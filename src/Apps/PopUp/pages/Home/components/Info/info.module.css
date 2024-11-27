@@ -1,0 +1,49 @@
+.infoContainer {
+  display: block;
+  width: 100%;
+}
+
+.header {
+  column-gap: 0.7rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  user-select: none;
+  cursor: pointer;
+  border-end-end-radius: 0;
+  border-end-start-radius: 0;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out,
+    border-bottom 0.3s ease-in-out;
+}
+
+.header:hover {
+  background-color: var(--highlight);
+}
+
+.headerActive {
+  background-color: var(--highlight);
+  border-bottom: 1px solid var(--txt2);
+  color: var(--txt2);
+}
+
+.icon {
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.arrow {
+  margin-left: auto;
+  transition: transform 0.2s ease-in-out;
+}
+.arrowActive {
+  transform: rotate(180deg);
+}
+
+.content {
+  display: none;
+  padding: 1rem;
+}
+
+.contentActive {
+  display: block !important;
+  height: fit-content;
+}

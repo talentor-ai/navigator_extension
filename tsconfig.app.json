@@ -22,6 +22,24 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@popup:components": [
+        "./src/Apps/PopUp/Components"
+      ],
+      "@popup:models": [
+        "./src/Apps/PopUp/models"
+      ],
+      "@popup:store": [
+        "./src/Apps/PopUp/store"
+      ],
+      "@popup:constants/*": [
+        "./src/Apps/PopUp/constants/*"
+      ],
+      "@popup/*": [
+        "./src/Apps/PopUp/*"
+      ],
+    }
   },
   "include": [
     "src",

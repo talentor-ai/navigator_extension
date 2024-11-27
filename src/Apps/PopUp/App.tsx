@@ -1,8 +1,19 @@
+import { HashRouter as RouterProvider } from 'react-router-dom';
+import { Router } from './routes';
+import { BaseLayout } from './components';
+import '@popup/app.css';
+import Header from './containers/Header';
+
 const App = () => {
   return (
-    <div>
-      <h1>Hello, Chrome Extension!</h1>
-    </div>
+    <RouterProvider
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
+      <BaseLayout>
+        <Header />
+        <Router />
+      </BaseLayout>
+    </RouterProvider>
   );
 };
 
