@@ -29,7 +29,6 @@ const LoginScreen = () => {
         className="mt-6"
         fieldProps={loginFormSchema}
         onSubmit={handleSubmit}
-        onCancel={() => console.log('cancel')}
         submitLabel="Iniciar sesión"
         isLoading={isPending}
       />

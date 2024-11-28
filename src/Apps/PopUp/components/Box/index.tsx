@@ -10,7 +10,7 @@ interface iProps extends CustomizableComponent {
   boxType?: 'button' | 'input' | 'icon' | 'navLink' | '';
   to?: string;
   id?: string;
-  onClick?: () => void | ((e: any) => void);
+  onClick?: (e?: any) => void;
   isActive?: boolean;
 }
 

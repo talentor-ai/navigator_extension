@@ -6,7 +6,7 @@ import {
   SIGNUP_PATH,
 } from '@popup:constants/paths';
 
-export const routes = [
+export const authenticatedRoutes = [
   {
     path: MAIN_PATH,
     label: 'Generate',
