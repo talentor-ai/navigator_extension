@@ -17,7 +17,7 @@ const RegisterScreen = () => {
         <SocialMedia socialMedia="linkedin" size={IconSize.medium} />
       </section>
       <Form
-        className="mt-8 flex flex-col justify-center"
+        className="my-8 w-72 flex flex-col justify-center"
         fieldProps={registerFormSchema}
         onSubmit={handleSubmit}
         submitLabel="Iniciar sesión"
