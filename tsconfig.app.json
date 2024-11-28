@@ -27,14 +27,17 @@
       "@popup:components": [
         "./src/Apps/PopUp/Components"
       ],
-      "@popup:models": [
-        "./src/Apps/PopUp/models"
+      "@popup:models/*": [
+        "./src/Apps/PopUp/models/*"
       ],
       "@popup:store": [
         "./src/Apps/PopUp/store"
       ],
       "@popup:constants/*": [
         "./src/Apps/PopUp/constants/*"
+      ],
+      "@popup:api": [
+        "./src/Apps/PopUp/api"
       ],
       "@popup/*": [
         "./src/Apps/PopUp/*"
