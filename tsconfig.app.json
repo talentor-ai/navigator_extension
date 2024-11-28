@@ -25,7 +25,7 @@
     "baseUrl": ".",
     "paths": {
       "@popup:components": [
-        "./src/Apps/PopUp/Components"
+        "./src/Apps/PopUp/components"
       ],
       "@popup:models/*": [
         "./src/Apps/PopUp/models/*"
@@ -35,6 +35,9 @@
       ],
       "@popup:constants/*": [
         "./src/Apps/PopUp/constants/*"
+      ],
+      "@popup:hooks": [
+        "./src/Apps/PopUp/hooks"
       ],
       "@popup:pages": [
         "./src/Apps/PopUp/pages"

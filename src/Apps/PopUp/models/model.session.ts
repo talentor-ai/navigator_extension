@@ -37,6 +37,6 @@ export interface IUserSessionInfo {
 
 // Session petition & response
 export interface ILoginRequest {
-  email: string;
+  username: string;
   password: string;
 }

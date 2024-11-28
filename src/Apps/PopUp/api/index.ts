@@ -1,6 +1,7 @@
 export { baseApi } from './baseApi';
 export {
   SERVICE_PATH,
+  BASE_PATH,
   AUTH_PATH,
   LOGIN_PATH,
   REGISTER_PATH,

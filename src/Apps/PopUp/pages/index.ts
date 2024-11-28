@@ -1,2 +1,7 @@
 export { default as Home } from './Home';
-export { LoginScreen, RegisterScreen } from './Login';
+export {
+  loginFormSchema,
+  registerFormSchema,
+  LoginScreen,
+  RegisterScreen,
+} from './Login';

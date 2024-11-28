@@ -1,4 +1,4 @@
-import { LOGIN_PATH } from '@popup:api';
+import { LOGIN_PATH } from '@popup:constants/paths';
 import { useSessionStore } from '@popup:store';
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';

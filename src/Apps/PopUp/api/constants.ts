@@ -1,9 +1,10 @@
 // ---------------------------------------- Service path
-export const SERVICE_PATH = import.meta.env.REACT_APP_BACKEND_URL || '/';
+export const SERVICE_PATH = import.meta.env.VITE_SERVICE_URL || '/';
+export const BASE_PATH = '/api/v1';
 
 // ---------------------------------------- API paths
 // auth
-export const AUTH_PATH = '/auth';
+export const AUTH_PATH = BASE_PATH + '/auth';
 export const LOGIN_PATH = AUTH_PATH + '/login';
 export const REGISTER_PATH = AUTH_PATH + '/register';
 

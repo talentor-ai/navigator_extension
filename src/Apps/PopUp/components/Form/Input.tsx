@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 interface IFieldProps extends FieldConfig {
   errorMessage?: string;
+  register: any;
 }
 
 const Input = ({
@@ -10,32 +11,35 @@ const Input = ({
   label,
   type,
   placeholder,
-  required,
   errorMessage = '',
+  register,
+  validationRules,
 }: IFieldProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const borderColor = () => {
     if (errorMessage) return 'border-errorColor';
     if (isFocused) return 'border-tertiary';
-    return 'border-border1';
+    return 'border-transparent';
   };
 
   return (
-    <div className="relative w-full mb-4">
+    <div className="relative w-full">
       <label htmlFor={name} className="text-txt2 block mb-1.5">
         {label}
-        {required && <span className="text-errorColor"> *</span>}
+        {validationRules?.required && (
+          <span className="text-errorColor"> *</span>
+        )}
       </label>
       <div
         className={`border ${borderColor()} px-4 text-txt1 flex justify-between 
-         items-center h-boxHeight bg-primary rounded-2xl`}
+         items-center h-boxHeight bg-secondary rounded-2xl`}
       >
         <input
           id={name}
           type={type}
           placeholder={placeholder}
-          //   {...register(name, { required: required })}
+          {...register(name, validationRules)}
           className="w-full border-none bg-transparent outline-none"
           autoComplete="off"
           onFocus={() => {

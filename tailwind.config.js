@@ -13,9 +13,12 @@ module.exports = {
         txt3: 'var(--txt3)',
         highlight: 'var(--highlight)',
         errorColor: 'var(--error-color)',
+        successColor: 'var(--success-color)',
       },
       fontSize: {
         small: '0.7rem',
+        medium: '1rem',
+        large: '1.3rem',
       },
       spacing: {
         boxHeight: '2.4rem',

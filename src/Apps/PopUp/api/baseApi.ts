@@ -51,7 +51,7 @@ const baseApi = async ({
   data,
   params,
 }: ApiClientOptions) => {
-  const response = await axiosInstance({
+  const response = await axiosInstance.request({
     url,
     method,
     data: data || {},
