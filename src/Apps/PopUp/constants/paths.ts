@@ -6,5 +6,6 @@ export const SETTINGS_PATH = '/settings';
 export const ID = ':id';
 
 // Login paths
-export const LOGIN_PATH = '/login';
-export const SIGNUP_PATH = '/signup';
+export const AUTH_PATH = '/auth';
+export const LOGIN_PATH = AUTH_PATH + '/login';
+export const SIGNUP_PATH = AUTH_PATH + '/register';

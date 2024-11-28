@@ -1,49 +1,45 @@
-import { Routes, Route } from 'react-router-dom';
-import { Login } from '../pages';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import {
+  AUTH_PATH,
   HISTORY_PATH,
   LOGIN_PATH,
   MAIN_PATH,
   SETTINGS_PATH,
   SIGNUP_PATH,
-} from '../constants/paths';
+} from '@popup:constants/paths';
+import { Home, LoginScreen, RegisterScreen } from '@popup:pages';
+import ConditionalRedirect from '@popup/hoc/RenderAuthComponent';
 
-export const routes = [
-  {
-    path: MAIN_PATH,
-    label: 'Generate',
-  },
-  {
-    path: HISTORY_PATH,
-    label: 'History',
-  },
-  {
-    path: SETTINGS_PATH,
-    label: 'Settings',
-  },
-];
-
-export const noLoginRoutes = [
-  {
-    path: LOGIN_PATH,
-    label: 'Login',
-  },
-  {
-    path: SIGNUP_PATH,
-    label: 'Sign Up',
-  },
-];
+const authenticatedComponent = (path: string) => {
+  let ComponentToRender = LoginScreen;
+  switch (path) {
+    case MAIN_PATH:
+      ComponentToRender = Home;
+      break;
+    default:
+      ComponentToRender = LoginScreen;
+      break;
+  }
+  return (
+    <ConditionalRedirect>
+      <ComponentToRender />
+    </ConditionalRedirect>
+  );
+};
 
 const Router = () => {
   return (
     <Routes>
-      <Route path={MAIN_PATH} element={<Login />} />
-      {/* <Route index element={<Home />} /> */}
+      <Route
+        path={MAIN_PATH}
+        index
+        element={authenticatedComponent(MAIN_PATH)}
+      />
       <Route path={HISTORY_PATH} element={<p>History</p>} />
       <Route path={SETTINGS_PATH} element={<p>Settings</p>} />
 
-      <Route path={LOGIN_PATH} element={<Login />} />
-      <Route path={SIGNUP_PATH} element={<Login />} />
+      <Route path={LOGIN_PATH} index element={<LoginScreen />} />
+      <Route path={SIGNUP_PATH} element={<RegisterScreen />} />
     </Routes>
   );
 };

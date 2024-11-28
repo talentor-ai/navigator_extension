@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SERVICE_PATH } from '@popup:api';
+import { SERVICE_PATH } from './constants';
 import { ApiClientOptions } from '@popup:models/model.api';
 
 // Create an Axios instance

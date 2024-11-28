@@ -5,6 +5,7 @@ export type {
 } from './default.components';
 export type { Address } from './model.address';
 export type { ApiClientOptions } from './model.api';
+export type { FieldConfig, formInputType } from './model.form';
 export { IconSize } from './model.icons';
 export type { iInfo, iProfile } from './model.info';
 export { UserRole } from './model.session';

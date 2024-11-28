@@ -1,6 +1,6 @@
+import { noLoginRoutes } from '@popup/routes';
 import { Box } from '../../components';
 import useMenu from './hooks/useMenu';
-import { noLoginRoutes } from '../../routes/Router';
 import styles from './menu.module.css';
 
 const Menu = () => {
