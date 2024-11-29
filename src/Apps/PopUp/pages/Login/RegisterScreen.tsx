@@ -2,10 +2,15 @@ import { Form, H1, SocialMedia } from '@popup/components';
 import styles from './login.module.css';
 import { IconSize } from '@popup:models/model.icons';
 import { registerFormSchema } from './constants';
+import { useRegister } from './hooks';
 
 const RegisterScreen = () => {
+  const { data: response, isPending, mutate: register } = useRegister();
+
+  // ----------------------------- Handlers
   const handleSubmit = async (data: any) => {
-    console.log('data', data);
+    await register(data);
+    console.log('data', response);
   };
 
   return (
@@ -21,7 +26,7 @@ const RegisterScreen = () => {
         fieldProps={registerFormSchema}
         onSubmit={handleSubmit}
         submitLabel="Iniciar sesión"
-        isLoading={false}
+        isLoading={isPending}
       />
     </div>
   );

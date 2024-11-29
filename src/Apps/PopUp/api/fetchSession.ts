@@ -6,5 +6,7 @@ export const loginApi = async (data: ILoginRequest) => {
   return response;
 };
 
-export const registerApi = (data: IUserSessionInfo) =>
-  baseApi({ url: REGISTER_PATH, method: 'POST', data });
+export const registerApi = async (data: IUserSessionInfo) => {
+  const response = await baseApi({ url: REGISTER_PATH, method: 'POST', data });
+  return response;
+};

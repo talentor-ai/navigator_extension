@@ -13,7 +13,7 @@ interface IUseSessionResponse {
   };
 }
 
-const useSession = () => {
+const useLogin = () => {
   const { setSession, setToken } = useSessionStore();
   const navigate = useNavigate();
 
@@ -36,4 +36,4 @@ const useSession = () => {
   });
 };
 
-export default useSession;
+export default useLogin;

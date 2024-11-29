@@ -56,12 +56,12 @@ export const registerFormSchema: FieldConfig[] = [
   {
     name: 'firstName',
     label: 'Nombres',
-    type: InputType.password,
+    type: InputType.text,
     placeholder: 'Ingrese su nombre',
     validationRules: {
       required: 'Este campo es requerido',
       pattern: {
-        value: /^[A-Za-z]+$/,
+        value: /^[A-Za-z ]+$/,
         message: 'Solo se permiten letras',
       },
     },
@@ -69,12 +69,12 @@ export const registerFormSchema: FieldConfig[] = [
   {
     name: 'lastName',
     label: 'Apellidos',
-    type: InputType.password,
+    type: InputType.text,
     placeholder: 'Ingrese su apellido',
     validationRules: {
       required: 'Este campo es requerido',
       pattern: {
-        value: /^[A-Za-z]+$/,
+        value: /^[A-Za-z ]+$/,
         message: 'Solo se permiten letras',
       },
     },

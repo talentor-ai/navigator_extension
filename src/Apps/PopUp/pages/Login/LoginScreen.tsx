@@ -3,10 +3,10 @@ import { H1 } from '@popup/components';
 import { IconSize } from '@popup/models/model.icons';
 import styles from './login.module.css';
 import { loginFormSchema } from './constants';
-import { useSession } from '@popup:hooks';
+import { useLogin } from './hooks';
 
 const LoginScreen = () => {
-  const { data: response, isPending, mutate: login } = useSession();
+  const { data: response, isPending, mutate: login } = useLogin();
 
   // ----------------------------- Handlers
   const handleSubmit = async (data: any) => {
@@ -26,7 +26,7 @@ const LoginScreen = () => {
         <SocialMedia socialMedia="linkedin" size={IconSize.medium} />
       </section>
       <Form
-        className="mt-6"
+        className="my-8 w-72 flex flex-col justify-center"
         fieldProps={loginFormSchema}
         onSubmit={handleSubmit}
         submitLabel="Iniciar sesión"

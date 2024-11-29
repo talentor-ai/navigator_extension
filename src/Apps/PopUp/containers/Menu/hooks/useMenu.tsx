@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const initialState = {
+const initialState: any = {
   picked: null,
   width: 0,
   left: 0,
@@ -10,7 +10,7 @@ const useMenu = () => {
   const [{ picked, width, left }, setPicked] = useState(initialState);
 
   // Getting the width and left position of the active item
-  const handleClick = (event, index) => {
+  const handleClick = (event: any, index: number) => {
     const element = event.currentTarget;
     const left =
       element.getBoundingClientRect().left -
