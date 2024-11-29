@@ -14,7 +14,6 @@ const LoginScreen = () => {
       username: data.username,
       password: data.password,
     });
-    console.log('data', response);
   };
 
   return (

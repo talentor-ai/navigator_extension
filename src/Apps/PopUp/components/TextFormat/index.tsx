@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomizableComponent } from '../../models';
+import { CustomizableComponent } from '@popup:models/default.components';
 import styles from './textformat.module.css';
 
 interface iProps extends CustomizableComponent {

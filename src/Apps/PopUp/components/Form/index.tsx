@@ -28,7 +28,16 @@ const Form: React.FC<DynamicFormProps> = ({
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
+
+  // ------------------------- Handlers -------------------------
+  const handleCancel = () => {
+    if (onCancel) {
+      reset();
+      onCancel();
+    }
+  };
 
   return (
     <form
@@ -47,12 +56,10 @@ const Form: React.FC<DynamicFormProps> = ({
         <Button className="bg-tertiary" type="submit" disabled={isLoading}>
           {submitLabel}
         </Button>
-        {onCancel ? (
-          <Button className="bg-errorColor" onClick={onCancel}>
+        {!!onCancel && (
+          <Button className="bg-errorColor" onClick={handleCancel}>
             {cancelLabel}
           </Button>
-        ) : (
-          <></>
         )}
       </div>
     </form>

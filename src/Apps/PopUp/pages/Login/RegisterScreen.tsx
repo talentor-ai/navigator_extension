@@ -5,12 +5,11 @@ import { registerFormSchema } from './constants';
 import { useRegister } from './hooks';
 
 const RegisterScreen = () => {
-  const { data: response, isPending, mutate: register } = useRegister();
+  const { isPending, mutate: register } = useRegister();
 
   // ----------------------------- Handlers
   const handleSubmit = async (data: any) => {
     await register(data);
-    console.log('data', response);
   };
 
   return (

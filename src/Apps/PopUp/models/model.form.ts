@@ -1,7 +1,7 @@
 export interface FieldConfig {
   name: string;
   label?: string;
-  type: InputType | RestInputType;
+  type: InputFieldType;
   placeholder?: string;
   defaultValue?: string | number;
   options?: string[];
@@ -16,15 +16,13 @@ export interface FieldConfig {
   };
 }
 
-export enum InputType {
+export enum InputFieldType {
   text = 'text',
   email = 'email',
   password = 'password',
   number = 'number',
-  datetime = 'datetime',
-}
+  datetime = 'datetime-local',
 
-export enum RestInputType {
   textarea = 'textarea',
   select = 'select',
   radio = 'radio',

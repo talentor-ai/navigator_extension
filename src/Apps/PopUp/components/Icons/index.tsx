@@ -3,6 +3,7 @@ import {
   faEllipsis,
   faCaretDown,
   faUser,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookF,
@@ -15,13 +16,14 @@ interface iProps extends CustomizableComponent {
 }
 
 const Icons = ({ iconType = '', className = '' }: iProps) => {
-  const iconPack = {
+  const iconPack: { [key: string]: any } = {
     itemMenu: faEllipsis,
     arrowDown: faCaretDown,
     user: faUser,
     linkedin: faLinkedinIn,
     facebook: faFacebookF,
     google: faGoogle,
+    plus: faPlus,
   };
 
   return (

@@ -1,10 +1,10 @@
-import { FieldConfig, InputType } from '@popup:models/model.form';
+import { FieldConfig, InputFieldType } from '@popup:models/model.form';
 
 export const loginFormSchema: FieldConfig[] = [
   {
     name: 'username',
     label: 'Username',
-    type: InputType.text,
+    type: InputFieldType.text,
     placeholder: 'Nombre de usuario',
     validationRules: {
       required: 'Este campo es requerido',
@@ -13,7 +13,7 @@ export const loginFormSchema: FieldConfig[] = [
   {
     name: 'password',
     label: 'Contraseña',
-    type: InputType.password,
+    type: InputFieldType.password,
     placeholder: 'Ingrese la contraseña',
     validationRules: {
       required: 'Este campo es requerido',
@@ -25,7 +25,7 @@ export const registerFormSchema: FieldConfig[] = [
   {
     name: 'email',
     label: 'Correo electrónico',
-    type: InputType.email,
+    type: InputFieldType.email,
     placeholder: 'Ingrese su correo electrónico',
     validationRules: {
       required: 'Este campo es requerido',
@@ -38,7 +38,7 @@ export const registerFormSchema: FieldConfig[] = [
   {
     name: 'username',
     label: 'Username',
-    type: InputType.text,
+    type: InputFieldType.text,
     placeholder: 'Nombre de usuario',
     validationRules: {
       required: 'Este campo es requerido',
@@ -47,7 +47,7 @@ export const registerFormSchema: FieldConfig[] = [
   {
     name: 'password',
     label: 'Contraseña',
-    type: InputType.password,
+    type: InputFieldType.password,
     placeholder: 'Ingrese la contraseña',
     validationRules: {
       required: 'Este campo es requerido',
@@ -56,7 +56,7 @@ export const registerFormSchema: FieldConfig[] = [
   {
     name: 'firstName',
     label: 'Nombres',
-    type: InputType.text,
+    type: InputFieldType.text,
     placeholder: 'Ingrese su nombre',
     validationRules: {
       required: 'Este campo es requerido',
@@ -69,7 +69,7 @@ export const registerFormSchema: FieldConfig[] = [
   {
     name: 'lastName',
     label: 'Apellidos',
-    type: InputType.text,
+    type: InputFieldType.text,
     placeholder: 'Ingrese su apellido',
     validationRules: {
       required: 'Este campo es requerido',
