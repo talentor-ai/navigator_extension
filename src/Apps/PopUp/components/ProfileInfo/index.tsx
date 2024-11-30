@@ -1,13 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import styles from './profile_info.module.css';
 import { Box, H2, Icons } from '../';
 import logoImage from '@popup/assets/logo.png';
 import { useSessionStore } from '@popup:store';
 
-const DEFAULT_TITLE = 'Talentor AI';
-const DEFAULT_DESCRIPTION =
-  "Genera multiples CV's en segundos con IA con un solo click!";
-
 const ProfileInfo = () => {
+  const { t } = useTranslation();
   const { session, token } = useSessionStore();
 
   return (
@@ -18,9 +16,11 @@ const ProfileInfo = () => {
         </div>
         <div className={styles.textContainer}>
           <H2 className="text-txt2">
-            {token ? `${session.firstName} ${session.lastName}` : DEFAULT_TITLE}
+            {token
+              ? `${session.firstName} ${session.lastName}`
+              : t('header.title')}
           </H2>
-          <p>{token ? session.email : DEFAULT_DESCRIPTION}</p>
+          <p>{token ? session.email : t('header.subtitle')}</p>
         </div>
       </div>
       <Box boxType="icon" className="w-8 h-8" containerMode>

@@ -48,6 +48,9 @@
       "@popup/*": [
         "./src/Apps/PopUp/*"
       ],
+      "@lang/*": [
+        "./src/Apps/PopUp/lang/*"
+      ],
     }
   },
   "include": [

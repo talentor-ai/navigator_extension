@@ -15,6 +15,11 @@ export type {
   IUserSessionInfo,
   ILoginRequest,
 } from './model.session';
+export type {
+  UserJobProfile,
+  UserJobProfileExperience,
+  UserJobProfileSkill,
+} from './model.user';
 export { SkillType } from './models.seekerInfo';
 export type {
   ApplicantInfo,

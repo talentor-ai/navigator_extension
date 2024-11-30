@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Form, H1, SocialMedia } from '@popup/components';
 import styles from './login.module.css';
 import { IconSize } from '@popup:models/model.icons';
@@ -5,6 +6,7 @@ import { registerFormSchema } from './constants';
 import { useRegister } from './hooks';
 
 const RegisterScreen = () => {
+  const { t } = useTranslation();
   const { isPending, mutate: register } = useRegister();
 
   // ----------------------------- Handlers
@@ -14,7 +16,7 @@ const RegisterScreen = () => {
 
   return (
     <div className={styles.main}>
-      <H1>Registrarse</H1>
+      <H1>{t('login.signUp')}</H1>
       <section className={styles.socialMediasection}>
         <SocialMedia socialMedia="google" size={IconSize.medium} />
         <SocialMedia socialMedia="facebook" size={IconSize.medium} />

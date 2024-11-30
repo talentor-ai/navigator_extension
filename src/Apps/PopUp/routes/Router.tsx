@@ -4,7 +4,7 @@ import {
   HISTORY_PATH,
   LOGIN_PATH,
   MAIN_PATH,
-  SETTINGS_PATH,
+  PROFILE_SETTINGS_PATH,
   SIGNUP_PATH,
 } from '@popup:constants/paths';
 import { Home, LoginScreen, RegisterScreen } from '@popup:pages';
@@ -36,7 +36,7 @@ const Router = () => {
         <Route path={GENERATE_MANUALLY_PATH} element={<GeneratePost />} />
       </Route>
       <Route path={HISTORY_PATH} element={<p>History</p>} />
-      <Route path={SETTINGS_PATH} element={<p>Settings</p>} />
+      <Route path={PROFILE_SETTINGS_PATH} element={<p>Settings</p>} />
 
       <Route path={LOGIN_PATH} index element={<LoginScreen />} />
       <Route path={SIGNUP_PATH} element={<RegisterScreen />} />

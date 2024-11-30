@@ -1,0 +1,27 @@
+{
+   "menu": {
+      "generate": "Generar",
+      "history": "Historial",
+      "profile": "Perfil"
+   },
+   "header": {
+      "title": "Talentor AI",
+      "subtitle": "Cree un multiples CV profesionales en segundos"
+   },
+   "home": {
+      "noEmployeeOfferSelected": "No hay ninguna oferta de empleo seleccionada",
+      "description": "Para seleccionar una oferta de empleo, diríjase a LinkedIn y presione el botón de \"Aplicar ahora\" en la oferta de empleo o agregue uno manualmente presionando \"Agregar manualmente\".",
+      "addManually": "Agregar manualmente"
+   },
+   "login": {
+      "login": "Iniciar sesión",
+      "signUp": "Registrarse"
+   },
+   "formFields": {
+      "name": "Nombres",
+      "lastName": "Apellidos",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña"
+   }
+}

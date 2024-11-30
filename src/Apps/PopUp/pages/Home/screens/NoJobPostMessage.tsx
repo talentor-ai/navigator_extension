@@ -1,18 +1,17 @@
 import { Box, H1, Icons } from '@popup:components';
 import { GENERATE_MANUALLY_PATH } from '@popup:constants/paths';
+import { useTranslation } from 'react-i18next';
 
 const NoJobPostMessage = () => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <div className="mt-8">
+      <div className="mt-20">
         <H1 className="text-center text-txt2">
-          No hay ninguna oferta de empleo seleccionada
+          {t('home.noEmployeeOfferSelected')}
         </H1>
-        <p className="text-center mt-4 text-txt3">
-          Para seleccionar una oferta de empleo, diríjase a LinkedIn y presione
-          el botón de "Aplicar ahora" en la oferta de empleo o agregue uno
-          manualmente presionando "Agregar manualmente".
-        </p>
+        <p className="text-center mt-4 text-txt3">{t('home.description')}</p>
       </div>
       <Box
         boxType="navLink"
@@ -21,7 +20,7 @@ const NoJobPostMessage = () => {
           px-6 hover:scale-[1.02]"
       >
         <Icons iconType="plus" className="mr-2" />
-        Agregar manualmente
+        {t('home.addManually')}
       </Box>
     </>
   );

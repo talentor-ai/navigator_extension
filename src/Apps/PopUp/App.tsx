@@ -2,6 +2,7 @@ import { HashRouter as RouterProvider } from 'react-router-dom';
 import { Router } from './routes';
 import { BaseLayout } from './components';
 import '@popup/app.css';
+import '@popup/lang/i18n';
 import Header from './containers/Header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 

@@ -4,9 +4,11 @@ import { IconSize } from '@popup/models/model.icons';
 import styles from './login.module.css';
 import { loginFormSchema } from './constants';
 import { useLogin } from './hooks';
+import { useTranslation } from 'react-i18next';
 
 const LoginScreen = () => {
-  const { data: response, isPending, mutate: login } = useLogin();
+  const { t } = useTranslation();
+  const { isPending, mutate: login } = useLogin();
 
   // ----------------------------- Handlers
   const handleSubmit = async (data: any) => {
@@ -18,7 +20,7 @@ const LoginScreen = () => {
 
   return (
     <div className={styles.main}>
-      <H1>Iniciar sesión</H1>
+      <H1>{t('login.login')}</H1>
       <section className={styles.socialMediasection}>
         <SocialMedia socialMedia="google" size={IconSize.medium} />
         <SocialMedia socialMedia="facebook" size={IconSize.medium} />
