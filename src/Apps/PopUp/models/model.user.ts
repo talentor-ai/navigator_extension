@@ -1,30 +1,34 @@
+// User profile
 export interface UserJobProfile {
-  id: string;
-  briefDescription: string;
-  aboutMe: string;
-  additionalSkills: string[];
-  softSkills: string[];
-  languages: string[];
-  linkedinUrl: string;
-  githubUrl: string;
-  portfolioUrl: string;
-  userJobProfileExperiences: UserJobProfileExperience[];
-  userJobProfileSkills: UserJobProfileSkill[];
+  id: string | null;
+  briefDescription: string | null;
+  aboutMe: string | null;
+  additionalSkills: string[] | null;
+  softSkills: string[] | null;
+  languages: string[] | null;
+  linkedinUrl: string | null;
+  githubUrl: string | null;
+  portfolioUrl: string | null;
+  userJobProfileExperiences: UserJobProfileExperience[] | null;
+  userJobProfileSkills: UserJobProfileSkill[] | null;
+  userId: string | null;
 }
 
+// User job profile
 export interface UserJobProfileExperience {
-  id: string;
-  position: string;
-  company: string;
-  startDate: string;
-  endDate: string;
-  jobType: string;
-  location: string;
-  description: string;
+  id: string | null;
+  position: string | null;
+  company: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  jobType: string | null;
+  location: string | null;
+  description: string | null;
 }
 
+// User job profile skill
 export interface UserJobProfileSkill {
-  id: string;
-  skillName: string;
-  yearsOfExperience: number;
+  id: string | null;
+  skillName: string | null;
+  yearsOfExperience: number | null;
 }

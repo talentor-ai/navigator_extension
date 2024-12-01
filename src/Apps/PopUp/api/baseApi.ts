@@ -14,8 +14,16 @@ const axiosInstance = axios.create({
 // Request interceptor (optional: add tokens, etc.)
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Add authentication token or any custom headers here
-    // config.headers.Authorization = `Bearer ${token}`;
+    // Add authentication token to headers if available
+    const session = localStorage.getItem('session');
+    let token;
+
+    if (session) {
+      token = JSON.parse(session)?.state?.token;
+    }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -25,16 +33,20 @@ axiosInstance.interceptors.request.use(
 
 // Response interceptor (optional: handle global responses or errors)
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response.data; // Return only the data for cleaner API calls
-  },
+  (response) => response.data,
   (error) => {
+    if (error.status === 401) {
+      // Handle 401 error globally
+      localStorage.removeItem('session');
+      window.location.reload();
+    }
     // Handle errors globally
     const customError = {
       message: error.response?.data?.message || 'Something went wrong',
       status: error.response?.status,
       data: error.response?.data,
     };
+
     return Promise.reject(customError);
   },
 );

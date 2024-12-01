@@ -1,3 +1,5 @@
+import { UserJobProfile } from './model.user';
+
 export interface Authority {
   authority: string; // Role
 }
@@ -25,7 +27,7 @@ export interface IUserSessionInfo {
   role: UserRole;
 
   // Relationships
-  userJobProfile?: object[];
+  userJobProfile?: UserJobProfile[];
 
   // UserDetails methods
   authorities?: Authority[];

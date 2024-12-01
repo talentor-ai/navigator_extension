@@ -7,3 +7,4 @@ export {
   LoginScreen,
   RegisterScreen,
 } from './Login';
+export { default as Profile } from './Profile';

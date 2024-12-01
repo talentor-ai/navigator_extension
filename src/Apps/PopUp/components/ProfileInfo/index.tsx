@@ -17,10 +17,10 @@ const ProfileInfo = () => {
         <div className={styles.textContainer}>
           <H2 className="text-txt2">
             {token
-              ? `${session.firstName} ${session.lastName}`
+              ? `${session?.firstName} ${session?.lastName}`
               : t('header.title')}
           </H2>
-          <p>{token ? session.email : t('header.subtitle')}</p>
+          <p>{token ? session?.email : t('header.subtitle')}</p>
         </div>
       </div>
       <Box boxType="icon" className="w-8 h-8" containerMode>

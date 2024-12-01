@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import { IUserSessionInfo, UserRole } from '@popup/models/model.session';
 
 interface State {
@@ -35,31 +35,29 @@ const sessionInitialState: IUserSessionInfo = {
   authorities: [],
 };
 
-const token: string = localStorage.getItem('token') || '';
+const token: string = localStorage.getItem('token') || ''; // TODO: Possibly it doesn't work
 
 // Store configuration
 const useSessionStore = create<State>()(
-  devtools(
-    persist(
-      (set) => ({
-        token,
-        session: sessionInitialState,
-        setSession: (session: IUserSessionInfo) =>
-          set((state: State) => ({ ...state, session })),
-        setToken: (token: string) => {
-          set((state: State) => ({ ...state, token }));
-        },
+  persist(
+    (set) => ({
+      token,
+      session: sessionInitialState,
+      setSession: (session: IUserSessionInfo) =>
+        set((state: State) => ({ ...state, session })),
+      setToken: (token: string) => {
+        set((state: State) => ({ ...state, token }));
+      },
 
-        // To reset everything
-        resetSession: () => {
-          set(() => ({
-            session: sessionInitialState,
-            token: '',
-          }));
-        },
-      }),
-      { name: 'session' },
-    ),
+      // To reset everything
+      resetSession: () => {
+        set(() => ({
+          session: sessionInitialState,
+          token: '',
+        }));
+      },
+    }),
+    { name: 'session' },
   ),
 );
 

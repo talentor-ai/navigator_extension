@@ -11,3 +11,6 @@ export const REGISTER_PATH = AUTH_PATH + '/register';
 // Jobs paths
 export const JOBS_PATH = '/jobs';
 export const APPLY_PATH = JOBS_PATH + '/apply';
+
+// User paths
+export const USER_PATH = BASE_PATH + '/user';

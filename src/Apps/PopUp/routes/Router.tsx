@@ -7,36 +7,50 @@ import {
   PROFILE_SETTINGS_PATH,
   SIGNUP_PATH,
 } from '@popup:constants/paths';
-import { Home, LoginScreen, RegisterScreen } from '@popup:pages';
+import { Home, LoginScreen, RegisterScreen, Profile } from '@popup:pages';
 import ConditionalRedirect from '@popup/hoc/RenderAuthComponent';
 import { GeneratePost, NoJobPostMessage } from '@popup/pages/Home/screens';
-
-const authenticatedComponent = (path: string) => {
-  let ComponentToRender: any = LoginScreen;
-  switch (path) {
-    case MAIN_PATH:
-      ComponentToRender = Home;
-      break;
-    default:
-      ComponentToRender = LoginScreen;
-      break;
-  }
-  return (
-    <ConditionalRedirect>
-      <ComponentToRender />
-    </ConditionalRedirect>
-  );
-};
+import { ProfileList } from '@popup/pages/Profile/Screens';
 
 const Router = () => {
   return (
     <Routes>
-      <Route path={MAIN_PATH} element={authenticatedComponent(MAIN_PATH)}>
-        <Route index element={<NoJobPostMessage />} />
-        <Route path={GENERATE_MANUALLY_PATH} element={<GeneratePost />} />
+      <Route
+        path={MAIN_PATH}
+        element={
+          <ConditionalRedirect>
+            <Home />
+          </ConditionalRedirect>
+        }
+      >
+        <Route
+          index
+          element={
+            <ConditionalRedirect>
+              <NoJobPostMessage />
+            </ConditionalRedirect>
+          }
+        />
+        <Route
+          path={GENERATE_MANUALLY_PATH}
+          element={
+            <ConditionalRedirect>
+              <GeneratePost />
+            </ConditionalRedirect>
+          }
+        />
       </Route>
       <Route path={HISTORY_PATH} element={<p>History</p>} />
-      <Route path={PROFILE_SETTINGS_PATH} element={<p>Settings</p>} />
+      <Route path={PROFILE_SETTINGS_PATH} element={<Profile />}>
+        <Route
+          index
+          element={
+            <ConditionalRedirect>
+              <ProfileList />
+            </ConditionalRedirect>
+          }
+        />
+      </Route>
 
       <Route path={LOGIN_PATH} index element={<LoginScreen />} />
       <Route path={SIGNUP_PATH} element={<RegisterScreen />} />

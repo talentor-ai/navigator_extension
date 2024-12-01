@@ -7,5 +7,7 @@ export {
   REGISTER_PATH,
   JOBS_PATH,
   APPLY_PATH,
+  USER_PATH,
 } from './constants';
 export { loginApi, registerApi } from './fetchSession';
+export { getUserApi } from './fetchUser';
