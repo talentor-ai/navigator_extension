@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const initialState: any = {
   picked: null,
@@ -8,20 +9,29 @@ const initialState: any = {
 
 const useMenu = () => {
   const [{ picked, width, left }, setPicked] = useState(initialState);
+  const { pathname } = useLocation();
 
-  // Getting the width and left position of the active item
-  const handleClick = (event: any, index: number) => {
-    const element = event.currentTarget;
-    const left =
-      element.getBoundingClientRect().left -
-      element.parentNode.getBoundingClientRect().left;
+  useEffect(() => {
+    const menuContainer = document.getElementById('menuContainer');
+    if (!menuContainer) return;
 
-    setPicked({
-      width: element.offsetWidth,
-      picked: index,
-      left,
+    Array.from(menuContainer.children).forEach((menuItem, index) => {
+      if (menuItem.id === `menu-${pathname}`) {
+        const left =
+          menuItem.getBoundingClientRect().left -
+          // @ts-expect-error - For some reason, getBoundingClientRect() is not recognized
+          menuItem?.parentNode?.getBoundingClientRect()?.left;
+
+        setPicked({
+          // @ts-expect-error - For some reason, offsetWidth() is not recognized
+          width: menuItem?.offsetWidth,
+          picked: index,
+          left,
+        });
+        return;
+      }
     });
-  };
+  }, [pathname]);
 
   useEffect(() => {
     if (picked === null) {
@@ -33,14 +43,13 @@ const useMenu = () => {
         picked: 0,
       });
     }
-  }, []);
+  }, [left, pathname, picked]);
 
   return {
     picked,
     width,
     left,
     setPicked,
-    handleClick,
   };
 };
 

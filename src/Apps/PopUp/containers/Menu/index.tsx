@@ -5,7 +5,7 @@ import styles from './menu.module.css';
 import { useSessionStore } from '@popup:store';
 
 const Menu = () => {
-  const { picked, width, left, handleClick } = useMenu();
+  const { picked, width, left } = useMenu();
   const { token } = useSessionStore();
   const routes = token ? authenticatedRoutes : noLoginRoutes;
 
@@ -14,7 +14,7 @@ const Menu = () => {
       {routes.length > 0 &&
         routes.map(({ path, label }, index) => (
           <Box
-            onClick={(e) => handleClick(e, index)}
+            id={'menu-' + path}
             key={path + index}
             boxType="navLink"
             className={`${styles.menuLink} ${
