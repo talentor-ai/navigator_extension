@@ -24,7 +24,7 @@ const ControlPanel = () => {
   return (
     <div className="">
       <p className="mb-2 text-txt3">Seleccionar perfil</p>
-      <div className="grid grid-cols-[1fr_2.3rem_2.3rem_2.3rem] gap-2 mb-4">
+      <div className="grid grid-cols-[13rem_2.3rem_2.3rem_2.3rem] gap-2 mb-4">
         <Select
           className="w-[13rem]"
           options={profileoptions}
