@@ -1,12 +1,40 @@
 import { useTranslation } from 'react-i18next';
 import styles from './profile_info.module.css';
-import { Box, H2, Icons } from '../';
+import { ButtonIcon, H2 } from '../';
 import logoImage from '@popup/assets/logo.png';
 import { useSessionStore } from '@popup:store';
+import { KebabMenu } from '@popup:components';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { PROFILE_SETTINGS_PATH } from '@popup:constants/paths';
 
 const ProfileInfo = () => {
   const { t } = useTranslation();
-  const { session, token } = useSessionStore();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { session, token, resetSession } = useSessionStore();
+  const navigate = useNavigate();
+
+  // Kebab menu options
+  const menuOptions = [
+    {
+      label: 'menu.profile',
+      action: () => navigate(PROFILE_SETTINGS_PATH),
+      icon: 'user',
+    },
+    {
+      label: 'login.logout',
+      action: () => resetSession(),
+      icon: 'logout',
+    },
+  ];
+
+  // -------------------------------------- Handlers
+  const handleOpenMenu = () => {
+    setMenuOpen(true);
+  };
+  const handleCloseMenu = () => {
+    setMenuOpen(false);
+  };
 
   return (
     <div className={styles.profileContainer}>
@@ -23,9 +51,20 @@ const ProfileInfo = () => {
           <p>{token ? session?.email : t('header.subtitle')}</p>
         </div>
       </div>
-      <Box boxType="icon" className="w-8 h-8" containerMode>
-        <Icons iconType="itemMenu" />
-      </Box>
+      {token && (
+        <ButtonIcon
+          icon="itemMenu"
+          className="hover:border-transparent hover:bg-secondary bg-transparent"
+          onClick={handleOpenMenu}
+        />
+      )}
+      {menuOpen && (
+        <KebabMenu
+          isOpen={true}
+          onClose={handleCloseMenu}
+          options={menuOptions}
+        />
+      )}
     </div>
   );
 };

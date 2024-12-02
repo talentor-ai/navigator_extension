@@ -15,7 +15,8 @@
    },
    "login": {
       "login": "Iniciar sesión",
-      "signUp": "Registrarse"
+      "signUp": "Registrarse",
+      "logout": "Cerrar sesión"
    },
    "formFields": {
       "name": "Nombres",
