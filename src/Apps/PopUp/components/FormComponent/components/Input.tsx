@@ -33,7 +33,7 @@ const Input = ({
       </label>
       <div
         className={`border ${borderColor()} px-4 text-txt1 flex justify-between 
-         items-center h-boxHeight bg-secondary rounded-2xl`}
+         items-center h-boxHeight bg-secondary rounded-md`}
       >
         <input
           id={name}

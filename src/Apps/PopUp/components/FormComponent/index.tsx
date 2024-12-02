@@ -15,7 +15,7 @@ interface DynamicFormProps extends CustomizableComponent {
   isLoading?: boolean;
 }
 
-const Form: React.FC<DynamicFormProps> = ({
+const FormComponent = ({
   fieldProps,
   onSubmit,
   onCancel,
@@ -23,7 +23,7 @@ const Form: React.FC<DynamicFormProps> = ({
   isLoading = false,
   submitLabel = 'Enviar',
   cancelLabel = 'Cancelar',
-}) => {
+}: DynamicFormProps) => {
   const {
     register,
     handleSubmit,
@@ -66,4 +66,4 @@ const Form: React.FC<DynamicFormProps> = ({
   );
 };
 
-export default Form;
+export default FormComponent;

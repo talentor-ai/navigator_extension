@@ -4,6 +4,8 @@ import {
   faCaretDown,
   faUser,
   faPlus,
+  faPenToSquare,
+  faTrashCan,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookF,
@@ -24,6 +26,8 @@ const Icons = ({ iconType = '', className = '' }: iProps) => {
     facebook: faFacebookF,
     google: faGoogle,
     plus: faPlus,
+    edit: faPenToSquare,
+    delete: faTrashCan,
   };
 
   return (

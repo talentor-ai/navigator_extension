@@ -34,7 +34,6 @@ body {
   height: 600px;
   width: 400px;
   margin: 0;
-  padding: 0.7rem;
   font-size: var(--size4);
   box-sizing: border-box;
   background-color: var(--primary);
@@ -213,4 +212,8 @@ template {
 
 [hidden] {
   display: none;
+}
+
+.ant-select-arrow {
+  color: var(--txt3) !important;
 }

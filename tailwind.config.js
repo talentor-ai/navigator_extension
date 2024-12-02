@@ -19,9 +19,10 @@ module.exports = {
         small: '0.7rem',
         medium: '1rem',
         large: '1.3rem',
+        icon: '1rem',
       },
       spacing: {
-        boxHeight: '2.4rem',
+        boxHeight: '2.3rem',
         boxRound: '1rem',
       },
     },

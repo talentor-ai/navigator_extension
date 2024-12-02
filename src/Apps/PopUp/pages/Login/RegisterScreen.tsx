@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Form, H1, SocialMedia } from '@popup/components';
+import { FormComponent, H1, SocialMedia } from '@popup/components';
 import styles from './login.module.css';
 import { IconSize } from '@popup:models/model.icons';
 import { registerFormSchema } from './constants';
@@ -22,7 +22,7 @@ const RegisterScreen = () => {
         <SocialMedia socialMedia="facebook" size={IconSize.medium} />
         <SocialMedia socialMedia="linkedin" size={IconSize.medium} />
       </section>
-      <Form
+      <FormComponent
         className="my-8 w-72 flex flex-col justify-center"
         fieldProps={registerFormSchema}
         onSubmit={handleSubmit}
