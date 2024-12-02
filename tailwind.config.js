@@ -14,6 +14,7 @@ module.exports = {
         highlight: 'var(--highlight)',
         errorColor: 'var(--error-color)',
         successColor: 'var(--success-color)',
+        infoColor: 'var(--info-color)',
       },
       fontSize: {
         small: '0.7rem',

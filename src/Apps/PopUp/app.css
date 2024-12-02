@@ -18,13 +18,16 @@
   --txt2: #fcaf58;
   --txt3: #8e8e8e;
   --highlight: rgba(255, 255, 255, 0.03);
-  --success-color: #b7ed60;
+  --success-color: #60ed91;
   --error-color: #fb4c69;
+  --info-color: #3ba8c4;
 
   --size1: 1.7rem;
   --size2: 0.75rem;
   --size3: 1.1rem;
   --size4: 0.9rem;
+
+  --screenMaxWith: 400px;
 }
 
 body {
@@ -32,7 +35,7 @@ body {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   height: 600px;
-  width: 400px;
+  width: var(--screenMaxWith);
   margin: 0;
   font-size: var(--size4);
   box-sizing: border-box;

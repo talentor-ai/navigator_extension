@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { get } from 'lodash';
 import { FieldConfig } from '@popup:models/model.form';

@@ -27,4 +27,9 @@ export enum InputFieldType {
   select = 'select',
   radio = 'radio',
   checkbox = 'checkbox',
+
+  multiselect = 'multiselect',
+
+  // subForm is a special type of field that will render a sub-form
+  subForm = 'subForm',
 }

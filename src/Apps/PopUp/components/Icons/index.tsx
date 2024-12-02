@@ -6,10 +6,13 @@ import {
   faPlus,
   faPenToSquare,
   faTrashCan,
+  faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookF,
+  faGithub,
   faGoogle,
+  faLinkedin,
   faLinkedinIn,
 } from '@fortawesome/free-brands-svg-icons';
 import { CustomizableComponent } from '../../models';
@@ -22,12 +25,15 @@ const Icons = ({ iconType = '', className = '' }: iProps) => {
     itemMenu: faEllipsis,
     arrowDown: faCaretDown,
     user: faUser,
-    linkedin: faLinkedinIn,
+    linkedin: faLinkedin,
+    linkedIn: faLinkedinIn,
     facebook: faFacebookF,
     google: faGoogle,
     plus: faPlus,
     edit: faPenToSquare,
     delete: faTrashCan,
+    github: faGithub,
+    portfolio: faGlobe,
   };
 
   return (
