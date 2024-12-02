@@ -8,7 +8,7 @@ const ControlPanel = () => {
   const { session } = useSessionStore();
   const { setJobProfile, jobProfileIdSelected } = useJobProfile();
 
-  const profileList: UserJobProfile[] = get(session, 'userJobProfile', []);
+  const profileList: UserJobProfile[] = get(session, 'userJobProfile', []) || [];
   const profileoptions = profileList.map(
     (profile: UserJobProfile, index: number) => ({
       value: profile?.id || index.toString(),
