@@ -9,14 +9,15 @@ import { useEffect } from 'react';
 const ProfileList = () => {
   const { session } = useSessionStore();
   const { jobProfileIdSelected, setJobProfile } = useJobProfile();
-  const profileList: UserJobProfile[] = get(session, 'userJobProfile', []);
+  const profileList: UserJobProfile[] =
+    get(session, 'userJobProfile', []) || [];
   const profileSelected =
     profileList.find((profile) => profile.id === jobProfileIdSelected) || null;
 
   useEffect(() => {
     if (!jobProfileIdSelected) {
       const firstProfile = profileList[0];
-      if (firstProfile.id) {
+      if (firstProfile?.id) {
         setJobProfile(firstProfile.id);
       }
     }
