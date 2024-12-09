@@ -7,7 +7,7 @@ import {
   PROFILE_SETTINGS_PATH,
   SIGNUP_PATH,
 } from '@popup:constants/paths';
-import { Home, LoginScreen, RegisterScreen, Profile } from '@popup:pages';
+import { Home, LoginScreen, RegisterScreen, Profile, History } from '@popup:pages';
 import ConditionalRedirect from '@popup/hoc/RenderAuthComponent';
 import { GeneratePost, NoJobPostMessage } from '@popup/pages/Home/screens';
 import { ProfileList } from '@popup/pages/Profile/Screens';
@@ -40,7 +40,7 @@ const Router = () => {
           }
         />
       </Route>
-      <Route path={HISTORY_PATH} element={<p>History</p>} />
+      <Route path={HISTORY_PATH} element={<History />} />
       <Route path={PROFILE_SETTINGS_PATH} element={<Profile />}>
         <Route
           index

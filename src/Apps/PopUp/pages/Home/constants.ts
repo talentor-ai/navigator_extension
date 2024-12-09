@@ -9,8 +9,8 @@ export const generatePostFormFields: FieldConfig[] = [
     validationRules: {
       required: 'Este campo es obligatorio',
       maxLength: {
-        value: 100,
-        message: 'El título no puede exceder los 100 caracteres',
+        value: 150,
+        message: 'El título no puede exceder los 150 caracteres',
       },
     },
   },
@@ -33,6 +33,12 @@ export const generatePostFormFields: FieldConfig[] = [
     type: InputFieldType.text,
     placeholder:
       'Ingrese el tipo de trabajo (ej., Tiempo completo, Medio tiempo)',
+    validationRules: {
+      maxLength: {
+        value: 20,
+        message: 'La posición no puede exceder los 20 caracteres',
+      },
+    },
   },
   {
     name: 'description',
@@ -75,8 +81,8 @@ export const generatePostFormFields: FieldConfig[] = [
     placeholder: 'Ingrese una breve descripción de la empresa',
     validationRules: {
       maxLength: {
-        value: 100,
-        message: 'La descripción breve no puede exceder los 100 caracteres',
+        value: 250,
+        message: 'El nombre de la empresa no puede exceder los 250 caracteres',
       },
     },
   },
@@ -99,8 +105,8 @@ export const generatePostFormFields: FieldConfig[] = [
     placeholder: 'Ingrese la URL del logo de la empresa',
     validationRules: {
       maxLength: {
-        value: 100,
-        message: 'La URL no puede exceder los 100 caracteres',
+        value: 250,
+        message: 'La URL no puede exceder los 250 caracteres',
       },
     },
   },
@@ -116,7 +122,10 @@ export const generatePostFormFields: FieldConfig[] = [
     type: InputFieldType.datetime,
     placeholder: 'Ingrese la fecha de publicación',
     validationRules: {
-      required: 'Este campo es obligatorio',
+      maxLength: {
+        value: 100,
+        message: 'La URL no puede exceder los 100 caracteres',
+      },
     },
   },
   {
@@ -124,20 +133,11 @@ export const generatePostFormFields: FieldConfig[] = [
     label: 'Número de Postulantes',
     type: InputFieldType.number,
     placeholder: 'Ingrese el número de postulantes',
-    validationRules: {
-      max: {
-        value: 9999,
-        message: 'El número de postulantes no puede exceder 4 dígitos',
-      },
-    },
   },
   {
     name: 'skills',
     label: 'Habilidades Requeridas',
     type: InputFieldType.textarea,
     placeholder: 'Ingrese las habilidades requeridas, separadas por comas',
-    validationRules: {
-      required: 'Este campo es obligatorio',
-    },
   },
 ];

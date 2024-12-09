@@ -1,6 +1,6 @@
 export const MAIN_PATH = '/';
 export const GENERATE_MANUALLY_PATH = MAIN_PATH + 'generate';
-export const HISTORY_PATH = '/history';
+export const HISTORY_PATH = '/my-cvs';
 
 export const PROFILE_SETTINGS_PATH = '/profile';
 export const PROFILE_LIST_PATH = PROFILE_SETTINGS_PATH + '/list';
