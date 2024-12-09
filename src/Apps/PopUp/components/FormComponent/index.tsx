@@ -1,9 +1,10 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { get } from 'lodash';
+import { debounce, get, isEqual } from 'lodash';
 import { FieldConfig } from '@popup:models/model.form';
 import InputFieldRender from './InputFieldRender';
 import { Button } from '@popup:components';
 import { CustomizableComponent } from '@popup:models/default.components';
+import { useCallback, useEffect } from 'react';
 
 interface DynamicFormProps extends CustomizableComponent {
   fieldProps: FieldConfig[];
@@ -12,6 +13,8 @@ interface DynamicFormProps extends CustomizableComponent {
   cancelLabel?: string;
   onCancel?: () => void;
   isLoading?: boolean;
+  onWatch?: (data: Record<string, any>) => void;
+  defaultValues?: Record<string, any>;
 }
 
 const FormComponent = ({
@@ -22,13 +25,28 @@ const FormComponent = ({
   isLoading = false,
   submitLabel = 'Enviar',
   cancelLabel = 'Cancelar',
+  onWatch,
+  defaultValues = {},
 }: DynamicFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+    watch,
+  } = useForm({
+    defaultValues,
+  });
+
+  const debouncedSetFormData = useCallback(
+    debounce((data) => {
+      if (!onWatch) return;
+      return onWatch(data);
+    }, 300), // Adjust debounce delay as needed
+    [onWatch],
+  );
+
+  const watchedValues = watch();
 
   // ------------------------- Handlers -------------------------
   const handleCancel = () => {
@@ -37,6 +55,11 @@ const FormComponent = ({
       onCancel();
     }
   };
+
+  useEffect(() => {
+    if (isEqual(watchedValues, {})) return;
+    debouncedSetFormData(watchedValues);
+  }, [watchedValues, debouncedSetFormData]);
 
   return (
     <form

@@ -12,7 +12,7 @@ export const LOGIN_PATH = AUTH_PATH + '/login';
 export const REGISTER_PATH = AUTH_PATH + '/register';
 
 // Jobs paths
-export const JOBS_PATH = '/jobs';
+export const JOBS_PATH = BASE_PATH + '/jobs';
 export const APPLY_PATH = JOBS_PATH + '/apply';
 
 // User paths

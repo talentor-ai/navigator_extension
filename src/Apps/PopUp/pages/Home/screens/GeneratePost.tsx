@@ -2,15 +2,32 @@ import { FormComponent, H1 } from '@popup:components';
 import { generatePostFormFields } from '../constants';
 import { useNavigate } from 'react-router-dom';
 import { MAIN_PATH } from '@popup:constants/paths';
+import { useJobPostFormStore, useJobProfile } from '@popup:store';
+import useApplyToJob from '../hooks/useApplyToJob';
+import { cleanEmptyFieldsFromObject } from '@popup:helpers';
 
 const GeneratePost = () => {
   const navigate = useNavigate();
+  const { jobProfileIdSelected } = useJobProfile();
+  const { setFormData, formData, clearFormData } = useJobPostFormStore();
+  const { mutate: applyToJob } = useApplyToJob();
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    console.log('data', cleanEmptyFieldsFromObject(data));
+    applyToJob({
+      jobPost: cleanEmptyFieldsFromObject(data),
+      jobProfileId: jobProfileIdSelected,
+    });
   };
   const oncancel = () => {
+    clearFormData();
+    useJobPostFormStore.getState().clearFormData();
     navigate(MAIN_PATH);
+  };
+
+  // Handlers
+  const onWatch = (data: Record<string, any>) => {
+    setFormData(data);
   };
 
   return (
@@ -21,6 +38,8 @@ const GeneratePost = () => {
         fieldProps={generatePostFormFields}
         onSubmit={onSubmit}
         onCancel={oncancel}
+        onWatch={onWatch}
+        defaultValues={formData}
       />
     </div>
   );

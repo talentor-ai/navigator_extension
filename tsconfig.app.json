@@ -45,6 +45,9 @@
       "@popup:api": [
         "./src/Apps/PopUp/api"
       ],
+      "@popup:helpers": [
+        "./src/Apps/PopUp/helpers"
+      ],
       "@popup/*": [
         "./src/Apps/PopUp/*"
       ],
