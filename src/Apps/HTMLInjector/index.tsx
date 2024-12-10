@@ -1,15 +1,14 @@
 import { createRoot } from 'react-dom/client';
 import { BUTTON_CONTAINER_PATH } from './constants';
 import { StrictMode } from 'react';
-import App from './App';
-import PopUpWrapper from './PopUpWrapper';
+import { ApplyButton } from '@injector/components';
 
 console.info('Running injector!');
 
 // -------------------------------------------- Addition of button
 (function () {
   const observer = new MutationObserver(() => {
-    const container = document.querySelector(BUTTON_CONTAINER_PATH);
+    const container = document.querySelector(BUTTON_CONTAINER_PATH)?.parentNode;
 
     if (!container) return;
 
@@ -25,7 +24,7 @@ console.info('Running injector!');
     // Mount the React component
     createRoot(reactRoot!).render(
       <StrictMode>
-        <App />
+        <ApplyButton />
       </StrictMode>,
     );
   });
@@ -57,5 +56,5 @@ console.info('Running injector!');
 
   container.appendChild(shadowHost);
   const root = createRoot(document.getElementById('talentor-ai-injected-app')!);
-  root.render(<PopUpWrapper />);
+  root.render(<></>);
 })();

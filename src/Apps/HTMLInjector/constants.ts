@@ -1,2 +1,61 @@
 export const BUTTON_CONTAINER_PATH =
-  '#main > div > div.scaffold-layout__list-detail-inner.scaffold-layout__list-detail-inner--grow > div.scaffold-layout__detail.overflow-x-hidden.jobs-search__job-details > div > div.jobs-search__job-details--container > div > div:nth-child(1) > div > div:nth-child(1) > div > div.relative.job-details-jobs-unified-top-card__container--two-pane > div > div.mt5 > div';
+  '.job-details-jobs-unified-top-card__container--two-pane .jobs-save-button.artdeco-button';
+
+export const JOB_POST_FIELDS = [
+  {
+    field: 'title',
+    cssKey: '.job-details-jobs-unified-top-card__job-title a.ember-view',
+  },
+  {
+    field: 'position',
+    cssKey: '.job-details-jobs-unified-top-card__job-title a.ember-view',
+  },
+  //   {
+  //     field: 'jobType',
+  //     cssKey: '',
+  //   },
+  {
+    field: 'description',
+    cssKey: '.jobs-description__container',
+  },
+  {
+    field: 'location',
+    cssKey:
+      '.job-details-jobs-unified-top-card__primary-description-container > div > span',
+  },
+  {
+    field: 'companyName',
+    cssKey: '.job-details-jobs-unified-top-card__company-name a',
+  },
+  {
+    field: 'companyBriefDescription',
+    cssKey: '.jobs-company__inline-information', // Parent element
+    accessTo: 'parentNode',
+  },
+  {
+    field: 'companyDescription',
+    cssKey: '.jobs-company__company-description',
+  },
+  {
+    field: 'companyLogoUrl',
+    cssKey: '.ivm-image-view-model img.ivm-view-attr__img--centered',
+    getUrl: true,
+  },
+  // {
+  //   field: 'companyWorkers',
+  //   cssKey: '.jobs-company__inline-information', // First child element
+  //   accessTo: 'firstChild',
+  // },
+  //   {
+  //     field: 'datePosted',
+  //     cssKey: '',
+  //   },
+  //   {
+  //     field: 'applicants',
+  //     cssKey: '',
+  //   },
+  //   {
+  //     field: 'skills',
+  //     cssKey: '',
+  //   },
+];

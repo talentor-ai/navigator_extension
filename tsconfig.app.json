@@ -59,6 +59,12 @@
       "@injector/*": [
         "./src/Apps/HTMLInjector/*"
       ],
+      "@injector:helpers": [
+        "./src/Apps/HTMLInjector/helpers"
+      ],
+      "@all/*": [
+        "./src/Apps/*"
+      ],
     }
   },
   "include": [

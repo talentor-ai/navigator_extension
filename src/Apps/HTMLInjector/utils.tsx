@@ -15,7 +15,7 @@ export const removeInjectedContent = () => {
 
 // Function to inject code into the .jobs-search-results__list-item elements
 export const injectHTMLBaseContent = (observer: MutationObserver) => {
-  const container = document.querySelector(BUTTON_CONTAINER_PATH);
+  const container = document.querySelector(BUTTON_CONTAINER_PATH)?.parentNode;
   console.info(container);
 
   if (!container) return;
