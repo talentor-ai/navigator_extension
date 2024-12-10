@@ -20,7 +20,7 @@ const MyCVList = () => {
   }, [resumeList]);
 
   return (
-    <div>
+    <div className='flex flex-col gap-2'>
       {!isEmpty(resumeHistory) &&
         resumeHistory.map((resume: any) => (
           <HistoryItem key={resume.id} {...resume} />
