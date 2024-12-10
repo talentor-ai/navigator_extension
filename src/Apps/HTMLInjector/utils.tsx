@@ -1,7 +1,12 @@
+import { BUTTON_CONTAINER_PATH } from '@injector/constants';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import ToRender from './App';
+
 // Before all, remove the previous elements injected
 export const removeInjectedContent = () => {
   const injectedElements = document.querySelectorAll(
-    '.talentor-ai-injected-add-button',
+    '#talentor-ai-injected-add-button',
   );
   injectedElements.forEach((element) => {
     element.remove();
@@ -9,26 +14,25 @@ export const removeInjectedContent = () => {
 };
 
 // Function to inject code into the .jobs-search-results__list-item elements
-export const injectHTMLBaseContent = () => {
-  // Removing the previous injected elements
-  removeInjectedContent();
+export const injectHTMLBaseContent = (observer: MutationObserver) => {
+  const container = document.querySelector(BUTTON_CONTAINER_PATH);
+  console.info(container);
 
-  const jobItems = document.querySelectorAll('.jobs-search-results__list-item');
+  if (!container) return;
 
-  if (jobItems.length > 0) {
-    jobItems.forEach((item) => {
-      // Create a test element to inject
-      // TODO: Remove this code and inject React components
-      const injectedElement = document.createElement('div');
-      injectedElement.className = 'talentor-ai-injected-add-button'; // Add a class to the injected element
-      injectedElement.textContent = 'X';
-      injectedElement.style.color = 'red'; // Style the injected content
-      injectedElement.style.cssText = `position: absolute; top: 0; left: 0; z-index: 9999`; // Reset the style of the injected content
+  observer.disconnect(); // Stop observing once the target is found
 
-      // Append the injected element to each job item
-      item.appendChild(injectedElement); // Add a relative position to the parent element
-    });
-  } else {
-    console.info('No elements found.');
-  }
+  // Create a container for the React component
+  const reactRoot = document.createElement('div');
+  reactRoot.id = 'talentor-ai-injected-button';
+
+  // Inject the container into the target element
+  container.appendChild(reactRoot);
+
+  // Mount the React component
+  createRoot(document.getElementById('talentor-ai-injected-button')!).render(
+    <StrictMode>
+      <ToRender />
+    </StrictMode>,
+  );
 };

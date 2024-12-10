@@ -1,0 +1,18 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.5rem;
+  margin-left: 1rem;
+  padding: 0 1.3rem;
+  height: 4rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-radius: 2rem;
+  color: white;
+  background-color: #1e1e27;
+}
+
+.button:hover {
+  color: #fcaf58;
+}

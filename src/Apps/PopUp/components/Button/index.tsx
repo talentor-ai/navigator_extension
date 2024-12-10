@@ -14,11 +14,13 @@ const Button = ({
   onClick = () => {},
   disabled = false,
   className = '',
+  style = {},
 }: IButtonProps) => {
   return (
     <button
       type={type}
       disabled={disabled}
+      style={style}
       className={`relative flex justify-center
          items-center h-boxHeight rounded-2xl
          text-primary font-semibold text-medium cursor-pointer 

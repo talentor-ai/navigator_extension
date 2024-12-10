@@ -24,6 +24,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      // PopUp paths
       "@popup:components": [
         "./src/Apps/PopUp/components"
       ],
@@ -53,6 +54,10 @@
       ],
       "@lang/*": [
         "./src/Apps/PopUp/lang/*"
+      ],
+      // HTML Injector paths
+      "@injector/*": [
+        "./src/Apps/HTMLInjector/*"
       ],
     }
   },

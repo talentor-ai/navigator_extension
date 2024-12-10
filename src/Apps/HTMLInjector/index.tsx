@@ -1,44 +1,61 @@
-import { injectHTMLBaseContent } from './utils';
+import { createRoot } from 'react-dom/client';
+import { BUTTON_CONTAINER_PATH } from './constants';
+import { StrictMode } from 'react';
+import App from './App';
+import PopUpWrapper from './PopUpWrapper';
 
-console.info('LinkedIn page found!');
+console.info('Running injector!');
 
-/*
- * This component makes 2 things:
- * 1. Just after the DOM is loaded, it injects the base content into the page
- * 2. It observes the pagination container to inject the base content into the new items
- */
+// -------------------------------------------- Addition of button
+(function () {
+  const observer = new MutationObserver(() => {
+    const container = document.querySelector(BUTTON_CONTAINER_PATH);
 
-if (document.readyState === 'loading') {
-  // The document is still loading
-  document.addEventListener('DOMContentLoaded', () => {
-    injectHTMLBaseContent();
+    if (!container) return;
 
-    // Optionally, observe DOM changes to inject into newly added items
-    const observer = new MutationObserver(injectHTMLBaseContent);
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.disconnect(); // Stop observing once the target is found
+
+    // Create a container for the React component
+    const reactRoot = document.createElement('div');
+    reactRoot.id = 'talentor-ai-injected-button';
+
+    // Inject the container into the target element
+    container.appendChild(reactRoot);
+
+    // Mount the React component
+    createRoot(reactRoot!).render(
+      <StrictMode>
+        <App />
+      </StrictMode>,
+    );
   });
-} else {
-  injectHTMLBaseContent();
-}
 
-// Creating an observer to update the injected content after the DOM changes
-const paginationContainer = document.querySelector(
-  '.scaffold-layout__list-container',
-);
-if (paginationContainer) {
-  // Create a MutationObserver instance
-  const observer = new MutationObserver((mutationsList) => {
-    // Loop through the mutations to find the childList type
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        injectHTMLBaseContent();
-      }
-    }
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
   });
-  // Start observing the target div for changes
-  observer.observe(paginationContainer, {
-    childList: true, // Observe when children are added or removed
-    attributes: false, // Observe attribute changes
-    subtree: false, // Observe all children of the target div
-  });
-}
+})();
+
+// --------------------------------------------- Injection of core app
+(function () {
+  const container =
+    (document.querySelector('#artdeco-toasts__wormhole') as HTMLElement) ||
+    document.body;
+  console.log('Injecting core app');
+  // Create a container for the React component
+  const shadowHost = document.createElement('div');
+  const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
+  // Adding styles to the shadow root
+  const styleLink = document.createElement('link');
+  styleLink.setAttribute('rel', 'stylesheet');
+  styleLink.setAttribute('href', chrome.runtime.getURL('@popup/app.css')); // Link to your Tailwind build
+  shadowRoot.appendChild(styleLink);
+
+  const reactRoot = document.createElement('div');
+  reactRoot.id = 'talentor-ai-injected-app';
+  shadowRoot.appendChild(reactRoot);
+
+  container.appendChild(shadowHost);
+  const root = createRoot(document.getElementById('talentor-ai-injected-app')!);
+  root.render(<PopUpWrapper />);
+})();
