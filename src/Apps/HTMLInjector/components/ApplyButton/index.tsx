@@ -20,7 +20,7 @@ const App = () => {
           height: '2.5rem',
         }}
       />
-      <span className={styles.label}>Aplicar ahora</span>
+      <span className={styles.label}>Extraer datos</span>
     </button>
   );
 };

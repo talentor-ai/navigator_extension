@@ -20,4 +20,6 @@ export const USER_PATH = BASE_PATH + '/user';
 
 // Resume paths
 export const RESUME_PATH = BASE_PATH + '/resume';
-export const RESUME_HISTORY_BY_PROFILE_PATH = RESUME_PATH + '/history/' + PROFILE_ID;
+export const RESUME_HISTORY_BY_PROFILE_PATH =
+  RESUME_PATH + '/history/' + PROFILE_ID;
+export const RESUME_DOWNLOAD_PATH = RESUME_PATH + '/download/' + PROFILE_ID;

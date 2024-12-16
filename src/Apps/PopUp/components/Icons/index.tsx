@@ -8,6 +8,7 @@ import {
   faTrashCan,
   faGlobe,
   faArrowRightFromBracket,
+  faPrint,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookF,
@@ -36,6 +37,7 @@ const Icons = ({ iconType = '', className = '' }: iProps) => {
     github: faGithub,
     portfolio: faGlobe,
     logout: faArrowRightFromBracket,
+    print: faPrint,
   };
 
   return (
