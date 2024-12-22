@@ -2,7 +2,7 @@ import { useJobProfile } from '@popup:store';
 import { useEffect } from 'react';
 import useHistoryStore from '@popup/store/useHistoryStore';
 import useResumeHistory from '../hooks/useResumeHistory';
-import { isEmpty } from 'lodash';
+import { isEmpty, reverse } from 'lodash';
 import HistoryItem from './HistoryItem';
 
 const MyCVList = () => {
@@ -22,7 +22,7 @@ const MyCVList = () => {
   return (
     <div className="flex flex-col gap-2">
       {!isEmpty(resumeHistory) &&
-        resumeHistory.map((resume: any) => (
+        reverse(resumeHistory).map((resume: any) => (
           <HistoryItem key={resume.id} {...resume} />
         ))}
     </div>

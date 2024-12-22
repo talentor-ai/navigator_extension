@@ -13,7 +13,10 @@ const App = () => {
   };
 
   return (
-    <button className={styles.button} onClick={handleClick}>
+    <button
+      className={`${styles.button} active:scale-95`}
+      onClick={handleClick}
+    >
       <img
         src="https://media.licdn.com/dms/image/v2/D560BAQFLyUQ1LDN7Zg/company-logo_100_100/company-logo_100_100/0/1729685244919?e=1741219200&v=beta&t=6TBfhen0KWu_7ozM8RbpBnqS-T7G8x2ISfEstezzm1Q"
         style={{

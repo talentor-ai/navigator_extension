@@ -68,10 +68,6 @@ export const generatePostFormFields: FieldConfig[] = [
     placeholder: 'Ingrese el nombre de la empresa',
     validationRules: {
       required: 'Este campo es obligatorio',
-      maxLength: {
-        value: 50,
-        message: 'El nombre de la empresa no puede exceder los 50 caracteres',
-      },
     },
   },
   {
@@ -91,12 +87,6 @@ export const generatePostFormFields: FieldConfig[] = [
     label: 'Descripción de la Empresa',
     type: InputFieldType.textarea,
     placeholder: 'Ingrese una descripción detallada de la empresa',
-    validationRules: {
-      maxLength: {
-        value: 500,
-        message: 'La descripción no puede exceder los 500 caracteres',
-      },
-    },
   },
   {
     name: 'companyLogoUrl',

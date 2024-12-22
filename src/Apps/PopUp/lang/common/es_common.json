@@ -26,12 +26,15 @@
       "confirmPassword": "Confirmar contraseña",
       "briefDescription": "Descripción breve",
       "aboutMe": "Sobre mí",
-      "additionalSkills": "Habilidades adicionales",
-      "softSkills": "Habilidades blandas",
+      "additionalSkills": "Habilidades",
+      "softSkills": "Habilidades adicionales",
       "languages": "Idiomas",
-      "linkedInUrl": "URL de LinkedIn",
-      "githubURL": "URL de GitHub",
-      "portfolioUrl": "URL de Portafolio",
+      "linkedInUrl": "LinkedIn",
+      "githubUrl": "GitHub",
+      "portfolioUrl": "Portafolio",
+      "linkedIn": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Portafolio",
       "userJobProfileExperience": "Experiencia",
       "userJobProfileSkills": "Habilidades",
       "position": "Posición",
@@ -42,9 +45,6 @@
       "location": "Ubicación",
       "description": "Descripción",
       "skillName": "Nombre de la habilidad",
-      "yearsOfExperience": "Años de experiencia",
-      "linkedIn": "Visitar LinkedIn",
-      "github": "GitHub personal",
-      "portfolio": "Portafolio web"
+      "yearsOfExperience": "Años de experiencia"
    }
 }

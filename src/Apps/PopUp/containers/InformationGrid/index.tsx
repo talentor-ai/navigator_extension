@@ -5,22 +5,24 @@ import { InputFieldType } from '@popup:models/model.form';
 
 const mockData = [
   { fieldKey: 'aboutMe', type: InputFieldType.textarea },
-  { fieldKey: 'briefDescription', type: InputFieldType.text },
+  // { fieldKey: 'briefDescription', type: InputFieldType.text },
   { fieldKey: 'additionalSkills', type: InputFieldType.multiselect },
   { fieldKey: 'softSkills', type: InputFieldType.multiselect },
   { fieldKey: 'languages', type: InputFieldType.multiselect },
   { fieldKey: 'userJobProfileExperience', type: InputFieldType.subForm },
   { fieldKey: 'userJobProfileSkills', type: InputFieldType.subForm },
-  { fieldKey: 'githubURL', type: InputFieldType.text },
+  { fieldKey: 'githubUrl', type: InputFieldType.text },
   { fieldKey: 'portfolioUrl', type: InputFieldType.text },
   { fieldKey: 'linkedInUrl', type: InputFieldType.text },
 ];
 
 const InformationGrid = ({ jobProfile }: { jobProfile: UserJobProfile }) => {
   if (isEmpty(jobProfile)) return <>Loading...</>;
+  console.log(jobProfile);
   return (
     <section className="grid grid-cols-3 grid-flow-dense gap-x-2 gap-y-4">
       {mockData.map(({ fieldKey, type }: { [key: string]: string }) => {
+        console.log(fieldKey, jobProfile[fieldKey as keyof UserJobProfile]);
         if (isEmpty(jobProfile[fieldKey as keyof UserJobProfile])) return null;
         switch (type) {
           case InputFieldType.subForm:
@@ -32,7 +34,7 @@ const InformationGrid = ({ jobProfile }: { jobProfile: UserJobProfile }) => {
               <InformationItem
                 key={fieldKey}
                 keyLabel={fieldKey}
-                span={2}
+                span={3}
                 value={valueToDisplay.join(', ')}
               />
             );

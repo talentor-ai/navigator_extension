@@ -15,10 +15,15 @@ const InformationItem = ({
   const { t } = useTranslation();
 
   if (urlKeyList[keyLabel]) {
+    // Remove http:// or https:// from the URL to avoid duplication of the protocol
+    let processedValue = value.replace('https://', '');
+    processedValue = processedValue.replace('http://', '');
+    processedValue = 'https://' + processedValue;
+
     return (
       <div style={{ gridColumn: `span ${span}` }}>
         <H2 className="mb-2 text-txt1">{t('formFields.' + keyLabel)}:</H2>
-        <Link href={value} target="_blank" rel="noreferrer">
+        <Link href={processedValue} target="_blank" rel="noreferrer">
           <Icons iconType={urlKeyList[keyLabel]} className="mr-1" />
           {t('formFields.' + urlKeyList[keyLabel])}
         </Link>
@@ -36,7 +41,7 @@ const InformationItem = ({
 // The following keys will render as links
 const urlKeyList: { [keyLabel: string]: string } = {
   linkedInUrl: 'linkedIn',
-  githubURL: 'github',
+  githubUrl: 'github',
   portfolioUrl: 'portfolio',
 };
 
