@@ -10,19 +10,17 @@ const MyCVList = () => {
   const { setResumeHistory, resumeHistory } = useHistoryStore();
   const { data: resumeList } = useResumeHistory(jobProfileIdSelected || '');
 
-  console.log(resumeHistory);
-
   useEffect(() => {
     // @ts-expect-error Expect response
     const result = resumeList?.response;
     if (!result) return;
-    setResumeHistory(result);
+    setResumeHistory(reverse(result));
   }, [resumeList]);
 
   return (
     <div className="flex flex-col gap-2">
       {!isEmpty(resumeHistory) &&
-        reverse(resumeHistory).map((resume: any) => (
+        resumeHistory.map((resume: any) => (
           <HistoryItem key={resume.id} {...resume} />
         ))}
     </div>

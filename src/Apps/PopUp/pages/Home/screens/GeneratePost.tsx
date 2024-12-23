@@ -13,7 +13,6 @@ const GeneratePost = () => {
   const { mutate: applyToJob } = useApplyToJob();
 
   const onSubmit = (data: any) => {
-    console.log('data', cleanEmptyFieldsFromObject(data));
     applyToJob({
       jobPost: cleanEmptyFieldsFromObject(data),
       jobProfileId: jobProfileIdSelected,

@@ -18,11 +18,10 @@ const mockData = [
 
 const InformationGrid = ({ jobProfile }: { jobProfile: UserJobProfile }) => {
   if (isEmpty(jobProfile)) return <>Loading...</>;
-  console.log(jobProfile);
+
   return (
     <section className="grid grid-cols-3 grid-flow-dense gap-x-2 gap-y-4">
       {mockData.map(({ fieldKey, type }: { [key: string]: string }) => {
-        console.log(fieldKey, jobProfile[fieldKey as keyof UserJobProfile]);
         if (isEmpty(jobProfile[fieldKey as keyof UserJobProfile])) return null;
         switch (type) {
           case InputFieldType.subForm:

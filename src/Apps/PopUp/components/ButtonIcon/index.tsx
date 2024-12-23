@@ -11,7 +11,9 @@ interface ButtonIconProps extends CustomizableComponent {
 const ButtonIcon = ({
   icon,
   disabled = false,
-  onClick,
+  onClick = () => {
+    console.warn('Click event not implemented');
+  },
   className = '',
 }: ButtonIconProps) => {
   return (

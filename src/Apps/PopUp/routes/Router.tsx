@@ -2,15 +2,23 @@ import { Routes, Route } from 'react-router-dom';
 import {
   GENERATE_MANUALLY_PATH,
   HISTORY_PATH,
+  ID,
   LOGIN_PATH,
   MAIN_PATH,
+  PROFILE_CONFIG_PATH,
   PROFILE_SETTINGS_PATH,
   SIGNUP_PATH,
 } from '@popup:constants/paths';
-import { Home, LoginScreen, RegisterScreen, Profile, History } from '@popup:pages';
+import {
+  Home,
+  LoginScreen,
+  RegisterScreen,
+  Profile,
+  History,
+} from '@popup:pages';
 import ConditionalRedirect from '@popup/hoc/RenderAuthComponent';
 import { GeneratePost, NoJobPostMessage } from '@popup/pages/Home/screens';
-import { ProfileList } from '@popup/pages/Profile/Screens';
+import { EditProfileList, ProfileList } from '@popup/pages/Profile/Screens';
 
 const Router = () => {
   return (
@@ -47,6 +55,22 @@ const Router = () => {
           element={
             <ConditionalRedirect>
               <ProfileList />
+            </ConditionalRedirect>
+          }
+        />
+        <Route
+          path={PROFILE_CONFIG_PATH}
+          element={
+            <ConditionalRedirect>
+              <EditProfileList />
+            </ConditionalRedirect>
+          }
+        />
+        <Route
+          path={`${PROFILE_CONFIG_PATH}/${ID}`}
+          element={
+            <ConditionalRedirect>
+              <EditProfileList />
             </ConditionalRedirect>
           }
         />

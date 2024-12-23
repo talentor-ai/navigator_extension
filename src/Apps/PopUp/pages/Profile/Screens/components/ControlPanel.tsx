@@ -3,8 +3,14 @@ import { Select } from '@popup/components/FormComponent/components';
 import { ButtonIcon } from '@popup:components';
 import { useSessionStore, useJobProfile } from '@popup:store';
 import { UserJobProfile } from '@popup:models/model.user';
+import { useNavigate } from 'react-router-dom';
+import {
+  PROFILE_CONFIG_PATH,
+  PROFILE_SETTINGS_PATH,
+} from '@popup:constants/paths';
 
 const ControlPanel = () => {
+  const navigate = useNavigate();
   const { session } = useSessionStore();
   const { setJobProfile, jobProfileIdSelected } = useJobProfile();
 
@@ -21,6 +27,14 @@ const ControlPanel = () => {
   const handleProfileChange = (value: string) => {
     setJobProfile(value);
   };
+  const redirectToEdit = () => {
+    navigate(
+      `${PROFILE_SETTINGS_PATH}/${PROFILE_CONFIG_PATH}/${jobProfileIdSelected}`,
+    );
+  };
+  const redirectToCreate = () => {
+    navigate(`${PROFILE_SETTINGS_PATH}/${PROFILE_CONFIG_PATH}`);
+  };
 
   return (
     <div className="">
@@ -32,8 +46,8 @@ const ControlPanel = () => {
           onChange={handleProfileChange}
           defaultValue={jobProfileIdSelected}
         />
-        <ButtonIcon icon="plus" />
-        <ButtonIcon icon="edit" />
+        <ButtonIcon icon="plus" onClick={redirectToCreate} />
+        <ButtonIcon icon="edit" onClick={redirectToEdit} />
         <ButtonIcon icon="delete" />
       </div>
     </div>
