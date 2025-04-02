@@ -1,50 +1,101 @@
-# React + TypeScript + Vite
+# Talentor Navigator Extension
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Currently, two official plugins are available:
+A smart Chrome extension that automates resume optimization using AI. Analyzes job postings, matches keywords with candidate profiles, and generates tailored resumes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Job Post Analysis**: Extracts key information from job descriptions
+- **Keyword Matching**: Identifies crucial skills and requirements
+- **Profile Comparison**: Analyzes candidate profiles against job requirements
+- **AI Resume Generation**: Creates optimized resumes using AI
+- **Resume download**: Instant downloads of generated resumes
+- **Multi-language Support**: Built-in internationalization (i18n)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Installation
 
-- Configure the top-level `parserOptions` property like this:
+#### 1. Clone repository:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+git clone https://github.com/talentor-ai/navigator_extension.git
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+#### 2. Install dependencies using pnpm:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+pnpm install
 ```
+
+#### 3. Development mode:
+
+```bash
+pnpm run dev
+```
+
+#### 4. Production build:
+
+```bash
+pnpm run build
+```
+
+## Development
+
+### Tech Stack
+
+- **Frontend:** React 18 + TypeScript
+
+- **Build Tool:** Vite 5
+
+- **Chrome Extension:** CRXJS Vite Plugin
+
+- **State Management:** Zustand
+
+- **API Handling:** React Query + Axios
+
+- **UI Framework:** Ant Design 5 + Tailwind CSS
+
+- **Internationalization:** i18next
+
+### Key Dependencies
+
+- **@tanstack/react-query:** Data fetching and caching
+
+- **react-hook-form:** Form management
+
+- **lodash:** Utility functions
+
+- **zustand:** State management
+
+- **i18next:** Localization
+
+- **antd:** UI components
+
+## Scripts
+
+```json
+"scripts": {
+"dev": "vite",
+"build": "vite build",
+"preview": "vite preview",
+"lint": "eslint ."
+}
+```
+
+## Contributing
+
+Contributions welcome! Please follow these steps:
+
+1. Fork the repository
+
+2. Create your feature branch
+
+3. Commit your changes
+
+4. Push to the branch
+
+5. Open a Pull Request
+
+## Disclaimer
+
+This extension uses AI-generated content. Users should review and verify all automatically generated resume content before use.
