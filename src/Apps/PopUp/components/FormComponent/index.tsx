@@ -64,7 +64,7 @@ const FormComponent = ({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={`${className} flex flex-col justify-center gap-2`}
+      className={`${className} ik-flex ik-flex-col ik-justify-center ik-gap-2`}
     >
       {fieldProps.map((field: FieldConfig) => (
         <InputFieldRender
@@ -74,12 +74,12 @@ const FormComponent = ({
           errorMessage={get(errors, `${field.name}.message`, '').toString()}
         />
       ))}
-      <div className="flex justify-center items-center gap-4 mt-4">
-        <Button className="bg-tertiary" type="submit" disabled={isLoading}>
+      <div className="ik-flex ik-justify-center ik-items-center ik-gap-4 ik-mt-4">
+        <Button className="ik-bg-tertiary" type="submit" disabled={isLoading}>
           {submitLabel}
         </Button>
         {!!onCancel && (
-          <Button className="bg-errorColor" onClick={handleCancel}>
+          <Button className="ik-bg-errorColor" onClick={handleCancel}>
             {cancelLabel}
           </Button>
         )}

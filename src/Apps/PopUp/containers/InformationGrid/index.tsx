@@ -20,7 +20,7 @@ const InformationGrid = ({ jobProfile }: { jobProfile: UserJobProfile }) => {
   if (isEmpty(jobProfile)) return <>Loading...</>;
 
   return (
-    <section className="grid grid-cols-3 grid-flow-dense gap-x-2 gap-y-4">
+    <section className="ik-grid ik-grid-cols-3 ik-grid-flow-dense ik-gap-x-2 ik-gap-y-4">
       {mockData.map(({ fieldKey, type }: { [key: string]: string }) => {
         if (isEmpty(jobProfile[fieldKey as keyof UserJobProfile])) return null;
         switch (type) {

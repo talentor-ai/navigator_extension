@@ -21,10 +21,10 @@ const Button = ({
       type={type}
       disabled={disabled}
       style={style}
-      className={`relative flex justify-center
-         items-center h-boxHeight rounded-2xl
-         text-primary font-semibold text-medium cursor-pointer 
-         hover:scale-[1.02] w-fit px-6 disabled:bg-txt3 ${className}`}
+      className={`ik-relative ik-flex ik-justify-center
+         ik-items-center ik-h-boxHeight ik-rounded-2xl
+         ik-text-primary ik-font-semibold ik-text-medium ik-cursor-pointer 
+         hover:ik-scale-[1.02] ik-w-fit ik-px-6 disabled:ik-bg-txt3 ${className}`}
       onClick={onClick}
     >
       {children}

@@ -27,7 +27,7 @@ const LoginScreen = () => {
         <SocialMedia socialMedia="linkedin" size={IconSize.medium} />
       </section>
       <FormComponent
-        className="my-8 w-72 flex flex-col justify-center"
+        className="ik-my-8 ik-w-72 ik-flex ik-flex-col ik-justify-center"
         fieldProps={loginFormSchema}
         onSubmit={handleSubmit}
         submitLabel="Iniciar sesión"

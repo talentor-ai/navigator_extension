@@ -24,24 +24,24 @@ const Textarea = ({
   };
 
   return (
-    <div className="relative w-full">
-      <label htmlFor={name} className="text-txt2 block mb-1.5">
+    <div className="ik-relative ik-w-full">
+      <label htmlFor={name} className="ik-text-txt2 ik-block ik-mb-1.5">
         {label}
         {validationRules?.required && (
-          <span className="text-errorColor"> *</span>
+          <span className="ik-text-errorColor"> *</span>
         )}
       </label>
       <div
-        className={`border ${borderColor()} text-txt1 flex justify-between 
-         items-center bg-secondary rounded-2xl rounded-ee-none`}
+        className={`ik-border ${borderColor()} ik-text-txt1 ik-flex ik-justify-between 
+         ik-items-center ik-bg-secondary ik-rounded-2xl ik-rounded-ee-none`}
       >
         <textarea
           id={name}
           type={type}
           placeholder={placeholder}
           {...register(name, validationRules)}
-          className="w-full h-full py-4 px-4 border-none bg-transparent outline-none resize-y
-            min-h-10 max-h-60"
+          className="ik-w-full ik-h-full ik-py-4 ik-px-4 ik-border-none ik-bg-transparent ik-outline-none ik-resize-y
+            ik-min-h-10 ik-max-h-60"
           autoComplete="off"
           onFocus={() => {
             setIsFocused(true);
@@ -52,7 +52,7 @@ const Textarea = ({
         />
       </div>
       {errorMessage && (
-        <span className="text-errorColor text-small absolute top-[100%] right-0">
+        <span className="ik-text-errorColor ik-text-small ik-absolute ik-top-[100%] ik-right-0">
           {errorMessage}
         </span>
       )}

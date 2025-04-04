@@ -38,10 +38,10 @@ const ControlPanel = () => {
 
   return (
     <div className="">
-      <p className="mb-2 text-txt3">Seleccionar perfil</p>
-      <div className="grid grid-cols-[13rem_2.3rem_2.3rem_2.3rem] gap-2 mb-4">
+      <p className="ik-mb-2 ik-text-txt3">Seleccionar perfil</p>
+      <div className="ik-grid ik-grid-cols-[13rem_2.3rem_2.3rem_2.3rem] ik-gap-2 ik-mb-4">
         <Select
-          className="w-[13rem]"
+          className="ik-w-[13rem]"
           options={profileoptions}
           onChange={handleProfileChange}
           defaultValue={jobProfileIdSelected}

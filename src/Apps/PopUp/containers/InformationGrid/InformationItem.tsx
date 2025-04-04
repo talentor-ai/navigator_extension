@@ -22,9 +22,9 @@ const InformationItem = ({
 
     return (
       <div style={{ gridColumn: `span ${span}` }}>
-        <H2 className="mb-2 text-txt1">{t('formFields.' + keyLabel)}:</H2>
+        <H2 className="ik-mb-2 ik-text-txt1">{t('formFields.' + keyLabel)}:</H2>
         <Link href={processedValue} target="_blank" rel="noreferrer">
-          <Icons iconType={urlKeyList[keyLabel]} className="mr-1" />
+          <Icons iconType={urlKeyList[keyLabel]} className="ik-mr-1" />
           {t('formFields.' + urlKeyList[keyLabel])}
         </Link>
       </div>
@@ -32,8 +32,8 @@ const InformationItem = ({
   }
   return (
     <div style={{ gridColumn: `span ${span}` }}>
-      <H2 className="mb-2 text-txt1">{t('formFields.' + keyLabel)}:</H2>
-      <p className="text-txt3">{value}</p>
+      <H2 className="ik-mb-2 ik-text-txt1">{t('formFields.' + keyLabel)}:</H2>
+      <p className="ik-text-txt3">{value}</p>
     </div>
   );
 };
