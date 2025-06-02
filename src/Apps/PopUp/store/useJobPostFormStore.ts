@@ -7,13 +7,29 @@ type FormState = {
   clearFormData: () => void;
 };
 
+const INITIAL_STATE = {
+  title: '',
+  position: '',
+  jobType: '',
+  description: '',
+  location: '',
+  companyName: '',
+  companyBriefDescription: '',
+  companyDescription: '',
+  companyLogoUrl: '',
+  companyWorkers: 0,
+  datePosted: '',
+  applicants: 0,
+  skills: '',
+};
+
 const useJobPostFormStore = create(
   persist<FormState>(
     (set) => ({
-      formData: {}, // Initial state
+      formData: INITIAL_STATE, // Initial state
       setFormData: (data) =>
         set((state) => ({ formData: { ...state.formData, ...data } })),
-      clearFormData: () => set({ formData: {} }),
+      clearFormData: () => set({ formData: INITIAL_STATE }),
     }),
     {
       name: 'job-post-form',
