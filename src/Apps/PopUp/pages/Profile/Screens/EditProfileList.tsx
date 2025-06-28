@@ -27,7 +27,9 @@ const EditProfileList = () => {
       <FormComponent
         className="my-8 flex flex-col justify-center w-full px-4"
         fieldProps={jobProfileFields}
-        onSubmit={() => {}}
+        onSubmit={(form) => {
+          console.log(form);
+        }}
         onCancel={() => {}}
         onWatch={() => {}}
         defaultValues={{}}

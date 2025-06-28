@@ -33,7 +33,7 @@ const KebabMenu = ({ isOpen, onClose, options = [] }: iProps) => {
               <li
                 key={index}
                 className="ik-px-4 ik-py-2 ik-border-b ik-border-txt3 ik-border-opacity-50 ik-last:border-none
-               hover:text-txt2 cursor-pointer"
+               hover:ik-text-txt2 ik-cursor-pointer"
                 onClick={() => {
                   action();
                   onClose();

@@ -18,9 +18,9 @@ const Textarea = ({
   const [isFocused, setIsFocused] = useState(false);
 
   const borderColor = () => {
-    if (errorMessage) return 'border-errorColor';
-    if (isFocused) return 'border-tertiary';
-    return 'border-transparent';
+    if (errorMessage) return 'ik-border-errorColor';
+    if (isFocused) return 'ik-border-tertiary';
+    return 'ik-border-transparent';
   };
 
   return (
