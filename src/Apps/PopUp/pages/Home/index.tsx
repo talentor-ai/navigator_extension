@@ -19,6 +19,7 @@ const Home = () => {
       const action = message.action;
       if (action === UPDATE_JOB_SCRAPPED_ACTION) {
         const data = JSON.parse(message.text);
+        console.log('receiving data...', message);
         // Confirming the message
         port.postMessage({ action: UPDATE_JOB_SCRAPPED_CONFIRMATION_ACTION });
         setFormData({ ...formData, ...data });
