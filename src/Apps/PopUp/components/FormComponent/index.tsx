@@ -1,4 +1,4 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Control } from 'react-hook-form';
 import { debounce, get } from 'lodash';
 import { FieldConfig } from '@popup:models/model.form';
 import InputFieldRender from './InputFieldRender';
@@ -14,6 +14,7 @@ const DEFAULT_CANCEL_LABEL = 'Cancelar';
 interface FormComponentProps extends CustomizableComponent {
   fieldProps: FieldConfig[];
   submitLabel?: string;
+  control?: Control<Record<string, any>>;
   onSubmit: SubmitHandler<Record<string, any>>;
   cancelLabel?: string;
   onCancel?: () => void;
@@ -39,6 +40,7 @@ const FormComponent = ({
     formState: { errors },
     reset,
     watch,
+    control,
   } = useForm({
     defaultValues,
   });
@@ -98,6 +100,8 @@ const FormComponent = ({
           key={field.name}
           {...field}
           register={register}
+          control={control}
+          errors={errors}
           errorMessage={String(get(errors, `${field.name}.message`, ''))}
         />
       ))}

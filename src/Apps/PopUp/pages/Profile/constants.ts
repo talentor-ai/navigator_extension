@@ -1,6 +1,6 @@
 import { FieldConfig, InputFieldType } from '@popup:models/model.form';
 
-export const jobProfileFields: FieldConfig[] = [
+export const JOB_PROFILE_FIELDS: FieldConfig[] = [
   {
     name: 'title',
     label: 'Descripcion breve',
@@ -30,15 +30,26 @@ export const jobProfileFields: FieldConfig[] = [
   {
     name: 'jobType',
     label: 'Habilidades',
-    type: InputFieldType.textarea,
-    placeholder:
-      'Ingrese Las habilidades (separadas por comas)',
-    validationRules: {
-      maxLength: {
-        value: 20,
-        message: 'No puede exceder los 20 caracteres',
+    type: InputFieldType.subForm,
+    subFormFields: [
+      {
+        formId: '1',
+        name: 'skill',
+        label: 'Habilidad',
+        fields: [
+          {
+            name: 'skill',
+            label: 'Habilidad',
+            type: InputFieldType.text,
+          },
+          {
+            name: 'yearsOfExperience',
+            label: 'Años de experiencia',
+            type: InputFieldType.number,
+          },
+        ],
       },
-    },
+    ],
   },
   {
     name: 'description',
