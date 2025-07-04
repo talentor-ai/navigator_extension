@@ -38,7 +38,12 @@ export const JOB_PROFILE_FIELDS: FieldConfig[] = [
         label: 'Habilidad',
         fields: [
           {
-            name: 'skill',
+            name: 'id',
+            label: 'Habilidad',
+            type: InputFieldType.hidden,
+          },
+          {
+            name: 'skillName',
             label: 'Habilidad',
             type: InputFieldType.text,
           },

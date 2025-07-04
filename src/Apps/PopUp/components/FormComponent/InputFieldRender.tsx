@@ -23,6 +23,10 @@ const InputFieldRender = ({
     return <Input type={type} name={name} register={register} {...rest} />;
   }
 
+  if (type === InputFieldType.hidden) {
+    return <Input type={type} name={name} register={register} {...rest} />;
+  }
+
   if (type === InputFieldType.textarea) {
     return <Textarea type={type} name={name} register={register} {...rest} />;
   }
