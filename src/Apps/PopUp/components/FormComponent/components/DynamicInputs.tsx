@@ -78,7 +78,7 @@ const DynamicInputs = ({
 
   return (
     <div className="ik-w-full">
-      <div className="ik-flex ik-justify-between ik-items-center ik-mb-4">
+      <div className="ik-flex ik-justify-between ik-items-center ik-my-4">
         <label className="ik-text-txt2 ik-block">
           {subFormFields[0]?.label || 'Dynamic Fields'}
         </label>

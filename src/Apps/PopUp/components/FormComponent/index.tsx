@@ -20,6 +20,7 @@ interface FormComponentProps extends CustomizableComponent {
   onCancel?: () => void;
   isLoading?: boolean;
   onWatch?: (data: Record<string, any>) => void;
+  setFormData?: (data: Record<string, any>) => void;
   defaultValues?: Record<string, any>;
 }
 

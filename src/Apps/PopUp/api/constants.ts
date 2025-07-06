@@ -17,6 +17,7 @@ export const APPLY_PATH = JOBS_PATH + '/apply';
 
 // User paths
 export const USER_PATH = BASE_PATH + '/user';
+export const USER_JOB_PROFILE_PATH = USER_PATH + '/job-profile';
 
 // Resume paths
 export const RESUME_PATH = BASE_PATH + '/resume';
