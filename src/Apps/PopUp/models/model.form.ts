@@ -28,7 +28,8 @@ export enum InputFieldType {
   email = 'email',
   password = 'password',
   number = 'number',
-  datetime = 'datetime-local',
+  date = 'date',
+  datetime = 'datetime',
   hidden = 'hidden',
 
   textarea = 'textarea',

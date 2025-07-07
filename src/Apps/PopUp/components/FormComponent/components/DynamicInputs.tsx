@@ -5,7 +5,7 @@ import {
   UseFormRegister,
   FieldErrors,
 } from 'react-hook-form';
-import { Input, Textarea } from './index';
+import { Input, Textarea, DatePicker } from './index';
 import { InputFieldType } from '@popup:models/model.form';
 
 interface ButtonProps {
@@ -120,6 +120,19 @@ const DynamicInputs = ({
                         {...fieldConfig}
                         name={fieldName}
                         register={register}
+                        errorMessage={errorMessage}
+                        validationRules={validationRules}
+                      />
+                    );
+                  }
+
+                  if (fieldConfig.type === InputFieldType.date) {
+                    return (
+                      <DatePicker
+                        key={fieldConfig.name}
+                        {...fieldConfig}
+                        name={fieldName}
+                        control={control}
                         errorMessage={errorMessage}
                         validationRules={validationRules}
                       />

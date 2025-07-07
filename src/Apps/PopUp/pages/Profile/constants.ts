@@ -69,7 +69,7 @@ export const JOB_PROFILE_FIELDS: FieldConfig[] = [
           {
             name: 'startDate',
             label: 'Fecha de inicio',
-            type: InputFieldType.text,
+            type: InputFieldType.date,
             validationRules: {
               required: 'Este campo es obligatorio',
             },
@@ -77,7 +77,7 @@ export const JOB_PROFILE_FIELDS: FieldConfig[] = [
           {
             name: 'endDate',
             label: 'Fecha de fin',
-            type: InputFieldType.text,
+            type: InputFieldType.date,
             validationRules: {
               required: 'Este campo es obligatorio',
             },

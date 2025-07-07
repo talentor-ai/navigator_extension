@@ -1,5 +1,5 @@
 import { FieldConfig, InputFieldType } from '@popup:models/model.form';
-import { Input, Textarea } from './components';
+import { Input, Textarea, DatePicker } from './components';
 import { isEmpty } from 'lodash';
 import { Control, UseFormRegister, FieldErrors } from 'react-hook-form';
 import DynamicInputs from './components/DynamicInputs';
@@ -21,6 +21,10 @@ const InputFieldRender = ({
 }: IFieldProps) => {
   if (type === InputFieldType.datetime) {
     return <Input type={type} name={name} register={register} {...rest} />;
+  }
+
+  if (type === InputFieldType.date) {
+    return <DatePicker type={type} name={name} control={control} {...rest} />;
   }
 
   if (type === InputFieldType.hidden) {
