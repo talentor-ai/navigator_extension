@@ -46,6 +46,8 @@ const FormComponent = ({
     defaultValues,
   });
 
+  console.log(errors);
+
   const debouncedSetFormDataRef = useRef<ReturnType<typeof debounce> | null>(
     null,
   );

@@ -43,6 +43,9 @@
       "@popup:pages": [
         "./src/Apps/PopUp/pages"
       ],
+      "@popup:pages/*": [
+        "./src/Apps/PopUp/pages/*"
+      ],
       "@popup:api": [
         "./src/Apps/PopUp/api"
       ],

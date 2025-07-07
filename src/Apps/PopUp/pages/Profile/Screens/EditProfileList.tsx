@@ -5,16 +5,35 @@ import { get, isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { JOB_PROFILE_FIELDS } from '../constants';
-import { PROFILE_SETTINGS_PATH } from '@popup:constants/paths';
+import { MAIN_PATH } from '@popup:constants/paths';
+import useEditJobProfile from '@popup:pages/Profile/hooks/useEditJobProfile';
+import useCreateProfile from '@popup:pages/Profile/hooks/useCreateProfile';
 
 const EditProfileList = () => {
   const { id = '' } = useParams();
   const { session } = useSessionStore();
   const navigate = useNavigate();
   const { jobProfileIdSelected } = useJobProfile();
+  const { mutate: updateJobProfile } = useEditJobProfile();
+  const { mutate: createJobProfile } = useCreateProfile();
   const [profileSelected, setProfileSelected] = useState<UserJobProfile | null>(
     null,
   );
+
+  const onSubmit = (form: Record<string, any>) => {
+    if (jobProfileIdSelected) {
+      updateJobProfile({ ...form, id: jobProfileIdSelected } as UserJobProfile);
+    } else {
+      createJobProfile(form as UserJobProfile);
+    }
+    setProfileSelected(null);
+    navigate(MAIN_PATH);
+  };
+
+  const onCancel = () => {
+    setProfileSelected(null);
+    navigate(MAIN_PATH);
+  };
 
   useEffect(() => {
     if (!isEmpty(id)) {
@@ -28,21 +47,14 @@ const EditProfileList = () => {
     }
   }, [id, jobProfileIdSelected, session]);
 
-  console.log(profileSelected);
-
   return (
     <div key={profileSelected?.id}>
       <H1 className="text-txt2 my-8 px-4">Agregar un perfil de trabajo</H1>
       <FormComponent
         className="my-8 flex flex-col justify-center w-full px-4"
         fieldProps={JOB_PROFILE_FIELDS}
-        onSubmit={(form) => {
-          console.log(form);
-        }}
-        onCancel={() => {
-          setProfileSelected(null);
-          navigate(PROFILE_SETTINGS_PATH);
-        }}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
         onWatch={() => {}}
         defaultValues={profileSelected ? profileSelected : {}}
       />

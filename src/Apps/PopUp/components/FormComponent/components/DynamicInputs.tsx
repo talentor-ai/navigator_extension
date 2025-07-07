@@ -111,9 +111,7 @@ const DynamicInputs = ({
                   ]?.message as string;
 
                   // Add default validation rules if none provided
-                  const validationRules = fieldConfig.validationRules || {
-                    required: 'Este campo es obligatorio',
-                  };
+                  const validationRules = fieldConfig.validationRules || {};
 
                   if (fieldConfig.type === InputFieldType.textarea) {
                     return (

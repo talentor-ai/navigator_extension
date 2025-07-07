@@ -30,8 +30,8 @@ export const JOB_PROFILE_FIELDS: FieldConfig[] = [
     validationRules: {
       required: 'Este campo es obligatorio',
       maxLength: {
-        value: 50,
-        message: 'No puede exceder los 50 caracteres',
+        value: 1000,
+        message: 'No puede exceder los 1000 caracteres',
       },
     },
   },
