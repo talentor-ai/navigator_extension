@@ -1,7 +1,7 @@
 import { FormComponent, H1 } from '@popup:components';
 import { UserJobProfile } from '@popup:models/model.user';
 import { useJobProfile, useSessionStore } from '@popup:store';
-import { get, isEmpty } from 'lodash';
+import { cloneDeep, get, isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { JOB_PROFILE_FIELDS } from '../constants';
@@ -21,10 +21,30 @@ const EditProfileList = () => {
   );
 
   const onSubmit = (form: Record<string, any>) => {
-    if (jobProfileIdSelected) {
-      updateJobProfile({ ...form, id: jobProfileIdSelected } as UserJobProfile);
+    const formToSend = cloneDeep(form);
+
+    const languages = formToSend.languages;
+    if (languages?.split) {
+      formToSend.languages = languages
+        .split(',')
+        .map((lang: string) => lang.trim());
+    }
+
+    const additionalSkills = formToSend.additionalSkills;
+    if (additionalSkills?.split) {
+      formToSend.additionalSkills = additionalSkills
+        .split(',')
+        .map((skill: string) => skill.trim());
+    }
+
+    if (formToSend.id) {
+      updateJobProfile({
+        ...formToSend,
+        id: jobProfileIdSelected,
+        userId: session?.id,
+      } as UserJobProfile);
     } else {
-      createJobProfile(form as UserJobProfile);
+      createJobProfile(formToSend as UserJobProfile);
     }
     setProfileSelected(null);
     navigate(MAIN_PATH);

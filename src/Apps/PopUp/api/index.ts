@@ -16,3 +16,4 @@ export { loginApi, registerApi } from './fetchSession';
 export { getUserApi } from './fetchUser';
 export { getResumeHistory, applyToJob } from './resumeApi';
 export { updateJobProfileApi, createJobProfileApi } from './jobProfileApi';
+export { deleteJobProfileApi } from './deleteJobProfile';

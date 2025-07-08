@@ -1,0 +1,239 @@
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.withOverlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Dialog */
+.dialog {
+  background-color: var(--secondary, #ffffff);
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-height: 90vh;
+  max-width: 90vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 1rem;
+}
+
+/* Sizes */
+.small {
+  width: 400px;
+  max-width: 90vw;
+}
+
+.medium {
+  width: 600px;
+  max-width: 90vw;
+}
+
+.large {
+  width: 800px;
+  max-width: 90vw;
+}
+
+.full {
+  width: 95vw;
+  height: 95vh;
+}
+
+/* Positions */
+.center {
+  align-self: center;
+  justify-self: center;
+}
+
+.top {
+  align-self: flex-start;
+  margin-top: 2rem;
+}
+
+.bottom {
+  align-self: flex-end;
+  margin-bottom: 2rem;
+}
+
+/* Animations */
+.fade {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide {
+  animation: slideIn 0.3s ease-out;
+}
+
+.scale {
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--highlight, #f3f4f6);
+  min-height: 3rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--txt1, #111827);
+  flex: 1;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  color: var(--primary);
+  background-color: var(--tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.closeButton:hover {
+  background-color: var(--tertiary);
+  color: var(--primary);
+  scale: 1.03;
+}
+
+.closeButton:focus {
+  outline: none;
+  outline-offset: 2px;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--highlight, #f3f4f6);
+  min-height: 3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .overlay {
+    padding: 0.5rem;
+  }
+
+  .dialog {
+    border-radius: 0.75rem;
+    max-height: 95vh;
+    max-width: 95vw;
+  }
+
+  .small,
+  .medium,
+  .large {
+    width: 95vw;
+  }
+
+  .header {
+    padding: 1rem 1rem 0 1rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .footer {
+    padding: 0 1rem 1rem 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footer > * {
+    width: 100%;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .dialog {
+    border: 2px solid var(--txt1, #000000);
+  }
+
+  .closeButton {
+    border: 1px solid var(--txt1, #000000);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .fade,
+  .slide,
+  .scale {
+    animation: none;
+  }
+
+  .closeButton {
+    transition: none;
+  }
+}

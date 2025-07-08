@@ -46,5 +46,11 @@
       "description": "Descripción",
       "skillName": "Nombre de la habilidad",
       "yearsOfExperience": "Años de experiencia"
+   },
+   "profile": {
+      "deleteProfile": "Eliminar perfil",
+      "deleteProfileDescription": "¿Estás seguro de querer eliminar este perfil?",
+      "deleteProfileConfirm": "Eliminar",
+      "deleteProfileCancel": "Cancelar"
    }
 }
