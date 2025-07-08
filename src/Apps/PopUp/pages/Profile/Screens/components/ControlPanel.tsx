@@ -61,7 +61,11 @@ const ControlPanel = () => {
       <div className="ik-grid ik-grid-cols-[13rem_2.3rem_2.3rem_2.3rem] ik-gap-2 ik-mb-4">
         <Select
           className="ik-w-[13rem]"
-          options={profileOptions}
+          options={
+            profileOptions.length > 0
+              ? profileOptions
+              : [{ label: <p>No hay perfiles</p>, value: '0' }]
+          }
           onChange={handleProfileChange}
           defaultValue={jobProfileIdSelected}
         />

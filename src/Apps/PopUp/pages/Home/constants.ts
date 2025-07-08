@@ -111,9 +111,6 @@ export const generatePostFormFields: FieldConfig[] = [
     label: 'Fecha de Publicación',
     type: InputFieldType.date,
     placeholder: 'Seleccione la fecha de publicación',
-    validationRules: {
-      required: 'Este campo es obligatorio',
-    },
   },
   {
     name: 'applicants',

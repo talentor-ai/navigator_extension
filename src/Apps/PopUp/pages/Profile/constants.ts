@@ -95,7 +95,7 @@ export const JOB_PROFILE_FIELDS: FieldConfig[] = [
           {
             name: 'description',
             label: 'Descripción',
-            type: InputFieldType.text,
+            type: InputFieldType.textarea,
           },
         ],
       },
