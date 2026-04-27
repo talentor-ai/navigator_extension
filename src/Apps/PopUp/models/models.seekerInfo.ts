@@ -1,4 +1,4 @@
-import { Address } from ".";
+import { Address } from '.';
 
 export interface ApplicantInfo {
   id: string;
@@ -53,10 +53,10 @@ export interface Skill {
 }
 
 export enum SkillType {
-  MAIN = "main",
-  STANDARD = "standard",
-  EXTRA = "extra",
-  SOFT = "soft",
+  MAIN = 'main',
+  STANDARD = 'standard',
+  EXTRA = 'extra',
+  SOFT = 'soft',
 }
 
 export interface Education {

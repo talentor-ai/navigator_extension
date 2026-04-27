@@ -21,7 +21,7 @@ export const getResumeHistory = async (jobProfileId: string) => {
 export const applyToJob = async (body: IApplyToJob) => {
   const response = await baseApi({
     url: APPLY_PATH,
-    data: { ...body, name: body?.jobPost?.title || "CV" },
+    data: { ...body, name: body?.jobPost?.title || 'CV' },
     method: 'POST',
   });
   return response;

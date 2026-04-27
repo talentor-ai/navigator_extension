@@ -65,10 +65,13 @@ const DynamicInputs = ({
   });
 
   const addNewField = () => {
-    const newField = subFormFields.reduce((acc, subFormField) => {
-      acc[subFormField.name] = '';
-      return acc;
-    }, {} as Record<string, any>);
+    const newField = subFormFields.reduce(
+      (acc, subFormField) => {
+        acc[subFormField.name] = '';
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
     append(newField);
   };
 
