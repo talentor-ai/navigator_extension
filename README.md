@@ -21,22 +21,22 @@ A smart Chrome extension that automates resume optimization using AI. Analyzes j
 git clone https://github.com/talentor-ai/navigator_extension.git
 ```
 
-#### 2. Install dependencies using pnpm:
+#### 2. Install dependencies using Bun:
 
 ```bash
-pnpm install
+bun install
 ```
 
 #### 3. Development mode:
 
 ```bash
-pnpm run dev
+bun run dev
 ```
 
 #### 4. Production build:
 
 ```bash
-pnpm run build
+bun run build
 ```
 
 ## Development
@@ -75,10 +75,12 @@ pnpm run build
 
 ```json
 "scripts": {
-"dev": "vite",
-"build": "vite build",
-"preview": "vite preview",
-"lint": "eslint ."
+  "dev": "vite",
+  "build": "vite build",
+  "lint": "eslint . --max-warnings 0",
+  "typecheck": "tsc -b",
+  "format": "prettier . --write",
+  "verify": "bun run format:check && bun run lint && bun run typecheck && bun run build"
 }
 ```
 

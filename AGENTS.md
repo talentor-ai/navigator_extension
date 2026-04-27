@@ -2,16 +2,16 @@
 
 ## Commands
 
-- Use `pnpm` (`packageManager` pins `pnpm@9.14.4`). Fresh clones need `pnpm install`.
-- `pnpm dev` runs the CRXJS/Vite extension dev server on fixed port `5173` (`strictPort: true`).
-- `pnpm build` builds the extension into `dist/`. Do not hand-edit `dist/`.
-- `pnpm lint` runs ESLint with `--max-warnings 0`.
-- `pnpm typecheck` runs `tsc -b`.
-- `pnpm format` and `pnpm format:check` run Prettier across the repo.
-- `pnpm verify` is the intended full local check order: format check -> lint -> typecheck -> build.
-- `pnpm build` still does not typecheck by itself.
-- `pnpm clean` is misnamed: it removes `dist/` and then starts Vite.
-- There is no repo CI workflow, but Husky is configured locally: `prepare` installs hooks and `.husky/pre-commit` runs `lint-staged`.
+- Use `bun` (`packageManager` pins `bun@1.3.5`). Fresh clones need `bun install`.
+- `bun run dev` runs the CRXJS/Vite extension dev server on fixed port `5173` (`strictPort: true`).
+- `bun run build` builds the extension into `dist/`. Do not hand-edit `dist/`.
+- `bun run lint` runs ESLint with `--max-warnings 0`.
+- `bun run typecheck` runs `tsc -b`.
+- `bun run format` and `bun run format:check` run Prettier across the repo.
+- `bun run verify` is the intended full local check order: format check -> lint -> typecheck -> build.
+- `bun run build` still does not typecheck by itself.
+- `bun run clean` is misnamed: it removes `dist/` and then starts Vite.
+- There is no repo CI workflow, but Husky is configured locally: `prepare` installs hooks and `.husky/pre-commit` runs `bunx lint-staged`.
 
 ## Wiring
 
