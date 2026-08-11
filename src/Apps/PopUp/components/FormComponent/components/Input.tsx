@@ -1,4 +1,4 @@
-import { FieldConfig } from '@popup:models/model.form';
+import { FieldConfig, InputFieldType } from '@popup:models/model.form';
 import { useState } from 'react';
 
 interface IFieldProps extends FieldConfig {
@@ -25,15 +25,20 @@ const Input = ({
 
   return (
     <div className="ik-relative ik-w-full">
-      <label htmlFor={name} className="ik-text-txt2 ik-block ik-mb-1.5">
-        {label}
-        {validationRules?.required && (
-          <span className="ik-text-errorColor"> *</span>
-        )}
-      </label>
+      {type !== InputFieldType.hidden && (
+        <label htmlFor={name} className="ik-text-txt2 ik-block ik-mb-1.5">
+          {label}
+          {validationRules?.required && (
+            <span className="ik-text-errorColor"> *</span>
+          )}
+        </label>
+      )}
       <div
         className={`ik-border ${borderColor()} ik-px-4 ik-text-txt1 ik-flex ik-justify-between 
-         ik-items-center ik-h-boxHeight ik-bg-secondary ik-rounded-md`}
+         ik-items-center ik-h-boxHeight ik-bg-secondary ik-rounded-md ${
+           type === InputFieldType.hidden &&
+           'ik-h-0 ik-border-none ik-absolute ik-pointer-events-none ik-opacity-0'
+         }`}
       >
         <input
           id={name}
@@ -50,7 +55,7 @@ const Input = ({
           }}
         />
       </div>
-      {errorMessage && (
+      {errorMessage && type !== InputFieldType.hidden && (
         <span className="ik-text-errorColor ik-text-small ik-absolute ik-top-[100%] ik-right-0">
           {errorMessage}
         </span>

@@ -17,6 +17,8 @@ const GeneratePost = () => {
       jobPost: cleanEmptyFieldsFromObject(data),
       jobProfileId: jobProfileIdSelected,
     });
+    useJobPostFormStore.getState().clearFormData();
+    navigate(MAIN_PATH);
   };
   const oncancel = () => {
     clearFormData();

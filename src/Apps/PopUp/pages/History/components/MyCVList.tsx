@@ -15,7 +15,7 @@ const MyCVList = () => {
     const result = resumeList?.response;
     if (!result) return;
     setResumeHistory(reverse(result));
-  }, [resumeList]);
+  }, [resumeList, setResumeHistory]);
 
   return (
     <div className="ik-flex ik-flex-col ik-gap-2">

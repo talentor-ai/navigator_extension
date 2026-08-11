@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 const Home = () => {
-  const { formData, setFormData } = useJobPostFormStore();
+  const { setFormData } = useJobPostFormStore();
 
   useEffect(() => {
     // Open a connection to the background script
@@ -19,17 +19,16 @@ const Home = () => {
       const action = message.action;
       if (action === UPDATE_JOB_SCRAPPED_ACTION) {
         const data = JSON.parse(message.text);
-        console.log('receiving data...', message);
         // Confirming the message
         port.postMessage({ action: UPDATE_JOB_SCRAPPED_CONFIRMATION_ACTION });
-        setFormData({ ...formData, ...data });
+        setFormData(data);
       }
     });
 
     return () => {
       port.disconnect(); // Cleanup on component unmount
     };
-  }, []);
+  }, [setFormData]);
 
   return <Outlet />;
 };

@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
@@ -25,50 +21,22 @@
     "baseUrl": ".",
     "paths": {
       // PopUp paths
-      "@popup:components": [
-        "./src/Apps/PopUp/components"
-      ],
-      "@popup:models/*": [
-        "./src/Apps/PopUp/models/*"
-      ],
-      "@popup:store": [
-        "./src/Apps/PopUp/store"
-      ],
-      "@popup:constants/*": [
-        "./src/Apps/PopUp/constants/*"
-      ],
-      "@popup:hooks": [
-        "./src/Apps/PopUp/hooks"
-      ],
-      "@popup:pages": [
-        "./src/Apps/PopUp/pages"
-      ],
-      "@popup:api": [
-        "./src/Apps/PopUp/api"
-      ],
-      "@popup:helpers": [
-        "./src/Apps/PopUp/helpers"
-      ],
-      "@popup/*": [
-        "./src/Apps/PopUp/*"
-      ],
-      "@lang/*": [
-        "./src/Apps/PopUp/lang/*"
-      ],
+      "@popup:components": ["./src/Apps/PopUp/components"],
+      "@popup:models/*": ["./src/Apps/PopUp/models/*"],
+      "@popup:store": ["./src/Apps/PopUp/store"],
+      "@popup:constants/*": ["./src/Apps/PopUp/constants/*"],
+      "@popup:hooks": ["./src/Apps/PopUp/hooks"],
+      "@popup:pages": ["./src/Apps/PopUp/pages"],
+      "@popup:pages/*": ["./src/Apps/PopUp/pages/*"],
+      "@popup:api": ["./src/Apps/PopUp/api"],
+      "@popup:helpers": ["./src/Apps/PopUp/helpers"],
+      "@popup/*": ["./src/Apps/PopUp/*"],
+      "@lang/*": ["./src/Apps/PopUp/lang/*"],
       // HTML Injector paths
-      "@injector/*": [
-        "./src/Apps/HTMLInjector/*"
-      ],
-      "@injector:helpers": [
-        "./src/Apps/HTMLInjector/helpers"
-      ],
-      "@all/*": [
-        "./src/Apps/*"
-      ],
+      "@injector/*": ["./src/Apps/HTMLInjector/*"],
+      "@injector:helpers": ["./src/Apps/HTMLInjector/helpers"],
+      "@all/*": ["./src/Apps/*"]
     }
   },
-  "include": [
-    "src",
-    "src/**/*",
-  ]
+  "include": ["src", "src/**/*"]
 }

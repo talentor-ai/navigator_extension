@@ -1,6 +1,6 @@
-import React from "react";
-import style from "./base_layout.module.css";
-import { CustomizableComponent } from "../../models/default.components";
+import React from 'react';
+import style from './base_layout.module.css';
+import { CustomizableComponent } from '../../models/default.components';
 
 interface iProps extends CustomizableComponent {
   children: React.ReactNode;

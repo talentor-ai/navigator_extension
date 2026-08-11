@@ -109,14 +109,8 @@ export const generatePostFormFields: FieldConfig[] = [
   {
     name: 'datePosted',
     label: 'Fecha de Publicación',
-    type: InputFieldType.datetime,
-    placeholder: 'Ingrese la fecha de publicación',
-    validationRules: {
-      maxLength: {
-        value: 100,
-        message: 'La URL no puede exceder los 100 caracteres',
-      },
-    },
+    type: InputFieldType.date,
+    placeholder: 'Seleccione la fecha de publicación',
   },
   {
     name: 'applicants',

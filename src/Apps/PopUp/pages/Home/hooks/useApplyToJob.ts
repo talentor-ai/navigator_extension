@@ -14,7 +14,7 @@ const useApplyToJob = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['RESUME_HISTORY'] });
       navigate(HISTORY_PATH);
-      clearFormData()
+      clearFormData();
       useJobPostFormStore.getState().clearFormData();
     },
     onError: (error: unknown) => {

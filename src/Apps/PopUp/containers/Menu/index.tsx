@@ -15,20 +15,25 @@ const Menu = () => {
 
   // Redirect to the last visited page
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       try {
         localStorage.setItem('current-path', pathname);
       } catch (e) {
         console.error(e);
       }
     }, 200);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [pathname]);
+
   useEffect(() => {
     const lastPath = localStorage.getItem('current-path');
     if (lastPath && lastPath !== pathname) {
       navigate(lastPath);
     }
-  }, []);
+  }, [navigate, pathname]);
 
   return (
     <Box className={styles.menuList} id="menuContainer" containerMode>
