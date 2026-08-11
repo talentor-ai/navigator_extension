@@ -1,4 +1,5 @@
 export interface FieldConfig {
+  formId?: string;
   name: string;
   label?: string;
   type: InputFieldType;
@@ -6,6 +7,12 @@ export interface FieldConfig {
   defaultValue?: string | number;
   options?: string[];
   checked?: boolean;
+  subFormFields?: {
+    formId: string;
+    name: string;
+    label: string;
+    fields: FieldConfig[];
+  }[];
   validationRules?: {
     required?: boolean | string; // Custom error message
     minLength?: { value: number; message: string };
@@ -21,7 +28,9 @@ export enum InputFieldType {
   email = 'email',
   password = 'password',
   number = 'number',
-  datetime = 'datetime-local',
+  date = 'date',
+  datetime = 'datetime',
+  hidden = 'hidden',
 
   textarea = 'textarea',
   select = 'select',

@@ -1,7 +1,7 @@
 import { BUTTON_CONTAINER_PATH } from '@injector/constants';
+import { ApplyButton } from '@injector/components';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import ToRender from './App';
 
 // Before all, remove the previous elements injected
 export const removeInjectedContent = () => {
@@ -32,7 +32,7 @@ export const injectHTMLBaseContent = (observer: MutationObserver) => {
   // Mount the React component
   createRoot(document.getElementById('talentor-ai-injected-button')!).render(
     <StrictMode>
-      <ToRender />
+      <ApplyButton />
     </StrictMode>,
   );
 };

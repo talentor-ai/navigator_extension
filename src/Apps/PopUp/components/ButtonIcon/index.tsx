@@ -11,19 +11,21 @@ interface ButtonIconProps extends CustomizableComponent {
 const ButtonIcon = ({
   icon,
   disabled = false,
-  onClick,
+  onClick = () => {
+    console.warn('Click event not implemented');
+  },
   className = '',
 }: ButtonIconProps) => {
   return (
     <button
       disabled={disabled}
-      className={`w-boxHeight h-boxHeight border border-transparent border-solid
-            flex justify-center items-center text-txt2 cursor-pointer rounded-full bg-secondary
-            hover:border-tertiary duration-200 disabled:text-txt3 disabled:cursor-not-allowed
+      className={`ik-w-boxHeight ik-h-boxHeight ik-border ik-border-transparent ik-border-solid
+            ik-flex ik-justify-center ik-items-center ik-text-txt2 ik-cursor-pointer ik-rounded-full ik-bg-secondary
+            hover:ik-border-tertiary ik-duration-200 disabled:ik-text-txt3 disabled:ik-cursor-not-allowed
             ${className}`}
       onClick={onClick}
     >
-      {icon && <Icons iconType={icon} className="text-icon" />}
+      {icon && <Icons iconType={icon} className="ik-text-icon" />}
     </button>
   );
 };

@@ -40,7 +40,6 @@ console.info('Running injector!');
   const container =
     (document.querySelector('#artdeco-toasts__wormhole') as HTMLElement) ||
     document.body;
-  console.log('Injecting core app');
   // Create a container for the React component
   const shadowHost = document.createElement('div');
   const shadowRoot = shadowHost.attachShadow({ mode: 'open' });

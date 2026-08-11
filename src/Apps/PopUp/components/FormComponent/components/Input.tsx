@@ -1,4 +1,4 @@
-import { FieldConfig } from '@popup:models/model.form';
+import { FieldConfig, InputFieldType } from '@popup:models/model.form';
 import { useState } from 'react';
 
 interface IFieldProps extends FieldConfig {
@@ -18,29 +18,34 @@ const Input = ({
   const [isFocused, setIsFocused] = useState(false);
 
   const borderColor = () => {
-    if (errorMessage) return 'border-errorColor';
-    if (isFocused) return 'border-tertiary';
-    return 'border-transparent';
+    if (errorMessage) return 'ik-border-errorColor';
+    if (isFocused) return 'ik-border-tertiary';
+    return 'ik-border-transparent';
   };
 
   return (
-    <div className="relative w-full">
-      <label htmlFor={name} className="text-txt2 block mb-1.5">
-        {label}
-        {validationRules?.required && (
-          <span className="text-errorColor"> *</span>
-        )}
-      </label>
+    <div className="ik-relative ik-w-full">
+      {type !== InputFieldType.hidden && (
+        <label htmlFor={name} className="ik-text-txt2 ik-block ik-mb-1.5">
+          {label}
+          {validationRules?.required && (
+            <span className="ik-text-errorColor"> *</span>
+          )}
+        </label>
+      )}
       <div
-        className={`border ${borderColor()} px-4 text-txt1 flex justify-between 
-         items-center h-boxHeight bg-secondary rounded-md`}
+        className={`ik-border ${borderColor()} ik-px-4 ik-text-txt1 ik-flex ik-justify-between 
+         ik-items-center ik-h-boxHeight ik-bg-secondary ik-rounded-md ${
+           type === InputFieldType.hidden &&
+           'ik-h-0 ik-border-none ik-absolute ik-pointer-events-none ik-opacity-0'
+         }`}
       >
         <input
           id={name}
           type={type}
           placeholder={placeholder}
           {...register(name, validationRules)}
-          className="w-full border-none bg-transparent outline-none"
+          className="ik-w-full ik-border-none ik-bg-transparent ik-outline-none"
           autoComplete="off"
           onFocus={() => {
             setIsFocused(true);
@@ -50,8 +55,8 @@ const Input = ({
           }}
         />
       </div>
-      {errorMessage && (
-        <span className="text-errorColor text-small absolute top-[100%] right-0">
+      {errorMessage && type !== InputFieldType.hidden && (
+        <span className="ik-text-errorColor ik-text-small ik-absolute ik-top-[100%] ik-right-0">
           {errorMessage}
         </span>
       )}

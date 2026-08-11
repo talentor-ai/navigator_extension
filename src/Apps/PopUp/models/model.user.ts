@@ -6,7 +6,7 @@ export interface UserJobProfile {
   additionalSkills: string[] | null;
   softSkills: string[] | null;
   languages: string[] | null;
-  linkedinUrl: string | null;
+  linkedInUrl: string | null;
   githubUrl: string | null;
   portfolioUrl: string | null;
   userJobProfileExperiences: UserJobProfileExperience[] | null;

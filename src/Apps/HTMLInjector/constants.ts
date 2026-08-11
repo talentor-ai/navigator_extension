@@ -21,7 +21,7 @@ export const JOB_POST_FIELDS = [
   {
     field: 'location',
     cssKey:
-      '.job-details-jobs-unified-top-card__primary-description-container > div > span',
+      '.job-details-jobs-unified-top-card__primary-description-container > div > span > span',
   },
   {
     field: 'companyName',

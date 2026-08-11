@@ -44,7 +44,6 @@ chrome.runtime.onMessage.addListener((message) => {
     }
   }
   if (message.action === UPDATE_JOB_SCRAPPED_CONFIRMATION_ACTION) {
-    console.log('removing jobPostFormQueueContent');
     jobPostFormQueueContent = null;
   }
 });

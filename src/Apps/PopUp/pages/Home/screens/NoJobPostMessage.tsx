@@ -7,19 +7,21 @@ const NoJobPostMessage = () => {
 
   return (
     <>
-      <div className="mt-20">
-        <H1 className="text-center text-txt2">
+      <div className="ik-mt-20">
+        <H1 className="ik-text-center ik-text-txt2">
           {t('home.noEmployeeOfferSelected')}
         </H1>
-        <p className="text-center mt-4 text-txt3">{t('home.description')}</p>
+        <p className="ik-text-center ik-mt-4 ik-text-txt3">
+          {t('home.description')}
+        </p>
       </div>
       <Box
         boxType="navLink"
         to={GENERATE_MANUALLY_PATH}
-        className="bg-txt2 text-primary font-semibold block w-fit mx-auto mt-10
-          px-6 hover:scale-[1.02]"
+        className="ik-bg-txt2 ik-text-primary ik-font-semibold ik-block ik-w-fit ik-mx-auto ik-mt-10
+          ik-px-6 hover:ik-scale-[1.02]"
       >
-        <Icons iconType="plus" className="mr-2" />
+        <Icons iconType="plus" className="ik-mr-2" />
         {t('home.addManually')}
       </Box>
     </>

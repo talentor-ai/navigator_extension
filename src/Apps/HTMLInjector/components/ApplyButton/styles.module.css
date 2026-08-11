@@ -16,3 +16,7 @@
 .button:hover {
   color: #fcaf58;
 }
+
+.button:active {
+  transform: scale(0.95);
+}
