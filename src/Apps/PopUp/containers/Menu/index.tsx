@@ -4,7 +4,7 @@ import useMenu from './hooks/useMenu';
 import styles from './menu.module.css';
 import { useSessionStore } from '@popup:store';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const Menu = () => {
   const { pathname } = useLocation();
@@ -12,6 +12,7 @@ const Menu = () => {
   const { picked, width, left } = useMenu();
   const { token } = useSessionStore();
   const routes = token ? authenticatedRoutes : noLoginRoutes;
+  const restoredPath = useRef(false);
 
   // Redirect to the last visited page
   useEffect(() => {
@@ -29,6 +30,9 @@ const Menu = () => {
   }, [pathname]);
 
   useEffect(() => {
+    if (restoredPath.current) return;
+    restoredPath.current = true;
+
     const lastPath = localStorage.getItem('current-path');
     if (lastPath && lastPath !== pathname) {
       navigate(lastPath);
