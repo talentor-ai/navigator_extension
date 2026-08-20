@@ -313,8 +313,6 @@ export interface components {
     AuthResponse: {
       /** Token */
       token: string;
-      /** Refreshtoken */
-      refreshToken: string;
       user: components['schemas']['UserResponse'];
     };
     /** CandidateProfileV1 */
@@ -627,11 +625,6 @@ export interface components {
       /** Skillrefs */
       skillRefs?: string[] | null;
     };
-    /** RefreshRequest */
-    RefreshRequest: {
-      /** Refreshtoken */
-      refreshToken: string;
-    };
     /** RegisterRequest */
     RegisterRequest: {
       /** Email */
@@ -791,13 +784,11 @@ export interface operations {
       query?: never;
       header?: never;
       path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RefreshRequest'];
+      cookie?: {
+        refresh_token?: string | null;
       };
     };
+    requestBody?: never;
     responses: {
       /** @description Successful Response */
       200: {

@@ -31,6 +31,14 @@
 - Formatting: Prettier config at root; keep `LF` (`.gitattributes`).
 - Workspace-local packages are referenced as `workspace:*`.
 
+## Auth
+
+- Refresh token is `HttpOnly` cookie (`refresh_token`, `Path=/api/v1/auth`); never in `localStorage` or JS.
+- Access token is memory-only (`packages/api-client` + `apps/web/src/store/auth.ts`).
+- `bootstrap` is single-flight (StrictMode) and calls `POST /api/v1/auth/refresh` via cookie.
+- `packages/api-client` handles `withCredentials`, single-flight refresh, and retry once on `401`.
+- Multi-tab: `BroadcastChannel('talentor-auth')` for login/logout; `Web Locks` (`talentor-refresh`) serializes refresh.
+
 ## Gotchas
 
 - Extension popup uses `HashRouter`; keep extension routes hash-based.

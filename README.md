@@ -50,3 +50,11 @@ bun run generate:contracts   # reads http://localhost:3011/openapi.json
 ```
 
 See `packages/contracts` and `packages/api-client`.
+
+## Auth
+
+- Web uses `HttpOnly` refresh cookie (`refresh_token`, `Path=/api/v1/auth`, `SameSite=Lax`, `Max-Age=30d`) and in-memory access token.
+- `packages/api-client` handles `withCredentials`, single-flight refresh, and retry once on `401`.
+- `apps/web` store (`zustand`) keeps `status: loading|authenticated|anonymous` and `user`; `bootstrap` calls `POST /api/v1/auth/refresh` via cookie. No token in `localStorage`.
+- Multi-tab: `BroadcastChannel('talentor-auth')` for login/logout sync; `Web Locks` (`talentor-refresh`) serializes refresh across tabs.
+- Routes: `/` protected, `/login` and `/register` public-only, with loading spinner and redirect preservation.

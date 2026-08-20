@@ -12,7 +12,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "verify": "bun run format:check && bun run lint && bun run typecheck && bun run build"
+    "verify": "bun run format:check && bun run lint && bun run typecheck && bun run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@talentor/api-client": "workspace:*",
@@ -20,16 +23,30 @@
     "@tanstack/react-query": "5.101.4",
     "antd": "6.6.1",
     "axios": "1.19.0",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "1.33.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-router-dom": "7.18.2",
+    "tailwind-merge": "3.6.0",
     "zustand": "5.0.15"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "@tailwindcss/vite": "4.3.3",
     "@talentor/config": "workspace:*",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.5",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react-swc": "4.3.3",
-    "vite": "8.2.2"
+    "jsdom": "30.0.1",
+    "msw": "2.15.0",
+    "shadcn": "4.18.0",
+    "tailwindcss": "4.3.3",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
   }
 }
