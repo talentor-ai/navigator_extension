@@ -10,8 +10,5 @@ export interface CustomizableComponent {
 export type DynamicType = string | number | boolean | null | undefined;
 export interface RecursiveObject {
   [key: string]:
-    | DynamicType
-    | RecursiveObject
-    | Array<DynamicType>
-    | Array<RecursiveObject>;
+    DynamicType | RecursiveObject | Array<DynamicType> | Array<RecursiveObject>;
 }

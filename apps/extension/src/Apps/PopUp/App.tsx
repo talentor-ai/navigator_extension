@@ -28,9 +28,7 @@ const App = () => {
           },
         }}
       >
-        <RouterProvider
-          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-        >
+        <RouterProvider>
           <BaseLayout>
             <Header />
             <Router />

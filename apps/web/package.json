@@ -1,0 +1,35 @@
+{
+  "name": "@talentor/web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "verify": "bun run format:check && bun run lint && bun run typecheck && bun run build"
+  },
+  "dependencies": {
+    "@talentor/api-client": "workspace:*",
+    "@talentor/contracts": "workspace:*",
+    "@tanstack/react-query": "5.101.4",
+    "antd": "6.6.1",
+    "axios": "1.19.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-router-dom": "7.18.2",
+    "zustand": "5.0.15"
+  },
+  "devDependencies": {
+    "@talentor/config": "workspace:*",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react-swc": "4.3.3",
+    "vite": "8.2.2"
+  }
+}

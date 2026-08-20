@@ -1,103 +1,52 @@
-# Talentor Navigator Extension
+# Talentor Frontend
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Monorepo for the Talentor web platform and browser extension.
 
-A smart Chrome extension that automates resume optimization using AI. Analyzes job postings, matches keywords with candidate profiles, and generates tailored resumes.
+## Structure
 
-## Features
+```text
+apps/
+├── web/          # Web platform (Vite + React + Ant Design)
+└── extension/    # Browser extension (Vite + CRXJS, previously navigator_extension)
 
-- **Job Post Analysis**: Extracts key information from job descriptions
-- **Keyword Matching**: Identifies crucial skills and requirements
-- **Profile Comparison**: Analyzes candidate profiles against job requirements
-- **AI Resume Generation**: Creates optimized resumes using AI
-- **Resume download**: Instant downloads of generated resumes
-- **Multi-language Support**: Built-in internationalization (i18n)
+packages/
+├── api-client/   # Typed axios client: envelope unwrap + ApiError
+├── contracts/    # Generated OpenAPI types (openapi-typescript)
+└── config/       # Shared tsconfig
 
-## Installation
+scripts/
+├── install-latest-dependencies.ts   # Install registry deps pinned to npm `latest`
+└── generate-contracts.ts            # Regenerate packages/contracts from backend OpenAPI
+```
 
-#### 1. Clone repository:
+## Commands
 
 ```bash
-git clone https://github.com/talentor-ai/navigator_extension.git
+bun install                  # install/update workspace lockfile
+bun run dev:web              # web dev server on :5173
+bun run dev:extension        # extension dev server (CRXJS) on :5174
+bun run build                # build web + extension
+bun run lint                 # ESLint across the monorepo (root config)
+bun run typecheck            # typecheck every workspace
+bun run format:check         # Prettier check
+bun run generate:contracts   # regenerate API types (backend must be running)
+bun run deps:latest <pkg>... # install registry deps at their npm `latest` version
+bun run verify               # format:check -> lint -> typecheck -> build
 ```
 
-#### 2. Install dependencies using Bun:
+## Toolchain
+
+- Package manager: `bun` (workspaces, single `bun.lock`).
+- Shared tooling (TypeScript, ESLint, Prettier, Husky) lives at the root.
+- `typescript` is pinned to `6.0.3` because `typescript-eslint` does not yet support TypeScript 7. Revisit when upstream adds support.
+- The installer script resolves `latest` from the npm registry at run time and writes exact versions.
+
+## API Contracts
+
+Backend API types are generated from the live backend:
 
 ```bash
-bun install
+bun run generate:contracts   # reads http://localhost:3011/openapi.json
 ```
 
-#### 3. Development mode:
-
-```bash
-bun run dev
-```
-
-#### 4. Production build:
-
-```bash
-bun run build
-```
-
-## Development
-
-### Tech Stack
-
-- **Frontend:** React 18 + TypeScript
-
-- **Build Tool:** Vite 5
-
-- **Chrome Extension:** CRXJS Vite Plugin
-
-- **State Management:** Zustand
-
-- **API Handling:** React Query + Axios
-
-- **UI Framework:** Ant Design 5 + Tailwind CSS
-
-- **Internationalization:** i18next
-
-### Key Dependencies
-
-- **@tanstack/react-query:** Data fetching and caching
-
-- **react-hook-form:** Form management
-
-- **lodash:** Utility functions
-
-- **zustand:** State management
-
-- **i18next:** Localization
-
-- **antd:** UI components
-
-## Scripts
-
-```json
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "lint": "eslint . --max-warnings 0",
-  "typecheck": "tsc -b",
-  "format": "prettier . --write",
-  "verify": "bun run format:check && bun run lint && bun run typecheck && bun run build"
-}
-```
-
-## Contributing
-
-Contributions welcome! Please follow these steps:
-
-1. Fork the repository
-
-2. Create your feature branch
-
-3. Commit your changes
-
-4. Push to the branch
-
-5. Open a Pull Request
-
-## Disclaimer
-
-This extension uses AI-generated content. Users should review and verify all automatically generated resume content before use.
+See `packages/contracts` and `packages/api-client`.

@@ -8,10 +8,10 @@ import manifest from './manifest.config.ts';
 export default defineConfig({
   plugins: [react(), tsConfigPaths(), crx({ manifest })],
   server: {
-    port: 5173,
+    port: 5174,
     strictPort: true,
     hmr: {
-      port: 5173,
+      port: 5174,
     },
   },
 });

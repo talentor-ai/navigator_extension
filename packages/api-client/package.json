@@ -1,0 +1,19 @@
+{
+  "name": "@talentor/api-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@talentor/contracts": "workspace:*",
+    "axios": "1.19.0"
+  },
+  "devDependencies": {
+    "@talentor/config": "workspace:*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react';
 import { CustomizableComponent } from '@popup:models/default.components';
 import { Select as SelectComponent } from 'antd';
 
 interface SelectProps extends CustomizableComponent {
-  options: { value: string; label: JSX.Element }[];
+  options: { value: string; label: ReactNode }[];
   placeholder?: string;
   onChange?: (value: string) => void;
   defaultValue?: string | null;
