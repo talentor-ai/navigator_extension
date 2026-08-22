@@ -1,60 +1,47 @@
 import type { components } from '@talentor/contracts';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { EditableField } from '@/components/EditableField';
-import { MOCK_PROFILE } from '../profile.constants';
 
-type CandidateProfile = components['schemas']['CandidateProfileV1'];
+type CandidateProfileV1 = components['schemas']['CandidateProfileV1'];
 
-type SummarySectionProps = {
-  baseSummary?: string | null;
-  defaultRole?: string | null;
-  profile?: CandidateProfile;
+type Props = {
+  profile: CandidateProfileV1;
+  onProfileChange: (next: CandidateProfileV1) => void | Promise<void>;
+  pending?: boolean;
+  readOnly?: boolean;
 };
 
 const SummarySection = ({
-  baseSummary: baseSummaryProp,
-  defaultRole: defaultRoleProp,
   profile,
-}: SummarySectionProps) => {
-  const baseSummary =
-    baseSummaryProp ??
-    profile?.baseSummary ??
-    MOCK_PROFILE.profile.baseSummary ??
-    '';
-  const defaultRole =
-    defaultRoleProp ??
-    profile?.defaultRole ??
-    MOCK_PROFILE.profile.defaultRole ??
-    '';
-
+  onProfileChange,
+  pending,
+  readOnly,
+}: Props) => {
   return (
     <Card className="bg-card border-border">
       <CardHeader>
-        <EditableField
-          value="Summary"
-          label="Summary section title"
-          purpose="section"
-          weight="semibold"
-          tone="muted"
-        />
-        {defaultRole ? (
-          <EditableField
-            value={defaultRole}
-            label="Default role"
-            purpose="role"
-            weight="medium"
-            tone="muted"
-          />
-        ) : null}
+        <h2 className="text-section font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Summary
+        </h2>
       </CardHeader>
       <CardContent>
         <EditableField
-          value={baseSummary ?? ''}
+          value={profile.baseSummary ?? ''}
           label="Summary"
           displayAs="p"
           purpose="body"
           editor="textarea"
           rows={4}
+          pending={pending}
+          disabled={readOnly}
+          onSubmit={(value) => {
+            const nextSummary = value.trim() === '' ? null : value;
+            const next: CandidateProfileV1 = {
+              ...profile,
+              baseSummary: nextSummary,
+            };
+            return onProfileChange(next);
+          }}
         />
       </CardContent>
     </Card>

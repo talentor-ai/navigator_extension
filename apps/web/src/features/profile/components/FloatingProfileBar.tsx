@@ -7,7 +7,7 @@ import { useAuthStore } from '@/store/auth';
 const FloatingProfileBar = () => {
   const logout = useAuthStore((s) => s.logout);
   const { pathname } = useLocation();
-  const isProfile = pathname === '/profile';
+  const isProfile = pathname === '/profile' || pathname.startsWith('/profile/');
 
   return (
     <Tooltip.Provider>

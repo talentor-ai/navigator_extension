@@ -1,62 +1,33 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
-import type { components } from '@talentor/contracts';
 
-/**
- * Error thrown when the API returns a non-2xx status.
- * The backend error shape is `{ detail: string }`.
- */
-export class ApiError extends Error {
-  constructor(
-    public readonly status: number,
-    detail: string | null,
-  ) {
-    super(detail ?? `Request failed with status ${status}`);
-    this.name = 'ApiError';
-  }
-}
+import { ApiError, extractDetail } from './errors';
+import { createProfiles } from './profiles';
+import type {
+  ApiClient,
+  ApiEnvelope,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+  UserResponse,
+} from './types';
 
-/**
- * Wire envelope used by the backend. Every successful response unwraps to
- * `response`; `204` responses carry no body.
- */
-export interface ApiEnvelope<T> {
-  message: string;
-  status: string;
-  date?: string;
-  response: T | null;
-}
-
-export type AuthResponse = components['schemas']['AuthResponse'];
-export type UserResponse = components['schemas']['UserResponse'];
-export type LoginRequest = components['schemas']['LoginRequest'];
-export type RegisterRequest = components['schemas']['RegisterRequest'];
-
-export interface ApiClient {
-  get<T>(path: string, config?: AxiosRequestConfig): Promise<T>;
-  post<T>(
-    path: string,
-    body?: unknown,
-    config?: AxiosRequestConfig,
-  ): Promise<T>;
-  put<T>(path: string, body?: unknown, config?: AxiosRequestConfig): Promise<T>;
-  patch<T>(
-    path: string,
-    body?: unknown,
-    config?: AxiosRequestConfig,
-  ): Promise<T>;
-  delete(path: string, config?: AxiosRequestConfig): Promise<void>;
-  // Auth state
-  getAccessToken(): string | null;
-  setAccessToken(token: string | null): void;
-  clearAuth(): void;
-  auth: {
-    register(data: RegisterRequest): Promise<AuthResponse>;
-    login(data: LoginRequest): Promise<AuthResponse>;
-    refresh(): Promise<AuthResponse>;
-    logout(): Promise<void>;
-    getSession(): Promise<UserResponse>;
-  };
-}
+// Re-export public API exactly as before
+export { ApiError } from './errors';
+export type {
+  ApiEnvelope,
+  ApiClient,
+  AuthResponse,
+  UserResponse,
+  LoginRequest,
+  RegisterRequest,
+  ProfileMetadata,
+  ProfileSnapshot,
+  ProfileVersionMetadata,
+  ProfileVersionSnapshot,
+  CandidateProfileV1,
+  CreateProfileRequest,
+  UpdateProfileRequest,
+} from './types';
 
 const NO_RETRY_PATHS = [
   '/api/v1/auth/login',
@@ -65,11 +36,8 @@ const NO_RETRY_PATHS = [
   '/api/v1/auth/logout',
   '/health',
 ];
-
-function isNoRetryPath(url: string | undefined): boolean {
-  if (!url) return false;
-  return NO_RETRY_PATHS.some((p) => url.includes(p));
-}
+const isNoRetryPath = (url?: string) =>
+  !!url && NO_RETRY_PATHS.some((p) => url.includes(p));
 
 /**
  * Build a typed HTTP client for the Talentor API.
@@ -105,7 +73,7 @@ export function createApiClient(baseUrl: string): ApiClient {
 
   instance.interceptors.response.use(
     (response) => response,
-    async (error: AxiosError<{ detail?: string }>) => {
+    async (error: AxiosError<{ detail?: unknown }>) => {
       const originalRequest = error.config as AxiosRequestConfig & {
         _retry?: boolean;
       };
@@ -155,8 +123,7 @@ export function createApiClient(baseUrl: string): ApiClient {
         try {
           await refreshPromise;
         } catch {
-          const detail =
-            (error.response?.data as { detail?: string })?.detail ?? null;
+          const detail = extractDetail(error.response?.data);
           throw new ApiError(status ?? 0, detail);
         }
         originalRequest._retry = true;
@@ -176,8 +143,7 @@ export function createApiClient(baseUrl: string): ApiClient {
         return instance(originalRequest);
       }
 
-      const detail =
-        (error.response?.data as { detail?: string })?.detail ?? null;
+      const detail = extractDetail(error.response?.data);
       throw new ApiError(status ?? 0, detail);
     },
   );
@@ -249,5 +215,6 @@ export function createApiClient(baseUrl: string): ApiClient {
       getSession: () =>
         request<UserResponse>({ method: 'GET', url: '/api/v1/session' }),
     },
+    profiles: createProfiles(request),
   };
 }

@@ -24,6 +24,25 @@
 - `packages/contracts`: generated OpenAPI types; regenerate with `bun run generate:contracts`.
 - `packages/config`: shared `tsconfig.base.json`.
 
+## Frontend structure
+
+- Non-test production files (`*.ts`, `*.tsx`, `*.js`, `*.jsx`) must stay at or below 250 lines. Split the file before it exceeds this limit.
+- Test and E2E files (e.g., `*.test.*`, `*.spec.*`, `__tests__/`, `e2e/`) are exempt from the line limit and must not be split solely to satisfy it.
+- Components that own state, data fetching, mutations, event orchestration, or substantial derived logic must extract that logic into custom hooks (colocated in `hooks/` or alongside the component). The component itself must focus on rendering and composition.
+- Logic-free, presentational subcomponents belong in the nearest feature or component `components/` folder. Do not promote single-use presentational pieces to top-level shared folders.
+- When a component grows large, convert it into a folder module. Create only files with clear responsibility — do not add speculative abstractions. Allowed layout as needed:
+  ```
+  FeatureOrComponent/
+  ├── index.tsx       # public entry; re-exports the component
+  ├── components/     # presentational subcomponents
+  ├── hooks/          # custom hooks extracted from the component
+  ├── types.ts        # module-scoped types
+  ├── constants.ts    # module-scoped constants
+  └── utils.ts        # module-scoped pure helpers
+  ```
+- When converting a file to a folder module, preserve its public import path (e.g., `Component.tsx` → `Component/index.tsx` with a re-export) so existing imports remain valid.
+- Structural refactors must preserve observable behavior and keep existing tests passing; update or add tests only for intentional behavior changes.
+
 ## Toolchain notes
 
 - `typescript` is pinned to `6.0.3` (latest `7.0.x` is incompatible with `typescript-eslint`). Do not bump past `6.x` until typescript-eslint supports TS 7.

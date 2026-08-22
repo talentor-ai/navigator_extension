@@ -206,3 +206,688 @@ describe('api-client', () => {
     expect(auth).toHaveProperty('user');
   });
 });
+
+describe('profiles', () => {
+  const PROFILE_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+  const makeSnapshot = (overrides: Partial<Record<string, unknown>> = {}) => ({
+    id: PROFILE_ID,
+    name: 'Test Profile',
+    currentVersion: 2,
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-02T00:00:00.000Z',
+    profile: {
+      schemaVersion: 1 as const,
+      locale: 'en-US',
+      personalInfo: {
+        fullName: 'Ada Lovelace',
+        email: 'ada@example.com',
+        links: [],
+      },
+      experience: [],
+      skills: [],
+      languages: [],
+      education: [],
+      projects: [],
+      certifications: [],
+    },
+    ...overrides,
+  });
+
+  it('list profiles unwraps envelope and hits GET /api/v1/profiles', async () => {
+    const api = createApiClient(API_URL);
+    const meta = {
+      id: PROFILE_ID,
+      name: 'Test',
+      currentVersion: 1,
+      createdAt: '2025-01-01T00:00:00.000Z',
+      updatedAt: '2025-01-01T00:00:00.000Z',
+    };
+    let capturedMethod: string | undefined;
+    let capturedPath: string | undefined;
+    server.use(
+      http.get(`${API_URL}/api/v1/profiles`, ({ request }) => {
+        capturedMethod = request.method;
+        capturedPath = new URL(request.url).pathname;
+        return HttpResponse.json({
+          message: 'ok',
+          status: 'OK',
+          response: [meta],
+        });
+      }),
+    );
+    const result = await api.profiles.list();
+    expect(capturedMethod).toBe('GET');
+    expect(capturedPath).toBe('/api/v1/profiles');
+    expect(result).toEqual([meta]);
+  });
+
+  it('get profile unwraps snapshot', async () => {
+    const api = createApiClient(API_URL);
+    const snapshot = makeSnapshot();
+    server.use(
+      http.get(`${API_URL}/api/v1/profiles/${PROFILE_ID}`, () => {
+        return HttpResponse.json({
+          message: 'ok',
+          status: 'OK',
+          response: snapshot,
+        });
+      }),
+    );
+    const result = await api.profiles.get(PROFILE_ID);
+    expect(result).toEqual(snapshot);
+    expect(result).not.toHaveProperty('response');
+  });
+
+  it('create profile posts to /api/v1/profiles with body', async () => {
+    const api = createApiClient(API_URL);
+    const snapshot = makeSnapshot();
+    let capturedBody: unknown = null;
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, async ({ request }) => {
+        capturedBody = await request.json();
+        return HttpResponse.json(
+          {
+            message: 'created',
+            status: 'OK',
+            response: snapshot,
+          },
+          { status: 201 },
+        );
+      }),
+    );
+    const payload = {
+      name: 'Backend',
+      profile: snapshot.profile,
+    } as unknown as import('./index').CreateProfileRequest;
+    const result = await api.profiles.create(payload);
+    expect(capturedBody).toEqual(payload);
+    expect(result).toEqual(snapshot);
+  });
+
+  it('update sends PUT with expectedVersion', async () => {
+    const api = createApiClient(API_URL);
+    const snapshot = makeSnapshot({ currentVersion: 5 });
+    let capturedMethod: string | undefined;
+    let capturedBody: unknown = null;
+    server.use(
+      http.put(
+        `${API_URL}/api/v1/profiles/${PROFILE_ID}`,
+        async ({ request }) => {
+          capturedMethod = request.method;
+          capturedBody = await request.json();
+          return HttpResponse.json({
+            message: 'ok',
+            status: 'OK',
+            response: snapshot,
+          });
+        },
+      ),
+    );
+    const nextProfile = {
+      ...snapshot.profile,
+      baseSummary: 'updated',
+    } as unknown as import('./index').CandidateProfileV1;
+    const result = await api.profiles.update(PROFILE_ID, {
+      expectedVersion: 2,
+      profile: nextProfile,
+    });
+    expect(capturedMethod).toBe('PUT');
+    expect(capturedBody).toEqual({
+      expectedVersion: 2,
+      profile: nextProfile,
+    });
+    expect(result).toEqual(snapshot);
+  });
+
+  it('list versions hits correct path', async () => {
+    const api = createApiClient(API_URL);
+    const meta = {
+      id: 'v1',
+      versionNumber: 1,
+      schemaVersion: 1,
+      sourceType: 'MANUAL',
+      createdAt: '2025-01-01T00:00:00.000Z',
+      isCurrent: false,
+    };
+    server.use(
+      http.get(`${API_URL}/api/v1/profiles/${PROFILE_ID}/versions`, () => {
+        return HttpResponse.json({
+          message: 'ok',
+          status: 'OK',
+          response: [meta],
+        });
+      }),
+    );
+    const result = await api.profiles.listVersions(PROFILE_ID);
+    expect(result).toEqual([meta]);
+  });
+
+  it('get version hits path with version number', async () => {
+    const api = createApiClient(API_URL);
+    const snap = {
+      profileId: PROFILE_ID,
+      name: 'Test',
+      version: {
+        id: 'v2',
+        versionNumber: 2,
+        schemaVersion: 1,
+        sourceType: 'MANUAL',
+        createdAt: '2025-01-01T00:00:00.000Z',
+        isCurrent: true,
+      },
+      profile: makeSnapshot().profile,
+    };
+    server.use(
+      http.get(`${API_URL}/api/v1/profiles/${PROFILE_ID}/versions/2`, () => {
+        return HttpResponse.json({
+          message: 'ok',
+          status: 'OK',
+          response: snap,
+        });
+      }),
+    );
+    const result = await api.profiles.getVersion(PROFILE_ID, 2);
+    expect(result).toEqual(snap);
+  });
+
+  it('activate version posts with no body', async () => {
+    const api = createApiClient(API_URL);
+    const snapshot = makeSnapshot({ currentVersion: 3 });
+    let capturedBody: string | null = null;
+    let capturedMethod: string | undefined;
+    server.use(
+      http.post(
+        `${API_URL}/api/v1/profiles/${PROFILE_ID}/versions/1/activate`,
+        async ({ request }) => {
+          capturedMethod = request.method;
+          capturedBody = await request.text();
+          return HttpResponse.json({
+            message: 'ok',
+            status: 'OK',
+            response: snapshot,
+          });
+        },
+      ),
+    );
+    const result = await api.profiles.activateVersion(PROFILE_ID, 1);
+    expect(capturedMethod).toBe('POST');
+    // Activation must send no body (empty string or no JSON)
+    expect(capturedBody === '' || capturedBody === null).toBe(true);
+    expect(result).toEqual(snapshot);
+  });
+
+  it('throws ApiError 409 on conflict', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.put(`${API_URL}/api/v1/profiles/${PROFILE_ID}`, () => {
+        return HttpResponse.json({ detail: 'Stale version' }, { status: 409 });
+      }),
+    );
+    await expect(
+      api.profiles.update(PROFILE_ID, {
+        expectedVersion: 1,
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      }),
+    ).rejects.toMatchObject({ status: 409, name: 'ApiError' });
+    try {
+      await api.profiles.update(PROFILE_ID, {
+        expectedVersion: 1,
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(409);
+    }
+  });
+});
+
+describe('ApiError detail normalization', () => {
+  const PROFILE_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+  const makeSnapshot = (overrides: Partial<Record<string, unknown>> = {}) => ({
+    id: PROFILE_ID,
+    name: 'Test Profile',
+    currentVersion: 2,
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-02T00:00:00.000Z',
+    profile: {
+      schemaVersion: 1 as const,
+      locale: 'en-US',
+      personalInfo: {
+        fullName: 'Ada Lovelace',
+        email: 'ada@example.com',
+        links: [],
+      },
+      experience: [],
+      skills: [],
+      languages: [],
+      education: [],
+      projects: [],
+      certifications: [],
+    },
+    ...overrides,
+  });
+
+  it('preserves string detail for errors', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          { detail: 'Profile name already exists' },
+          { status: 400 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'dup',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(400);
+      expect((e as ApiError).message).toBe('Profile name already exists');
+      expect((e as ApiError).message).not.toContain('[object Object]');
+    }
+  });
+
+  it('normalizes FastAPI 422 array into readable message using loc and msg', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'profile', 'personalInfo', 'email'],
+                msg: 'value is not a valid email address',
+                type: 'value_error',
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'bad',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(422);
+      expect((e as ApiError).message).toBe(
+        'profile.personalInfo.email: value is not a valid email address',
+      );
+      expect((e as ApiError).message).not.toContain('[object Object]');
+    }
+  });
+
+  it('joins multiple validation errors consistently', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.put(`${API_URL}/api/v1/profiles/${PROFILE_ID}`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'profile', 'personalInfo', 'email'],
+                msg: 'value is not a valid email',
+                type: 'value_error',
+              },
+              {
+                loc: ['body', 'profile', 'personalInfo', 'fullName'],
+                msg: 'Field required',
+                type: 'missing',
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.update(PROFILE_ID, {
+        expectedVersion: 1,
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(422);
+      const msg = (e as ApiError).message;
+      expect(msg).toContain(
+        'profile.personalInfo.email: value is not a valid email',
+      );
+      expect(msg).toContain('profile.personalInfo.fullName: Field required');
+      // joined consistently with "; "
+      expect(msg).toBe(
+        'profile.personalInfo.email: value is not a valid email; profile.personalInfo.fullName: Field required',
+      );
+      expect(msg).not.toContain('[object Object]');
+    }
+  });
+
+  it('handles numeric loc segments', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'experience', 0, 'company'],
+                msg: 'Field required',
+                type: 'missing',
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'x',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect((e as ApiError).message).toBe(
+        'experience.0.company: Field required',
+      );
+      expect((e as ApiError).status).toBe(422);
+    }
+  });
+
+  it('ignores malformed elements safely', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'profile', 'personalInfo', 'email'],
+                msg: 'value is not a valid email',
+                type: 'value_error',
+              },
+              { loc: null, msg: null },
+              { bad: true } as unknown as { loc: string[]; msg: string },
+              'string' as unknown as { loc: string[]; msg: string },
+              null as unknown as { loc: string[]; msg: string },
+              {
+                loc: ['body', 'profile', 'personalInfo', 'fullName'],
+                msg: 'Field required',
+                type: 'missing',
+              },
+              { loc: ['body', 'name'], msg: 'Field required' } as unknown as {
+                loc: string[];
+                msg: string;
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'x',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      const msg = (e as ApiError).message;
+      expect(msg).toContain(
+        'profile.personalInfo.email: value is not a valid email',
+      );
+      expect(msg).toContain('profile.personalInfo.fullName: Field required');
+      expect(msg).toContain('name: Field required');
+      expect(msg).not.toContain('[object Object]');
+      // malformed entries should not cause extra segments or throw
+      expect((e as ApiError).status).toBe(422);
+    }
+  });
+
+  it('falls back to generic message for absent/null detail', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json({}, { status: 422 });
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'x',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(422);
+      expect((e as ApiError).message).toBe('Request failed with status 422');
+      expect((e as ApiError).message).not.toContain('[object Object]');
+    }
+
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json({ detail: null }, { status: 422 });
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'x',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect((e as ApiError).message).toBe('Request failed with status 422');
+    }
+
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json({ detail: [] }, { status: 422 });
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'x',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect((e as ApiError).message).toBe('Request failed with status 422');
+    }
+
+    // Non-array, non-string detail (e.g., number) should also fallback
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          { detail: 123 as unknown as string },
+          { status: 422 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'x',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect((e as ApiError).message).toBe('Request failed with status 422');
+      expect((e as ApiError).message).not.toContain('[object Object]');
+    }
+  });
+
+  it('does not expose [object Object] for array detail', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'profile', 'name'],
+                msg: 'Field required',
+                type: 'missing',
+              },
+              {
+                loc: ['body', 'profile', 'personalInfo', 'email'],
+                msg: 'value is not a valid email',
+                type: 'value_error',
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: '',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      const msg = (e as ApiError).message;
+      expect(msg).not.toContain('[object Object]');
+      expect(msg).not.toContain('object Object');
+    }
+  });
+
+  it('preserves status code for structured errors', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'profile', 'name'],
+                msg: 'too short',
+                type: 'value_error',
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'x',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect((e as ApiError).status).toBe(422);
+      expect((e as ApiError).name).toBe('ApiError');
+    }
+  });
+
+  it('no regression: 409 string detail still maps to ApiError with same status/message', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.post(`${API_URL}/api/v1/profiles`, () => {
+        return HttpResponse.json(
+          { detail: 'Profile name already exists' },
+          { status: 409 },
+        );
+      }),
+    );
+    try {
+      await api.profiles.create({
+        name: 'dup',
+        profile: makeSnapshot()
+          .profile as unknown as import('./index').CandidateProfileV1,
+      });
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(409);
+      expect((e as ApiError).message).toBe('Profile name already exists');
+      expect((e as ApiError).name).toBe('ApiError');
+    }
+  });
+
+  it('normalizes detail on failed-refresh rethrow path', async () => {
+    const api = createApiClient(API_URL);
+    api.setAccessToken('expired-token');
+    server.use(
+      http.get(`${API_URL}/api/v1/session`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'profile', 'personalInfo', 'email'],
+                msg: 'value is not a valid email',
+                type: 'value_error',
+              },
+            ],
+          },
+          { status: 401 },
+        );
+      }),
+      http.post(`${API_URL}/api/v1/auth/refresh`, () => {
+        return HttpResponse.json({ detail: 'Invalid' }, { status: 401 });
+      }),
+    );
+    try {
+      await api.get('/api/v1/session');
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(401);
+      // Even though refresh failed, original 401 detail array should be normalized, not "[object Object]"
+      expect((e as ApiError).message).toBe(
+        'profile.personalInfo.email: value is not a valid email',
+      );
+      expect((e as ApiError).message).not.toContain('[object Object]');
+    }
+    expect(api.getAccessToken()).toBeNull();
+  });
+
+  it('preserves string detail on failed-refresh rethrow path', async () => {
+    const api = createApiClient(API_URL);
+    api.setAccessToken('expired-token');
+    server.use(
+      http.get(`${API_URL}/api/v1/session`, () => {
+        return HttpResponse.json(
+          { detail: 'Session revoked' },
+          { status: 401 },
+        );
+      }),
+      http.post(`${API_URL}/api/v1/auth/refresh`, () => {
+        return HttpResponse.json(
+          { detail: 'Invalid refresh' },
+          { status: 401 },
+        );
+      }),
+    );
+    try {
+      await api.get('/api/v1/session');
+      expect.unreachable('should throw');
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).status).toBe(401);
+      expect((e as ApiError).message).toBe('Session revoked');
+    }
+  });
+});
