@@ -32,6 +32,7 @@ export type UpdateProfileRequest =
 export type RequestFn = <T>(config: AxiosRequestConfig) => Promise<T>;
 
 export interface ApiClient {
+  request<T>(config: AxiosRequestConfig): Promise<T>;
   get<T>(path: string, config?: AxiosRequestConfig): Promise<T>;
   post<T>(
     path: string,

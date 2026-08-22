@@ -556,7 +556,13 @@ describe('profile editing - immutable saves', () => {
     expect(screen.getByText('No certifications yet')).toBeInTheDocument();
     render(<ContactDetails profile={empty} onProfileChange={noop} />);
     expect(screen.getByText('No links yet')).toBeInTheDocument();
-    expect(screen.queryByText(/Add/i)).not.toBeInTheDocument();
+    // Skills and Languages now expose Add via CollectionSectionHeader; other sections remain without Add until their waves
+    expect(screen.getAllByRole('button', { name: /Add Skills/i })).toHaveLength(
+      1,
+    );
+    expect(
+      screen.getAllByRole('button', { name: /Add Languages/i }),
+    ).toHaveLength(1);
   });
 
   it('forbidden fields not rendered as editable', () => {

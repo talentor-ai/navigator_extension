@@ -42,6 +42,9 @@
   ```
 - When converting a file to a folder module, preserve its public import path (e.g., `Component.tsx` → `Component/index.tsx` with a re-export) so existing imports remain valid.
 - Structural refactors must preserve observable behavior and keep existing tests passing; update or add tests only for intentional behavior changes.
+- All web icons are registered in `apps/web/src/components/Icons/constants.ts` and rendered through type-driven `<Icons type="..." />`; no direct `react-icons` imports elsewhere.
+- Generic endpoint calls use `apps/web/src/api/baseApi.ts`, which delegates to shared `@talentor/api-client`; never create another Axios instance or duplicate auth interceptors.
+- E2E work is excluded for now; normal verification uses unit tests + `bun run verify` (existing E2E files/scripts remain, not deleted, but are not executed).
 
 ## Toolchain notes
 

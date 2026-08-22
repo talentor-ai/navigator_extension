@@ -207,6 +207,140 @@ describe('api-client', () => {
   });
 });
 
+describe('request generic', () => {
+  it('exposes request as function matching internal lifecycle', async () => {
+    const api = createApiClient(API_URL);
+    expect(typeof api.request).toBe('function');
+    // request should reuse envelope unwrap + interceptors: prove via direct call
+    server.use(
+      http.get(`${API_URL}/api/v1/ping`, () => {
+        return HttpResponse.json({
+          message: 'ok',
+          status: 'OK',
+          response: { pong: true },
+        });
+      }),
+    );
+    const data = await api.request<{ pong: boolean }>({
+      method: 'GET',
+      url: '/api/v1/ping',
+    });
+    expect(data).toEqual({ pong: true });
+    expect(data).not.toHaveProperty('response');
+  });
+
+  it('forwards method, url, data and params via config', async () => {
+    const api = createApiClient(API_URL);
+    let capturedMethod: string | undefined;
+    let capturedUrl: string | undefined;
+    let capturedBody: unknown = null;
+    let capturedQuery: string | null = null;
+    server.use(
+      http.post(`${API_URL}/api/v1/echo`, async ({ request }) => {
+        capturedMethod = request.method;
+        capturedUrl = new URL(request.url).pathname;
+        capturedQuery = new URL(request.url).search;
+        capturedBody = await request.json();
+        return HttpResponse.json({
+          message: 'ok',
+          status: 'OK',
+          response: { ok: true },
+        });
+      }),
+    );
+    const result = await api.request<{ ok: boolean }>({
+      method: 'POST',
+      url: '/api/v1/echo',
+      data: { hello: 'world' },
+      params: { q: '1', page: '2' },
+    });
+    expect(capturedMethod).toBe('POST');
+    expect(capturedUrl).toBe('/api/v1/echo');
+    expect(capturedQuery).toContain('q=1');
+    expect(capturedQuery).toContain('page=2');
+    expect(capturedBody).toEqual({ hello: 'world' });
+    expect(result).toEqual({ ok: true });
+  });
+
+  it('passes through headers and signal via config', async () => {
+    const api = createApiClient(API_URL);
+    let capturedHeader: string | null = null;
+    server.use(
+      http.get(`${API_URL}/api/v1/headers-check`, ({ request }) => {
+        capturedHeader = request.headers.get('x-custom-header');
+        return HttpResponse.json({
+          message: 'ok',
+          status: 'OK',
+          response: { ok: true },
+        });
+      }),
+    );
+    const controller = new AbortController();
+    const result = await api.request<{ ok: boolean }>({
+      method: 'GET',
+      url: '/api/v1/headers-check',
+      headers: { 'x-custom-header': 'custom-value' },
+      signal: controller.signal,
+    });
+    expect(capturedHeader).toBe('custom-value');
+    expect(result).toEqual({ ok: true });
+  });
+
+  it('unwraps envelope and handles 204 via request', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.delete(`${API_URL}/api/v1/no-content`, () => {
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+    const result = await api.request<void>({
+      method: 'DELETE',
+      url: '/api/v1/no-content',
+    });
+    expect(result).toBeUndefined();
+  });
+
+  it('throws ApiError with normalized detail via request', async () => {
+    const api = createApiClient(API_URL);
+    server.use(
+      http.get(`${API_URL}/api/v1/fail`, () => {
+        return HttpResponse.json(
+          {
+            detail: [
+              {
+                loc: ['body', 'name'],
+                msg: 'Field required',
+                type: 'missing',
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }),
+    );
+    await expect(
+      api.request({ method: 'GET', url: '/api/v1/fail' }),
+    ).rejects.toMatchObject({ status: 422, name: 'ApiError' });
+    try {
+      await api.request({ method: 'GET', url: '/api/v1/fail' });
+    } catch (e) {
+      expect(e).toBeInstanceOf(ApiError);
+      expect((e as ApiError).message).toBe('name: Field required');
+    }
+  });
+
+  it('preserves get/post/put/patch/delete alongside request', () => {
+    const api = createApiClient(API_URL);
+    expect(typeof api.get).toBe('function');
+    expect(typeof api.post).toBe('function');
+    expect(typeof api.put).toBe('function');
+    expect(typeof api.patch).toBe('function');
+    expect(typeof api.delete).toBe('function');
+    expect(typeof api.profiles.list).toBe('function');
+    expect(typeof api.auth.login).toBe('function');
+  });
+});
+
 describe('profiles', () => {
   const PROFILE_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
   const makeSnapshot = (overrides: Partial<Record<string, unknown>> = {}) => ({

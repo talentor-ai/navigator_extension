@@ -167,6 +167,7 @@ export function createApiClient(baseUrl: string): ApiClient {
   };
 
   return {
+    request,
     get: <T>(path: string, config?: AxiosRequestConfig) =>
       request<T>({ ...config, method: 'GET', url: path }),
     post: <T>(path: string, body?: unknown, config?: AxiosRequestConfig) =>

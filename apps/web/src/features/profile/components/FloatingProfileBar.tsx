@@ -1,7 +1,7 @@
-import { House, LogOut, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/Icons';
 import { useAuthStore } from '@/store/auth';
 
 const FloatingProfileBar = () => {
@@ -22,7 +22,7 @@ const FloatingProfileBar = () => {
               aria-label="Home"
               className="inline-flex h-10 w-10 items-center justify-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4"
             >
-              <House className="h-4 w-4" />
+              <Icons type="home" className="h-4 w-4" />
             </Link>
           </Tooltip.Trigger>
           <Tooltip.Portal>
@@ -43,7 +43,7 @@ const FloatingProfileBar = () => {
               aria-current={isProfile ? 'page' : undefined}
               className={`inline-flex h-10 w-10 items-center justify-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4 ${isProfile ? 'bg-secondary text-secondary-foreground' : ''}`}
             >
-              <User className="h-4 w-4" />
+              <Icons type="profile" className="h-4 w-4" />
             </Link>
           </Tooltip.Trigger>
           <Tooltip.Portal>
@@ -64,7 +64,7 @@ const FloatingProfileBar = () => {
               aria-label="Logout"
               onClick={() => void logout()}
             >
-              <LogOut className="h-4 w-4" />
+              <Icons type="logout" className="h-4 w-4" />
             </Button>
           </Tooltip.Trigger>
           <Tooltip.Portal>

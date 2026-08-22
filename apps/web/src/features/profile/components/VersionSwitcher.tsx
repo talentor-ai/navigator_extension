@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { formatDate } from '@/lib/date';
 
 type ProfileVersionMetadata = components['schemas']['ProfileVersionMetadata'];
 
@@ -16,22 +17,6 @@ export type VersionSwitcherProps = {
   onPreview: (version: number) => void;
   onActivate: (version: number) => void;
   onExitPreview: () => void;
-};
-
-const formatDate = (iso: string) => {
-  try {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return iso;
-    // Deterministic UTC date for tests / SSR stability; shows date + time short
-    const year = d.getUTCFullYear();
-    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(d.getUTCDate()).padStart(2, '0');
-    const hours = String(d.getUTCHours()).padStart(2, '0');
-    const minutes = String(d.getUTCMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes} UTC`;
-  } catch {
-    return iso;
-  }
 };
 
 const VersionSwitcher = ({
