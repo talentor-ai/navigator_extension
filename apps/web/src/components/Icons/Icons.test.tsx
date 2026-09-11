@@ -15,10 +15,12 @@ describe('Icons', () => {
         'check',
         'chevronDown',
         'chevronUp',
+        'close',
         'delete',
         'drag',
         'home',
         'logout',
+        'menu',
         'profile',
       ].sort(),
     );

@@ -39,11 +39,11 @@ const ProfileInfo = () => {
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileInfo}>
-        <div className={`${styles.image} ik-bg-primary`}>
+        <div className={`${styles.image} tai:bg-primary`}>
           <img src={logoImage} alt="Profile" />
         </div>
         <div className={styles.textContainer}>
-          <H2 className="ik-text-txt2">
+          <H2 className="tai:text-txt2">
             {token
               ? `${session?.firstName} ${session?.lastName}`
               : t('header.title')}
@@ -54,7 +54,7 @@ const ProfileInfo = () => {
       {token && (
         <ButtonIcon
           icon="itemMenu"
-          className="hover:ik-border-transparent hover:ik-bg-secondary ik-bg-transparent"
+          className="tai:hover:border-transparent tai:hover:bg-secondary tai:bg-transparent"
           onClick={handleOpenMenu}
         />
       )}

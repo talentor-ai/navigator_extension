@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <header>
       <ProfileInfo />
-      <div className="ik-block">
+      <div className="tai:block">
         <Menu />
       </div>
     </header>

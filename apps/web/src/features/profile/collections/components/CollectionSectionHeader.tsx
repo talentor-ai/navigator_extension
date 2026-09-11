@@ -32,7 +32,7 @@ export function CollectionSectionHeader({
       {showAdd ? (
         <Button
           type="button"
-          variant="outline"
+          variant="lime"
           size="sm"
           onClick={onAdd}
           disabled={pending}

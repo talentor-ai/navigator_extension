@@ -133,7 +133,12 @@ export const AddLanguageDialog = ({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={pending} aria-busy={pending}>
+            <Button
+              type="submit"
+              variant="lime"
+              disabled={pending}
+              aria-busy={pending}
+            >
               {pending ? 'Adding...' : 'Add'}
             </Button>
           </div>

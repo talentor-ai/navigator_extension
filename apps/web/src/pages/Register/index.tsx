@@ -116,7 +116,13 @@ export const Register = () => {
         </Form.Item>
       </Form>
       <Typography.Paragraph>
-        Already have an account? <Link to="/login">Log in</Link>
+        Already have an account?{' '}
+        <Link
+          to="/login"
+          className="text-neutral-200 underline underline-offset-4 hover:text-white"
+        >
+          Log in
+        </Link>
       </Typography.Paragraph>
     </div>
   );

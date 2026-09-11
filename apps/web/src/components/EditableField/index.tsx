@@ -18,6 +18,7 @@ export type {
 export function EditableField({
   value,
   label,
+  emptyText,
   editor = 'input',
   inputType = 'text',
   options,
@@ -64,7 +65,9 @@ export function EditableField({
   });
 
   const displayContent = isEmptyDisplay ? (
-    <span className="text-muted-foreground">Not set</span>
+    <span className="text-muted-foreground">
+      {emptyText ?? `No ${label.toLowerCase()} provided`}
+    </span>
   ) : (
     displayValue
   );

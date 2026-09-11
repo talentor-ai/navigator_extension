@@ -83,6 +83,7 @@ export function ProjectAddDialog({
           </Button>
           <Button
             type="button"
+            variant="lime"
             onClick={onConfirm}
             disabled={pending}
             aria-busy={pending ? 'true' : undefined}

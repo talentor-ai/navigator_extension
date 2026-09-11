@@ -74,7 +74,13 @@ export const Login = () => {
         </Form.Item>
       </Form>
       <Typography.Paragraph>
-        No account? <Link to="/register">Register</Link>
+        No account?{' '}
+        <Link
+          to="/register"
+          className="text-neutral-200 underline underline-offset-4 hover:text-white"
+        >
+          Register
+        </Link>
       </Typography.Paragraph>
     </div>
   );

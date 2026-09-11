@@ -9,7 +9,7 @@ interface LinkProps extends CustomizableComponent {
 
 const Link = ({ href, children, ...extra }: LinkProps) => {
   return (
-    <a className="ik-text-infoColor ik-underline" href={href} {...extra}>
+    <a className="tai:text-infoColor tai:underline" href={href} {...extra}>
       {children}
     </a>
   );

@@ -18,26 +18,26 @@ const Input = ({
   const [isFocused, setIsFocused] = useState(false);
 
   const borderColor = () => {
-    if (errorMessage) return 'ik-border-errorColor';
-    if (isFocused) return 'ik-border-tertiary';
-    return 'ik-border-transparent';
+    if (errorMessage) return 'tai:border-errorColor';
+    if (isFocused) return 'tai:border-tertiary';
+    return 'tai:border-transparent';
   };
 
   return (
-    <div className="ik-relative ik-w-full">
+    <div className="tai:relative tai:w-full">
       {type !== InputFieldType.hidden && (
-        <label htmlFor={name} className="ik-text-txt2 ik-block ik-mb-1.5">
+        <label htmlFor={name} className="tai:text-txt2 tai:block tai:mb-1.5">
           {label}
           {validationRules?.required && (
-            <span className="ik-text-errorColor"> *</span>
+            <span className="tai:text-errorColor"> *</span>
           )}
         </label>
       )}
       <div
-        className={`ik-border ${borderColor()} ik-px-4 ik-text-txt1 ik-flex ik-justify-between 
-         ik-items-center ik-h-boxHeight ik-bg-secondary ik-rounded-md ${
+        className={`tai:border ${borderColor()} tai:px-4 tai:text-txt1 tai:flex tai:justify-between 
+         tai:items-center tai:h-boxHeight tai:bg-secondary tai:rounded-md ${
            type === InputFieldType.hidden &&
-           'ik-h-0 ik-border-none ik-absolute ik-pointer-events-none ik-opacity-0'
+           'tai:h-0 tai:border-none tai:absolute tai:pointer-events-none tai:opacity-0'
          }`}
       >
         <input
@@ -45,7 +45,7 @@ const Input = ({
           type={type}
           placeholder={placeholder}
           {...register(name, validationRules)}
-          className="ik-w-full ik-border-none ik-bg-transparent ik-outline-none"
+          className="tai:w-full tai:border-none tai:bg-transparent tai:outline-none"
           autoComplete="off"
           onFocus={() => {
             setIsFocused(true);
@@ -56,7 +56,7 @@ const Input = ({
         />
       </div>
       {errorMessage && type !== InputFieldType.hidden && (
-        <span className="ik-text-errorColor ik-text-small ik-absolute ik-top-[100%] ik-right-0">
+        <span className="tai:text-errorColor tai:text-small tai:absolute tai:top-[100%] tai:right-0">
           {errorMessage}
         </span>
       )}

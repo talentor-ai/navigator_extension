@@ -64,6 +64,6 @@
 ## Gotchas
 
 - Extension popup uses `HashRouter`; keep extension routes hash-based.
-- Extension Tailwind classes use the `ik-` prefix (Tailwind 4 via `@tailwindcss/postcss`, `@config` in `app.css`).
+- Extension Tailwind classes must use the `tai:` prefix (Tailwind 4 variant-style via `@tailwindcss/postcss`, `@config` in `app.css`, `prefix: 'tai'` in `tailwind.config.js`). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`, `tai:active:scale-95`, `tai:last:border-none`. Never use unprefixed or dash-form `tai-`/`ik-` classes; `apps/web` stays unprefixed.
 - Backend must be running for `bun run generate:contracts`.
 - If a latest dependency conflicts (e.g. TS vs typescript-eslint), do not silently downgrade; pin a compatible version and document the reason here.

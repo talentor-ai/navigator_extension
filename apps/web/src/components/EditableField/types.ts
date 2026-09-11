@@ -15,6 +15,7 @@ export type EditableEditor =
 export type EditableFieldProps = VariantProps<typeof editableTextVariants> & {
   value: string;
   label: string;
+  emptyText?: string;
   displayAs?: ElementType;
   className?: string;
   disabled?: boolean;

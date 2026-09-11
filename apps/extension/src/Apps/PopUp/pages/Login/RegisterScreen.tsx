@@ -23,7 +23,7 @@ const RegisterScreen = () => {
         <SocialMedia socialMedia="linkedin" size={IconSize.medium} />
       </section>
       <FormComponent
-        className="ik-my-8 ik-w-72 ik-flex ik-flex-col ik-justify-center"
+        className="tai:my-8 tai:w-72 tai:flex tai:flex-col tai:justify-center"
         fieldProps={registerFormSchema}
         onSubmit={handleSubmit}
         submitLabel="Iniciar sesión"

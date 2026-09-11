@@ -24,7 +24,7 @@ const Select = ({
   return (
     <div className="">
       <SelectComponent
-        className={`ik-w-full ${className}`}
+        className={`tai:w-full ${className}`}
         size="small"
         style={{ height: '2.3rem' }}
         placeholder={placeholder}

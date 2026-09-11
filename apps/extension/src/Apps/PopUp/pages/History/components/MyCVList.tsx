@@ -18,7 +18,7 @@ const MyCVList = () => {
   }, [resumeList, setResumeHistory]);
 
   return (
-    <div className="ik-flex ik-flex-col ik-gap-2">
+    <div className="tai:flex tai:flex-col tai:gap-2">
       {!isEmpty(resumeHistory) &&
         resumeHistory.map((resume: any) => (
           <HistoryItem key={resume.id} {...resume} />

@@ -62,7 +62,7 @@ The scrape bridge uses the constants `JOB_POST_SCRAPPED_ACTION`, `UPDATE_JOB_SCR
 
 - Keep `manifest.config.ts` as source of truth for entry points and permissions.
 - Use existing path aliases: `@popup:...`, `@injector:...`, and `@all/*`.
-- Keep Tailwind utility classes prefixed with `ik-`.
+- Keep Tailwind utility classes in the extension prefixed with `tai:` (Tailwind 4 variant-style). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`, `tai:active:scale-95`, `tai:last:border-none`. Never use unprefixed or dash-form `tai-`/`ik-` utilities; `apps/web` stays unprefixed.
 - Keep shared popup CSS compatible with both popup rendering and content-script shadow-root injection.
 - Keep LinkedIn selectors in `HTMLInjector/constants.ts`; isolate selector changes from scraping behavior.
 - Type API payloads and response data. Replace `any` at boundaries as code is touched.

@@ -33,11 +33,11 @@ const GeneratePost = () => {
 
   return (
     <div>
-      <H1 className="ik-text-txt2 ik-my-8 ik-px-4">
+      <H1 className="tai:text-txt2 tai:my-8 tai:px-4">
         Agregar una oferta de trabajo
       </H1>
       <FormComponent
-        className="ik-my-8 ik-flex ik-flex-col ik-justify-center ik-w-full ik-px-4"
+        className="tai:my-8 tai:flex tai:flex-col tai:justify-center tai:w-full tai:px-4"
         fieldProps={generatePostFormFields}
         onSubmit={onSubmit}
         onCancel={oncancel}

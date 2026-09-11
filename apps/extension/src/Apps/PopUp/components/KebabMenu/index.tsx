@@ -21,25 +21,25 @@ const KebabMenu = ({ isOpen, onClose, options = [] }: iProps) => {
     isOpen && (
       <>
         <div
-          className="ik-fixed ik-z-10 ik-top-0 ik-left-0 ik-right-0 ik-bottom-0"
+          className="tai:fixed tai:z-10 tai:top-0 tai:left-0 tai:right-0 tai:bottom-0"
           onClick={onClose}
         />
         <ul
-          className="ik-bg-secondary ik-w-fit ik-rounded-md ik-absolute ik-top-[80%] ik-right-0 ik-z-20 ik-border
-             ik-border-opacity-50 ik-border-txt3"
+          className="tai:bg-secondary tai:w-fit tai:rounded-md tai:absolute tai:top-[80%] tai:right-0 tai:z-20 tai:border
+             tai:border-opacity-50 tai:border-txt3"
         >
           {!isEmpty(options) &&
             options.map(({ icon, label, action }: IOption, index: number) => (
               <li
                 key={index}
-                className="ik-px-4 ik-py-2 ik-border-b ik-border-txt3 ik-border-opacity-50 ik-last:border-none
-               hover:ik-text-txt2 ik-cursor-pointer"
+                className="tai:px-4 tai:py-2 tai:border-b tai:border-txt3 tai:border-opacity-50 tai:last:border-none
+               tai:hover:text-txt2 tai:cursor-pointer"
                 onClick={() => {
                   action();
                   onClose();
                 }}
               >
-                {icon && <Icons iconType={icon} className="ik-mr-2" />}
+                {icon && <Icons iconType={icon} className="tai:mr-2" />}
                 {t(label)}
               </li>
             ))}

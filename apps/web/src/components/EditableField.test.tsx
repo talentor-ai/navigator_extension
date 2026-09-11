@@ -359,13 +359,13 @@ describe('EditableField controlled inline editor', () => {
     expect(screen.queryByLabelText('Edit Choice')).not.toBeInTheDocument();
   });
 
-  it('empty value shows Not set with accessible target and opens empty input', async () => {
+  it('empty value shows descriptive empty text with accessible target and opens empty input', async () => {
     const user = userEvent.setup();
     render(<EditableField value="" label="Name" />);
     const display = screen.getByLabelText('Edit Name');
     expect(display).toBeInTheDocument();
-    expect(display).toHaveTextContent('Not set');
-    expect(screen.getByText('Not set')).toBeInTheDocument();
+    expect(display).toHaveTextContent('No name provided');
+    expect(screen.getByText('No name provided')).toBeInTheDocument();
     // aria-label remains Edit Name, not replaced
     expect(display).toHaveAttribute('aria-label', 'Edit Name');
     await user.dblClick(display);
@@ -376,7 +376,7 @@ describe('EditableField controlled inline editor', () => {
     expect(input).not.toHaveAttribute('placeholder');
   });
 
-  it('empty select value shows Not set', () => {
+  it('empty select value shows descriptive empty text', () => {
     render(
       <EditableField
         value=""
@@ -389,7 +389,18 @@ describe('EditableField controlled inline editor', () => {
       />,
     );
     const display = screen.getByLabelText('Edit Choice');
-    expect(display).toHaveTextContent('Not set');
+    expect(display).toHaveTextContent('No choice provided');
+  });
+
+  it('custom empty text overrides the generated fallback', () => {
+    render(
+      <EditableField
+        value=""
+        label="Phone"
+        emptyText="No phone number added"
+      />,
+    );
+    expect(screen.getByText('No phone number added')).toBeInTheDocument();
   });
 
   it('select display and controlled value refresh on prop change', async () => {

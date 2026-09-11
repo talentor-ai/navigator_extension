@@ -29,7 +29,7 @@ const ProfileList = () => {
       <ControlPanel />
       {profileSelected && jobProfileIdSelected && (
         <>
-          <H1 className="ik-my-6 ik-text-txt2">Información del perfil</H1>
+          <H1 className="tai:my-6 tai:text-txt2">Información del perfil</H1>
           <InformationGrid jobProfile={profileSelected} />
         </>
       )}

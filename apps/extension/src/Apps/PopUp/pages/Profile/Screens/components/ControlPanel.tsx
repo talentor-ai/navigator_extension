@@ -57,10 +57,10 @@ const ControlPanel = () => {
 
   return (
     <div className="">
-      <p className="ik-mb-2 ik-text-txt3">Seleccionar perfil</p>
-      <div className="ik-grid ik-grid-cols-[13rem_2.3rem_2.3rem_2.3rem] ik-gap-2 ik-mb-4">
+      <p className="tai:mb-2 tai:text-txt3">Seleccionar perfil</p>
+      <div className="tai:grid tai:grid-cols-[13rem_2.3rem_2.3rem_2.3rem] tai:gap-2 tai:mb-4">
         <Select
-          className="ik-w-[13rem]"
+          className="tai:w-[13rem]"
           options={
             profileOptions.length > 0
               ? profileOptions
@@ -79,17 +79,17 @@ const ControlPanel = () => {
         size="medium"
         title={t('profile.deleteProfile')}
       >
-        <div className="ik-mb-4">
+        <div className="tai:mb-4">
           <p>{t('profile.deleteProfileDescription')}</p>
         </div>
-        <div className="ik-flex ik-justify-end ik-gap-2">
+        <div className="tai:flex tai:justify-end tai:gap-2">
           <Button
-            className="ik-bg-errorColor ik-text-txt1"
+            className="tai:bg-errorColor tai:text-txt1"
             onClick={handleConfirmDeleteProfile}
           >
             {t('profile.deleteProfileConfirm')}
           </Button>
-          <Button className="ik-bg-txt3" onClick={handleCloseDeleteProfile}>
+          <Button className="tai:bg-txt3" onClick={handleCloseDeleteProfile}>
             {t('profile.deleteProfileCancel')}
           </Button>
         </div>

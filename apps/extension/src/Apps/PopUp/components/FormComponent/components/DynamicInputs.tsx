@@ -22,10 +22,10 @@ const Button = ({
   className = '',
 }: ButtonProps) => {
   const baseClasses =
-    'ik-px-3 ik-py-1 ik-rounded-md ik-text-sm ik-transition-colors';
+    'tai:px-3 tai:py-1 tai:rounded-md tai:text-sm tai:transition-colors';
   const variantClasses = {
-    primary: 'ik-bg-primary ik-text-white hover:ik-bg-primary/80',
-    danger: 'ik-text-red-500 hover:ik-text-red-700',
+    primary: 'tai:bg-primary tai:text-white tai:hover:bg-primary/80',
+    danger: 'tai:text-red-500 tai:hover:text-red-700',
   };
 
   return (
@@ -80,9 +80,9 @@ const DynamicInputs = ({
   };
 
   return (
-    <div className="ik-w-full">
-      <div className="ik-flex ik-justify-between ik-items-center ik-my-4">
-        <label className="ik-text-txt2 ik-block">
+    <div className="tai:w-full">
+      <div className="tai:flex tai:justify-between tai:items-center tai:my-4">
+        <label className="tai:text-txt2 tai:block">
           {subFormFields[0]?.label || 'Dynamic Fields'}
         </label>
         <Button onClick={addNewField} variant="primary">
@@ -93,10 +93,10 @@ const DynamicInputs = ({
       {fields.map((field, index) => (
         <div
           key={field.id}
-          className="ik-border ik-border-gray-200 ik-p-4 ik-rounded-md ik-mb-3"
+          className="tai:border tai:border-gray-200 tai:p-4 tai:rounded-md tai:mb-3"
         >
-          <div className="ik-flex ik-justify-between ik-items-center ik-mb-3">
-            <span className="ik-text-sm ik-text-gray-600">
+          <div className="tai:flex tai:justify-between tai:items-center tai:mb-3">
+            <span className="tai:text-sm tai:text-gray-600">
               {subFormFields[0]?.label} #{index + 1}
             </span>
             <Button onClick={() => removeField(index)} variant="danger">
@@ -104,7 +104,7 @@ const DynamicInputs = ({
             </Button>
           </div>
 
-          <div className="ik-space-y-3">
+          <div className="tai:space-y-3">
             {subFormFields.map((subFormField) => (
               <div key={subFormField.name}>
                 {subFormField.fields.map((fieldConfig) => {
@@ -160,7 +160,7 @@ const DynamicInputs = ({
       ))}
 
       {fields.length === 0 && (
-        <div className="ik-text-center ik-text-gray-500 ik-py-4 ik-border ik-border-dashed ik-border-gray-300 ik-rounded-md">
+        <div className="tai:text-center tai:text-gray-500 tai:py-4 tai:border tai:border-dashed tai:border-gray-300 tai:rounded-md">
           No hay elementos agregados. Haga clic en "Agregar" para comenzar.
         </div>
       )}

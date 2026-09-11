@@ -94,7 +94,7 @@ const FormComponent = ({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={`${className} ik-flex ik-flex-col ik-justify-center ik-gap-2`}
+      className={`${className} tai:flex tai:flex-col tai:justify-center tai:gap-2`}
     >
       {fieldProps.map((field) => (
         <InputFieldRender
@@ -106,12 +106,12 @@ const FormComponent = ({
           errorMessage={String(get(errors, `${field.name}.message`, ''))}
         />
       ))}
-      <div className="ik-flex ik-justify-center ik-items-center ik-gap-4 ik-mt-4">
-        <Button className="ik-bg-tertiary" type="submit" disabled={isLoading}>
+      <div className="tai:flex tai:justify-center tai:items-center tai:gap-4 tai:mt-4">
+        <Button className="tai:bg-tertiary" type="submit" disabled={isLoading}>
           {submitLabel}
         </Button>
         {onCancel && (
-          <Button className="ik-bg-errorColor" onClick={handleCancel}>
+          <Button className="tai:bg-errorColor" onClick={handleCancel}>
             {cancelLabel}
           </Button>
         )}

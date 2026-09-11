@@ -14,7 +14,7 @@ const App = () => {
 
   return (
     <button
-      className={`${styles.button} active:ik-scale-95`}
+      className={`${styles.button} tai:active:scale-95`}
       onClick={handleClick}
     >
       <img

@@ -19,13 +19,13 @@ const ButtonIcon = ({
   return (
     <button
       disabled={disabled}
-      className={`ik-w-boxHeight ik-h-boxHeight ik-border ik-border-transparent ik-border-solid
-            ik-flex ik-justify-center ik-items-center ik-text-txt2 ik-cursor-pointer ik-rounded-full ik-bg-secondary
-            hover:ik-border-tertiary ik-duration-200 disabled:ik-text-txt3 disabled:ik-cursor-not-allowed
+      className={`tai:w-boxHeight tai:h-boxHeight tai:border tai:border-transparent tai:border-solid
+            tai:flex tai:justify-center tai:items-center tai:text-txt2 tai:cursor-pointer tai:rounded-full tai:bg-secondary
+            tai:hover:border-tertiary tai:duration-200 tai:disabled:text-txt3 tai:disabled:cursor-not-allowed
             ${className}`}
       onClick={onClick}
     >
-      {icon && <Icons iconType={icon} className="ik-text-icon" />}
+      {icon && <Icons iconType={icon} className="tai:text-icon" />}
     </button>
   );
 };

@@ -33,7 +33,7 @@
 - Git line endings are normalized with `.gitattributes` and `.editorconfig`; keep text files on `LF`.
 - Popup routing uses `HashRouter`; keep extension routes hash-based.
 - The popup remembers the last route via `localStorage['current-path']` in `src/Apps/PopUp/containers/Menu/index.tsx`.
-- Tailwind classes must use the `ik-` prefix.
+- Tailwind classes must use the `tai:` prefix (Tailwind 4 variant-style via `@tailwindcss/postcss` + `@config` in `app.css` + `prefix: 'tai'` in `tailwind.config.js`). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`, `tai:active:scale-95`, `tai:last:border-none`. Never use unprefixed or dash-form `tai-`/`ik-` classes.
 - `src/Apps/PopUp/app.css` is shared: the popup imports it directly, and the content script injects the built CSS into a shadow root.
 - TS path aliases are nonstandard and worth reusing: `@popup:...`, `@injector:...`, `@all/*`.
 - API base config lives in `src/Apps/PopUp/api/baseApi.ts` and `constants.ts`; the only verified env var is `VITE_SERVICE_URL`, which falls back to `'/'`, and all API paths build from `/api/v1`.

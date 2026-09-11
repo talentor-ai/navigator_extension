@@ -1,6 +1,5 @@
 import { lazy, Suspense } from 'react';
 import { Navigate } from 'react-router-dom';
-import FloatingProfileBar from './components/FloatingProfileBar';
 import ProfilePageLoadingView from './components/ProfilePageLoadingView';
 import ProfilePageSelectorErrorView from './components/ProfilePageSelectorErrorView';
 import ProfilePageContentView from './components/ProfilePageContentView';
@@ -159,7 +158,6 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <FloatingProfileBar />
       <div className="mx-auto max-w-[1200px] px-4 md:px-6 py-6 pt-20 space-y-4">
         <ProfilePageContentView
           profiles={profiles}

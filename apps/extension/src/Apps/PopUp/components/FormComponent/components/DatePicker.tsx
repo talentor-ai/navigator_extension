@@ -21,22 +21,22 @@ const DatePicker = ({
   const [isFocused, setIsFocused] = useState(false);
 
   const borderColor = () => {
-    if (errorMessage) return 'ik-border-errorColor';
-    if (isFocused) return 'ik-border-tertiary';
-    return 'ik-border-transparent';
+    if (errorMessage) return 'tai:border-errorColor';
+    if (isFocused) return 'tai:border-tertiary';
+    return 'tai:border-transparent';
   };
 
   return (
-    <div className="ik-relative ik-w-full">
-      <label htmlFor={name} className="ik-text-txt2 ik-block ik-mb-1.5">
+    <div className="tai:relative tai:w-full">
+      <label htmlFor={name} className="tai:text-txt2 tai:block tai:mb-1.5">
         {label}
         {validationRules?.required && (
-          <span className="ik-text-errorColor"> *</span>
+          <span className="tai:text-errorColor"> *</span>
         )}
       </label>
       <div
-        className={`ik-border ${borderColor()} ik-px-4 ik-text-txt1 ik-flex ik-justify-between 
-         ik-items-center ik-h-boxHeight ik-bg-secondary ik-rounded-md`}
+        className={`tai:border ${borderColor()} tai:px-4 tai:text-txt1 tai:flex tai:justify-between 
+         tai:items-center tai:h-boxHeight tai:bg-secondary tai:rounded-md`}
       >
         <Controller
           name={name}
@@ -45,7 +45,7 @@ const DatePicker = ({
           render={({ field }) => (
             <AntDatePicker
               id={name}
-              className="ik-w-full ik-border-none ik-bg-transparent"
+              className="tai:w-full tai:border-none tai:bg-transparent"
               placeholder={placeholder}
               value={field.value ? dayjs(field.value) : null}
               onChange={(date) => {
@@ -67,7 +67,7 @@ const DatePicker = ({
         />
       </div>
       {errorMessage && (
-        <span className="ik-text-errorColor ik-text-small ik-absolute ik-top-[100%] ik-right-0">
+        <span className="tai:text-errorColor tai:text-small tai:absolute tai:top-[100%] tai:right-0">
           {errorMessage}
         </span>
       )}

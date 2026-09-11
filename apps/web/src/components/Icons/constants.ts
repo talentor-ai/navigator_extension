@@ -5,9 +5,11 @@ import {
   LuGripVertical,
   LuHouse,
   LuLogOut,
+  LuMenu,
   LuPlus,
   LuTrash2,
   LuUser,
+  LuX,
 } from 'react-icons/lu';
 
 export const ICON_COMPONENTS = {
@@ -20,4 +22,6 @@ export const ICON_COMPONENTS = {
   add: LuPlus,
   delete: LuTrash2,
   drag: LuGripVertical,
+  menu: LuMenu,
+  close: LuX,
 } as const;
