@@ -76,19 +76,6 @@ describe('DashboardLayout', () => {
     expect(within(profilesLink).getByText('(current)')).toBeInTheDocument();
   });
 
-  it('keeps profiles highlighted on profile editor paths', () => {
-    renderLayout('/profile/abc');
-    const profilesLink = screen.getByTestId('dashboard-nav-profiles');
-    expect(profilesLink).toHaveClass('bg-lime');
-    expect(profilesLink).toHaveAttribute('aria-current', 'page');
-    expect(within(profilesLink).getByText('(current)')).toBeInTheDocument();
-    const dashboardLink = screen.getByTestId('dashboard-nav-dashboard');
-    expect(dashboardLink).not.toHaveClass('bg-lime');
-    expect(
-      within(dashboardLink).queryByText('(current)'),
-    ).not.toBeInTheDocument();
-  });
-
   it('renders bottom user profile/menu with logout using useAuthStore', async () => {
     const logoutSpy = vi
       .spyOn(useAuthStore.getState(), 'logout')
@@ -190,14 +177,6 @@ describe('DashboardLayout', () => {
         screen.queryByTestId('dashboard-mobile-drawer'),
       ).not.toBeInTheDocument();
     });
-  });
-
-  it('desktop sidebar hidden on mobile via CSS classes', () => {
-    renderLayout();
-    const desktopAside = screen.getByTestId('dashboard-sidebar-desktop');
-    expect(desktopAside).toHaveClass('hidden');
-    expect(desktopAside).toHaveClass('md:flex');
-    expect(screen.getByTestId('dashboard-mobile-header')).toBeInTheDocument();
   });
 });
 

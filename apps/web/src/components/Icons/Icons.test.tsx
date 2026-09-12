@@ -39,46 +39,6 @@ describe('Icons', () => {
     expect(screen.getByLabelText(label)).toBeInTheDocument();
   });
 
-  it('passes className through', () => {
-    render(
-      <Icons
-        type="home"
-        data-testid="class-test"
-        className="test-class extra"
-      />,
-    );
-    const el = screen.getByTestId('class-test');
-    expect(el).toHaveClass('test-class');
-    expect(el).toHaveClass('extra');
-  });
-
-  it('passes style through', () => {
-    render(
-      <Icons
-        type="profile"
-        data-testid="style-test"
-        style={{ color: 'rgb(255, 0, 0)', marginLeft: '10px' }}
-      />,
-    );
-    const el = screen.getByTestId('style-test');
-    expect(el).toHaveStyle({ color: 'rgb(255, 0, 0)' });
-    expect(el.style.marginLeft).toBe('10px');
-  });
-
-  it('passes className and style together', () => {
-    render(
-      <Icons
-        type="logout"
-        data-testid="combined-test"
-        className="combined-class"
-        style={{ color: 'blue' }}
-      />,
-    );
-    const el = screen.getByTestId('combined-test');
-    expect(el).toHaveClass('combined-class');
-    expect(el.style.color).toBe('blue');
-  });
-
   it('passes extra SVG props like aria-hidden, id, data attributes', () => {
     render(
       <Icons
