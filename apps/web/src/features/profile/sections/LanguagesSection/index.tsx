@@ -39,6 +39,7 @@ const LanguagesSection = ({
       <CardHeader>
         <CollectionSectionHeader
           title="Languages"
+          icon="languages"
           onAdd={openAdd}
           pending={pending}
           readOnly={readOnly}

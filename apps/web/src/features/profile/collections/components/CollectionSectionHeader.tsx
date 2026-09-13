@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { Icons } from '@/components/Icons';
+import { Icons, type IconType } from '@/components/Icons';
 
 export type CollectionSectionHeaderProps = {
   title: string;
+  icon?: IconType;
   onAdd: () => void;
   readOnly?: boolean;
   pending?: boolean;
@@ -13,6 +14,7 @@ export type CollectionSectionHeaderProps = {
 
 export function CollectionSectionHeader({
   title,
+  icon,
   onAdd,
   readOnly = false,
   pending = false,
@@ -26,9 +28,19 @@ export function CollectionSectionHeader({
 
   return (
     <div className="flex items-center justify-between gap-4">
-      <HeadingTag className="text-section font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        {title}
-      </HeadingTag>
+      <span className="flex items-center gap-2.5">
+        {icon ? (
+          <Icons
+            type={icon}
+            aria-hidden="true"
+            strokeWidth={2.5}
+            className="h-5 w-5 shrink-0 text-lime"
+          />
+        ) : null}
+        <HeadingTag className="text-base font-semibold tracking-tight text-foreground">
+          {title}
+        </HeadingTag>
+      </span>
       {showAdd ? (
         <Button
           type="button"

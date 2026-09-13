@@ -45,6 +45,7 @@ const EducationSection = ({
       <CardHeader>
         <CollectionSectionHeader
           title="Education"
+          icon="education"
           onAdd={openAdd}
           pending={pending}
           readOnly={readOnly}

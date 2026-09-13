@@ -12,16 +12,25 @@ describe('Icons', () => {
     expect(types.sort()).toEqual(
       [
         'add',
+        'certifications',
         'check',
         'chevronDown',
         'chevronUp',
         'close',
+        'contact',
         'delete',
         'drag',
+        'education',
+        'experience',
+        'history',
         'home',
+        'languages',
         'logout',
         'menu',
         'profile',
+        'projects',
+        'skills',
+        'summary',
       ].sort(),
     );
   });

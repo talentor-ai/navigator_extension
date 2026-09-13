@@ -1,6 +1,7 @@
 import type { components } from '@talentor/contracts';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { EditableField } from '@/components/EditableField';
+import { Icons } from '@/components/Icons';
 
 type CandidateProfileV1 = components['schemas']['CandidateProfileV1'];
 
@@ -20,9 +21,17 @@ const SummarySection = ({
   return (
     <Card className="bg-card border-border">
       <CardHeader>
-        <h2 className="text-section font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Summary
-        </h2>
+        <span className="flex items-center gap-2.5">
+          <Icons
+            type="summary"
+            aria-hidden="true"
+            strokeWidth={2.5}
+            className="h-5 w-5 shrink-0 text-lime"
+          />
+          <h2 className="text-base font-semibold tracking-tight text-foreground">
+            Summary
+          </h2>
+        </span>
       </CardHeader>
       <CardContent>
         <EditableField

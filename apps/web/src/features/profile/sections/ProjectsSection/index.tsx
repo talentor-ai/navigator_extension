@@ -47,6 +47,7 @@ const ProjectsSection = ({
       <CardHeader>
         <CollectionSectionHeader
           title="Projects"
+          icon="projects"
           onAdd={openAdd}
           pending={pending}
           readOnly={readOnly}

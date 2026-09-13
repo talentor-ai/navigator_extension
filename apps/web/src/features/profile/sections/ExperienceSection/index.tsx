@@ -53,6 +53,7 @@ const ExperienceSection = ({
       <CardHeader>
         <CollectionSectionHeader
           title="Experience"
+          icon="experience"
           onAdd={openAdd}
           pending={pending}
           readOnly={readOnly}

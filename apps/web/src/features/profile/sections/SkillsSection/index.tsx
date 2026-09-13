@@ -41,6 +41,7 @@ const SkillsSection = ({
       <CardHeader>
         <CollectionSectionHeader
           title="Skills"
+          icon="skills"
           onAdd={openAdd}
           pending={pending}
           readOnly={readOnly}

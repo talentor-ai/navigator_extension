@@ -46,8 +46,14 @@ const VersionSwitcher = ({
           aria-label={isOpen ? 'Collapse history' : 'Expand history'}
           className="flex w-full items-center justify-between gap-3 rounded-2xl px-6 py-4 text-left transition-colors hover:bg-white/4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="flex flex-wrap items-center gap-2">
-            <h2 className="text-section font-semibold uppercase tracking-widest text-muted-foreground">
+          <span className="flex flex-wrap items-center gap-2.5">
+            <Icons
+              type="history"
+              aria-hidden="true"
+              strokeWidth={2.5}
+              className="h-5 w-5 shrink-0 text-lime"
+            />
+            <h2 className="text-base font-semibold tracking-tight text-foreground">
               History
             </h2>
             <Badge variant="secondary" className="text-[10px] px-2 py-0.5">

@@ -41,6 +41,7 @@ const CertificationsSection = ({
       <CardHeader>
         <CollectionSectionHeader
           title="Certifications"
+          icon="certifications"
           onAdd={openAdd}
           pending={pending}
           readOnly={readOnly}
