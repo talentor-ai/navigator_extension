@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { components } from '@talentor/contracts';
 import { renderHook, act } from '@testing-library/react';
 
 import ProjectsSection from './index';
 import { useProjectEditor } from './hooks/useProjectEditor';
+import { validateOptionalYearMonth } from '@/features/profile/validation';
 
 type CandidateProfileV1 = components['schemas']['CandidateProfileV1'];
 
@@ -452,5 +453,185 @@ describe('ProjectsSection – Wave 3A', () => {
     onProfileChange.mockClear();
     act(() => result.current.handleReorder(1, 1));
     expect(onProfileChange).not.toHaveBeenCalled();
+  });
+
+  it('hook addAchievement immutable and appends to null achievements', () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const { result } = renderHook(() =>
+      useProjectEditor(profile, onProfileChange),
+    );
+    act(() =>
+      result.current.addAchievement(
+        '60000000-0000-4000-a000-000000000006',
+        'new ach',
+      ),
+    );
+    expect(onProfileChange).toHaveBeenCalledTimes(1);
+    const next = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.projects[0].achievements).toEqual(['proj ach', 'new ach']);
+    expect(profile.projects[0].achievements).toEqual(['proj ach']);
+    expect(next).not.toBe(profile);
+    onProfileChange.mockClear();
+    act(() =>
+      result.current.addAchievement(
+        '60000000-0000-4000-a000-000000000007',
+        'first ach',
+      ),
+    );
+    expect(onProfileChange).toHaveBeenCalledTimes(1);
+    const next2 = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next2.projects[1].achievements).toEqual(['first ach']);
+    expect(profile.projects[1].achievements).toBeNull();
+  });
+
+  it('hook removeAchievement immutable', () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const { result } = renderHook(() =>
+      useProjectEditor(profile, onProfileChange),
+    );
+    act(() =>
+      result.current.removeAchievement(
+        '60000000-0000-4000-a000-000000000006',
+        0,
+      ),
+    );
+    expect(onProfileChange).toHaveBeenCalledTimes(1);
+    const next = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.projects[0].achievements).toEqual([]);
+    expect(profile.projects[0].achievements).toEqual(['proj ach']);
+    expect(next).not.toBe(profile);
+  });
+
+  it('hook updateAchievement preserves pattern', () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const { result } = renderHook(() =>
+      useProjectEditor(profile, onProfileChange),
+    );
+    act(() =>
+      result.current.updateAchievement(
+        '60000000-0000-4000-a000-000000000006',
+        0,
+        'updated ach',
+      ),
+    );
+    expect(onProfileChange).toHaveBeenCalledTimes(1);
+    const next = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.projects[0].achievements).toEqual(['updated ach']);
+  });
+
+  it('UI adds achievement via EditableStringList', async () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(
+      <ProjectsSection profile={profile} onProfileChange={onProfileChange} />,
+    );
+    const addButtons = screen.getAllByRole('button', {
+      name: 'Add achievement',
+    });
+    expect(addButtons).toHaveLength(2);
+    await user.click(addButtons[0]);
+    expect(
+      screen.getByRole('dialog', { name: 'Add achievement' }),
+    ).toBeInTheDocument();
+    const input = screen.getByLabelText('Achievement');
+    await user.type(input, 'UI new ach');
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    await waitFor(() => expect(onProfileChange).toHaveBeenCalledTimes(1));
+    const next = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.projects[0].achievements).toEqual(['proj ach', 'UI new ach']);
+    expect(profile.projects[0].achievements).toEqual(['proj ach']);
+  });
+
+  it('UI removes achievement via EditableStringList', async () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(
+      <ProjectsSection profile={profile} onProfileChange={onProfileChange} />,
+    );
+    const removeBtns = screen.getAllByLabelText('Remove achievement');
+    expect(removeBtns).toHaveLength(1);
+    await user.click(removeBtns[0]);
+    await waitFor(() => expect(onProfileChange).toHaveBeenCalledTimes(1));
+    const next = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.projects[0].achievements).toEqual([]);
+  });
+
+  it('url validation rejects invalid url and allows blank clear', async () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <ProjectsSection profile={profile} onProfileChange={onProfileChange} />,
+    );
+    await user.dblClick(screen.getAllByLabelText('Edit Project URL')[0]);
+    const input = screen.getByLabelText('Project URL');
+    await user.clear(input);
+    await user.type(input, 'not-a-url');
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Enter a valid http(s) URL'),
+    ).toBeInTheDocument();
+    expect(onProfileChange).not.toHaveBeenCalled();
+    // clearing blank is allowed (optional)
+    await user.clear(input);
+    fireEvent.submit(input.closest('form')!);
+    await waitFor(() => expect(onProfileChange).toHaveBeenCalledTimes(1));
+    expect(onProfileChange.mock.calls[0][0].projects[0].url).toBeNull();
+  });
+
+  it('repository url validation rejects ftp and allows https', async () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <ProjectsSection profile={profile} onProfileChange={onProfileChange} />,
+    );
+    await user.dblClick(screen.getAllByLabelText('Edit Repository URL')[0]);
+    const input = screen.getByLabelText('Repository URL');
+    await user.clear(input);
+    await user.type(input, 'ftp://example.com/repo');
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Enter a valid http(s) URL'),
+    ).toBeInTheDocument();
+    expect(onProfileChange).not.toHaveBeenCalled();
+    await user.clear(input);
+    await user.type(input, 'https://github.com/new/repo');
+    fireEvent.submit(input.closest('form')!);
+    await waitFor(() => expect(onProfileChange).toHaveBeenCalledTimes(1));
+    expect(onProfileChange.mock.calls[0][0].projects[0].repository).toBe(
+      'https://github.com/new/repo',
+    );
+  });
+
+  it('description validation rejects blank', async () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <ProjectsSection profile={profile} onProfileChange={onProfileChange} />,
+    );
+    await user.dblClick(
+      screen.getAllByLabelText('Edit Project description')[0],
+    );
+    const input = screen.getByLabelText('Project description');
+    await user.clear(input);
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter', shiftKey: false });
+    expect(
+      await screen.findByText('Description is required'),
+    ).toBeInTheDocument();
+    expect(onProfileChange).not.toHaveBeenCalled();
+  });
+
+  it('startDate validation rejects invalid month via direct validator', () => {
+    // jsdom sanitizes <input type="month"> invalid values to "" so UI cannot submit "2020-13"
+    expect(validateOptionalYearMonth('2020-13')).toBe('Use YYYY-MM');
+    expect(validateOptionalYearMonth('')).toBeNull();
+    expect(validateOptionalYearMonth('2021-01')).toBeNull();
   });
 });

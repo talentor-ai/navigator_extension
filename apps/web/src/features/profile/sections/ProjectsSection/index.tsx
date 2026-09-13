@@ -26,6 +26,8 @@ const ProjectsSection = ({
     updateUrl,
     updateRepository,
     updateAchievement,
+    addAchievement,
+    removeAchievement,
     isAddOpen,
     openAdd,
     closeAdd,
@@ -89,6 +91,12 @@ const ProjectsSection = ({
                   }
                   onAchievementSubmit={(idx, value) =>
                     updateAchievement(project.id, idx, value)
+                  }
+                  onAchievementAdd={(value) =>
+                    addAchievement(project.id, value)
+                  }
+                  onAchievementRemove={(idx) =>
+                    removeAchievement(project.id, idx)
                   }
                 />
               </SortableCollectionItem>

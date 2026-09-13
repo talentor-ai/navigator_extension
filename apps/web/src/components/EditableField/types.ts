@@ -21,6 +21,7 @@ export type EditableFieldProps = VariantProps<typeof editableTextVariants> & {
   disabled?: boolean;
   pending?: boolean;
   error?: string | null;
+  validate?: (value: string) => string | null;
   onSubmit?: (value: string) => void | Promise<void>;
   editor?: 'input' | 'textarea' | 'select';
   inputType?: EditableInputType;

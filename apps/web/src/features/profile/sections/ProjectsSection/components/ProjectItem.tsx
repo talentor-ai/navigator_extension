@@ -1,4 +1,10 @@
 import { EditableField } from '@/components/EditableField';
+import { EditableStringList } from '@/features/profile/components/EditableStringList';
+import {
+  validateNonBlank,
+  validateOptionalHttpUrl,
+  validateOptionalYearMonth,
+} from '@/features/profile/validation';
 import type { ProjectItemProps } from '../types';
 
 export const ProjectItem = ({
@@ -13,6 +19,8 @@ export const ProjectItem = ({
   onUrlSubmit,
   onRepositorySubmit,
   onAchievementSubmit,
+  onAchievementAdd,
+  onAchievementRemove,
 }: ProjectItemProps) => {
   return (
     <div className="flex flex-col gap-3 pt-4 first:pt-0">
@@ -46,6 +54,7 @@ export const ProjectItem = ({
         rows={3}
         pending={pending}
         disabled={readOnly}
+        validate={(value) => validateNonBlank(value, 'Description')}
         onSubmit={onDescriptionSubmit}
       />
       <div className="flex flex-wrap gap-2">
@@ -58,6 +67,7 @@ export const ProjectItem = ({
           inputType="month"
           pending={pending}
           disabled={readOnly}
+          validate={validateOptionalYearMonth}
           onSubmit={onStartDateSubmit}
         />
         <EditableField
@@ -69,6 +79,7 @@ export const ProjectItem = ({
           inputType="month"
           pending={pending}
           disabled={readOnly}
+          validate={validateOptionalYearMonth}
           onSubmit={onEndDateSubmit}
         />
       </div>
@@ -81,6 +92,7 @@ export const ProjectItem = ({
         inputType="url"
         pending={pending}
         disabled={readOnly}
+        validate={validateOptionalHttpUrl}
         onSubmit={onUrlSubmit}
       />
       <EditableField
@@ -92,26 +104,19 @@ export const ProjectItem = ({
         inputType="url"
         pending={pending}
         disabled={readOnly}
+        validate={validateOptionalHttpUrl}
         onSubmit={onRepositorySubmit}
       />
-      {item.achievements && item.achievements.length > 0 ? (
-        <div className="flex flex-col gap-2">
-          {item.achievements.map((ach, idx) => (
-            <EditableField
-              key={`${item.id}-ach-${idx}`}
-              value={ach}
-              label="Achievement"
-              displayAs="p"
-              purpose="body"
-              editor="textarea"
-              rows={2}
-              pending={pending}
-              disabled={readOnly}
-              onSubmit={(value) => onAchievementSubmit(idx, value)}
-            />
-          ))}
-        </div>
-      ) : null}
+      <EditableStringList
+        itemLabel="Achievement"
+        addLabel="Add achievement"
+        items={item.achievements ?? []}
+        pending={pending}
+        readOnly={readOnly}
+        onChange={onAchievementSubmit}
+        onAdd={onAchievementAdd}
+        onRemove={onAchievementRemove}
+      />
     </div>
   );
 };

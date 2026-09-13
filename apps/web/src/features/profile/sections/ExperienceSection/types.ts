@@ -18,6 +18,9 @@ export type ExperienceItemProps = {
   onPositionSubmit: (value: string) => void | Promise<void>;
   onEmploymentTypeSubmit: (value: string) => void | Promise<void>;
   onLocationTypeSubmit: (value: string) => void | Promise<void>;
+  onCompanyLocationCitySubmit: (value: string) => void | Promise<void>;
+  onCompanyLocationRegionSubmit: (value: string) => void | Promise<void>;
+  onCompanyLocationCountryCodeSubmit: (value: string) => void | Promise<void>;
   onStartDateSubmit: (value: string) => void | Promise<void>;
   onEndDateSubmit: (value: string) => void | Promise<void>;
   onSummarySubmit: (value: string) => void | Promise<void>;
@@ -25,5 +28,9 @@ export type ExperienceItemProps = {
     index: number,
     value: string,
   ) => void | Promise<void>;
+  onResponsibilityAdd: (value: string) => void | Promise<void>;
+  onResponsibilityRemove: (index: number) => void | Promise<void>;
   onAchievementSubmit: (index: number, value: string) => void | Promise<void>;
+  onAchievementAdd: (value: string) => void | Promise<void>;
+  onAchievementRemove: (index: number) => void | Promise<void>;
 };

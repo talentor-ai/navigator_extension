@@ -2,136 +2,118 @@ import { useState } from 'react';
 import type { components } from '@talentor/contracts';
 import { removeExperience, reorder } from '@/features/profile/collections';
 import type { CandidateProfileV1 } from '../types';
-
-type ExperienceDraft = {
-  company: string;
-  position: string;
-  startDate: string;
-};
-
+type ExperienceDraft = { company: string; position: string; startDate: string };
 type ExperienceAddErrors = Partial<Record<keyof ExperienceDraft, string>>;
-
 const INITIAL_DRAFT: ExperienceDraft = {
   company: '',
   position: '',
   startDate: '',
 };
-
-function isValidYearMonth(value: string): boolean {
-  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(value)) return false;
-  return true;
+function isValidYearMonth(v: string) {
+  return /^\d{4}-(0[1-9]|1[0-2])$/.test(v);
 }
-
 export function useExperienceEditor(
   profile: CandidateProfileV1,
   onProfileChange: (next: CandidateProfileV1) => void | Promise<void>,
 ) {
-  const updateCompany = (id: string, value: string) => {
+  const patch = (
+    id: string,
+    patchFn: (
+      e: components['schemas']['Experience'],
+    ) => components['schemas']['Experience'],
+  ) => {
     const nextExperience = profile.experience.map((e) =>
-      e.id === id ? { ...e, company: value } : e,
+      e.id === id ? patchFn(e) : e,
     );
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
+    return onProfileChange({ ...profile, experience: nextExperience });
   };
-
-  const updatePosition = (id: string, value: string) => {
-    const nextExperience = profile.experience.map((e) =>
-      e.id === id ? { ...e, position: value } : e,
-    );
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
-  const updateEmploymentType = (id: string, value: string) => {
-    const nextType =
-      value === '' ? null : (value as components['schemas']['EmploymentType']);
-    const nextExperience = profile.experience.map((e) =>
-      e.id === id ? { ...e, employmentType: nextType } : e,
-    );
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
-  const updateLocationType = (id: string, value: string) => {
-    const nextType =
-      value === '' ? null : (value as components['schemas']['LocationType']);
-    const nextExperience = profile.experience.map((e) =>
-      e.id === id ? { ...e, locationType: nextType } : e,
-    );
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
-  const updateStartDate = (id: string, value: string) => {
-    const nextExperience = profile.experience.map((e) =>
-      e.id === id ? { ...e, startDate: value } : e,
-    );
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
-  const updateEndDate = (id: string, value: string) => {
-    const nextEnd = value.trim() === '' ? null : value;
-    const nextExperience = profile.experience.map((e) =>
-      e.id === id ? { ...e, endDate: nextEnd } : e,
-    );
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
-  const updateSummary = (id: string, value: string) => {
-    const nextSummary = value.trim() === '' ? null : value;
-    const nextExperience = profile.experience.map((e) =>
-      e.id === id ? { ...e, summary: nextSummary } : e,
-    );
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
-  const updateResponsibility = (id: string, index: number, value: string) => {
-    const nextExperience = profile.experience.map((e) => {
-      if (e.id !== id) return e;
-      const prev = e.responsibilities ?? [];
-      const nextResp = prev.map((r, i) => (i === index ? value : r));
-      return { ...e, responsibilities: nextResp };
-    });
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
-  const updateAchievement = (id: string, index: number, value: string) => {
-    const nextExperience = profile.experience.map((e) => {
-      if (e.id !== id) return e;
-      const nextAch = e.achievements.map((a, i) => (i === index ? value : a));
-      return { ...e, achievements: nextAch };
-    });
-    const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
-    return onProfileChange(next);
-  };
-
+  const updateCompany = (id: string, v: string) =>
+    patch(id, (e) => ({ ...e, company: v }));
+  const updatePosition = (id: string, v: string) =>
+    patch(id, (e) => ({ ...e, position: v }));
+  const updateEmploymentType = (id: string, v: string) =>
+    patch(id, (e) => ({
+      ...e,
+      employmentType:
+        v === '' ? null : (v as components['schemas']['EmploymentType']),
+    }));
+  const updateLocationType = (id: string, v: string) =>
+    patch(id, (e) => ({
+      ...e,
+      locationType:
+        v === '' ? null : (v as components['schemas']['LocationType']),
+    }));
+  const updateCompanyLocationField = (
+    id: string,
+    field: 'city' | 'region' | 'countryCode',
+    v: string,
+  ) =>
+    patch(id, (e) => ({
+      ...e,
+      companyLocation: {
+        ...(e.companyLocation ?? {}),
+        [field]: v.trim() === '' ? null : v,
+      } as components['schemas']['Location'],
+    }));
+  const updateCompanyLocationCity = (id: string, v: string) =>
+    updateCompanyLocationField(id, 'city', v);
+  const updateCompanyLocationRegion = (id: string, v: string) =>
+    updateCompanyLocationField(id, 'region', v);
+  const updateCompanyLocationCountryCode = (id: string, v: string) =>
+    updateCompanyLocationField(id, 'countryCode', v);
+  const updateStartDate = (id: string, v: string) =>
+    patch(id, (e) => ({ ...e, startDate: v }));
+  const updateEndDate = (id: string, v: string) =>
+    patch(id, (e) => ({ ...e, endDate: v.trim() === '' ? null : v }));
+  const updateSummary = (id: string, v: string) =>
+    patch(id, (e) => ({ ...e, summary: v.trim() === '' ? null : v }));
+  const updateResponsibility = (id: string, idx: number, v: string) =>
+    patch(id, (e) => ({
+      ...e,
+      responsibilities: (e.responsibilities ?? []).map((r, i) =>
+        i === idx ? v : r,
+      ),
+    }));
+  const addResponsibility = (id: string, v: string) =>
+    patch(id, (e) => ({
+      ...e,
+      responsibilities: [...(e.responsibilities ?? []), v],
+    }));
+  const removeResponsibility = (id: string, idx: number) =>
+    patch(id, (e) => ({
+      ...e,
+      responsibilities: (e.responsibilities ?? []).filter((_, i) => i !== idx),
+    }));
+  const updateAchievement = (id: string, idx: number, v: string) =>
+    patch(id, (e) => ({
+      ...e,
+      achievements: e.achievements.map((a, i) => (i === idx ? v : a)),
+    }));
+  const addAchievement = (id: string, v: string) =>
+    patch(id, (e) => ({ ...e, achievements: [...e.achievements, v] }));
+  const removeAchievement = (id: string, idx: number) =>
+    patch(id, (e) => ({
+      ...e,
+      achievements: e.achievements.filter((_, i) => i !== idx),
+    }));
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [draft, setDraft] = useState<ExperienceDraft>({ ...INITIAL_DRAFT });
   const [addErrors, setAddErrors] = useState<ExperienceAddErrors>({});
   const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
-
   const openAdd = () => {
     setDraft({ ...INITIAL_DRAFT });
     setAddErrors({});
     setIsAddOpen(true);
   };
-
   const closeAdd = () => {
     setIsAddOpen(false);
     setAddErrors({});
   };
-
   const handleDraftChange = (field: keyof ExperienceDraft, value: string) => {
     setDraft((prev) => ({ ...prev, [field]: value }));
-    if (addErrors[field]) {
+    if (addErrors[field])
       setAddErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
   };
-
   const handleAddConfirm = () => {
     const company = draft.company.trim();
     const position = draft.position.trim();
@@ -148,6 +130,7 @@ export function useExperienceEditor(
     const newExperience = {
       id: crypto.randomUUID(),
       company,
+      companyLocation: null,
       position,
       startDate,
       achievements: [] as string[],
@@ -165,19 +148,15 @@ export function useExperienceEditor(
           setDraft({ ...INITIAL_DRAFT });
           setAddErrors({});
         })
-        .catch(() => {
-          // keep dialog open, error surfaced via parent pending/saveError
-        });
+        .catch(() => {});
       return;
     }
     setIsAddOpen(false);
     setDraft({ ...INITIAL_DRAFT });
     setAddErrors({});
   };
-
   const requestRemove = (id: string) => setPendingRemoveId(id);
   const cancelRemove = () => setPendingRemoveId(null);
-
   const confirmRemove = () => {
     if (!pendingRemoveId) return;
     const next = removeExperience(profile, pendingRemoveId);
@@ -189,37 +168,38 @@ export function useExperienceEditor(
     if (result && typeof (result as Promise<void>).then === 'function') {
       void (result as Promise<void>)
         .then(() => setPendingRemoveId(null))
-        .catch(() => {
-          // keep dialog open on failure
-        });
+        .catch(() => {});
       return;
     }
     setPendingRemoveId(null);
   };
-
   const handleReorder = (oldIndex: number, newIndex: number) => {
     const nextExperience = reorder(profile.experience, oldIndex, newIndex);
     if (nextExperience === profile.experience) return;
     const next: CandidateProfileV1 = { ...profile, experience: nextExperience };
     const result = onProfileChange(next);
     if (result && typeof (result as Promise<void>).then === 'function') {
-      void (result as Promise<void>).catch(() => {
-        // attach rejection handling without swallowing parent query error state
-      });
+      void (result as Promise<void>).catch(() => {});
     }
     return result as unknown as void;
   };
-
   return {
     updateCompany,
     updatePosition,
     updateEmploymentType,
     updateLocationType,
+    updateCompanyLocationCity,
+    updateCompanyLocationRegion,
+    updateCompanyLocationCountryCode,
     updateStartDate,
     updateEndDate,
     updateSummary,
     updateResponsibility,
+    addResponsibility,
+    removeResponsibility,
     updateAchievement,
+    addAchievement,
+    removeAchievement,
     isAddOpen,
     openAdd,
     closeAdd,

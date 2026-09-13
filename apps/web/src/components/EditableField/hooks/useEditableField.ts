@@ -13,6 +13,7 @@ type UseEditableFieldOptions = Pick<
   | 'pending'
   | 'disabled'
   | 'onSubmit'
+  | 'validate'
   | 'purpose'
   | 'weight'
   | 'tone'
@@ -26,12 +27,14 @@ export function useEditableField({
   pending = false,
   disabled = false,
   onSubmit,
+  validate,
   purpose,
   weight,
   tone,
   align,
 }: UseEditableFieldOptions) {
   const [isEditing, setIsEditing] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const displayRef = useRef<HTMLElement>(null);
   const submittingRef = useRef(false);
   const styles = editableTextVariants({ purpose, weight, tone, align });
@@ -40,6 +43,7 @@ export function useEditableField({
 
   const beginEditing = () => {
     if (isBlocked) return;
+    setValidationError(null);
     setIsEditing(true);
   };
 
@@ -75,18 +79,31 @@ export function useEditableField({
     const nextValue = String(
       new FormData(event.currentTarget).get('value') ?? '',
     );
+    const error = validate?.(nextValue) ?? null;
+    if (error) {
+      setValidationError(error);
+      return;
+    }
+    setValidationError(null);
     setIsEditing(false);
     void submitValue(nextValue);
   };
 
   const handleSelectChange = (nextValue: string) => {
     if (pending || submittingRef.current) return;
+    const error = validate?.(nextValue) ?? null;
+    if (error) {
+      setValidationError(error);
+      return;
+    }
+    setValidationError(null);
     setIsEditing(false);
     void submitValue(nextValue);
   };
 
   const handleBlurCancel = () => {
     if (pending) return;
+    setValidationError(null);
     setIsEditing(false);
   };
 
@@ -94,6 +111,7 @@ export function useEditableField({
     if (event.key === 'Escape') {
       event.preventDefault();
       if (pending) return;
+      setValidationError(null);
       setIsEditing(false);
     }
   };
@@ -102,12 +120,19 @@ export function useEditableField({
     if (event.key === 'Escape') {
       event.preventDefault();
       if (pending) return;
+      setValidationError(null);
       setIsEditing(false);
     }
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       if (pending || submittingRef.current) return;
       const nextValue = event.currentTarget.value;
+      const error = validate?.(nextValue) ?? null;
+      if (error) {
+        setValidationError(error);
+        return;
+      }
+      setValidationError(null);
       setIsEditing(false);
       void submitValue(nextValue);
     }
@@ -131,6 +156,7 @@ export function useEditableField({
     isBlocked,
     displayValue,
     isEmptyDisplay,
+    validationError,
     beginEditing,
     handleDisplayKeyDown,
     handleSubmit,

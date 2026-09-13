@@ -22,11 +22,18 @@ const ExperienceSection = ({
     updatePosition,
     updateEmploymentType,
     updateLocationType,
+    updateCompanyLocationCity,
+    updateCompanyLocationRegion,
+    updateCompanyLocationCountryCode,
     updateStartDate,
     updateEndDate,
     updateSummary,
     updateResponsibility,
+    addResponsibility,
+    removeResponsibility,
     updateAchievement,
+    addAchievement,
+    removeAchievement,
     isAddOpen,
     openAdd,
     closeAdd,
@@ -83,14 +90,33 @@ const ExperienceSection = ({
                   onLocationTypeSubmit={(value) =>
                     updateLocationType(item.id, value)
                   }
+                  onCompanyLocationCitySubmit={(value) =>
+                    updateCompanyLocationCity(item.id, value)
+                  }
+                  onCompanyLocationRegionSubmit={(value) =>
+                    updateCompanyLocationRegion(item.id, value)
+                  }
+                  onCompanyLocationCountryCodeSubmit={(value) =>
+                    updateCompanyLocationCountryCode(item.id, value)
+                  }
                   onStartDateSubmit={(value) => updateStartDate(item.id, value)}
                   onEndDateSubmit={(value) => updateEndDate(item.id, value)}
                   onSummarySubmit={(value) => updateSummary(item.id, value)}
                   onResponsibilitySubmit={(index, value) =>
                     updateResponsibility(item.id, index, value)
                   }
+                  onResponsibilityAdd={(value) =>
+                    addResponsibility(item.id, value)
+                  }
+                  onResponsibilityRemove={(index) =>
+                    removeResponsibility(item.id, index)
+                  }
                   onAchievementSubmit={(index, value) =>
                     updateAchievement(item.id, index, value)
+                  }
+                  onAchievementAdd={(value) => addAchievement(item.id, value)}
+                  onAchievementRemove={(index) =>
+                    removeAchievement(item.id, index)
                   }
                 />
               </SortableCollectionItem>

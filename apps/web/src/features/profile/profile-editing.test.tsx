@@ -605,4 +605,325 @@ describe('profile editing - immutable saves', () => {
       screen.getByRole('heading', { name: 'Contact' }),
     ).toBeInTheDocument();
   });
+
+  it('ProjectsSection achievements add/remove and URL validation', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ProjectsSection profile={profile} onProfileChange={onChange} />);
+    // URL invalid should be rejected with validation message
+    await user.dblClick(screen.getAllByLabelText('Edit Project URL')[0]);
+    const urlInput = screen.getByLabelText('Project URL');
+    await user.clear(urlInput);
+    await user.type(urlInput, 'ftp://bad.example');
+    fireEvent.submit(urlInput.closest('form')!);
+    expect(
+      await screen.findByText('Enter a valid http(s) URL'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    // valid https URL should submit
+    await user.clear(urlInput);
+    await user.type(urlInput, 'https://valid.example/projects/1');
+    fireEvent.submit(urlInput.closest('form')!);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const nextUrl = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(nextUrl.projects[0].url).toBe('https://valid.example/projects/1');
+    onChange.mockClear();
+    // description blank should be rejected
+    await user.dblClick(
+      screen.getAllByLabelText('Edit Project description')[0],
+    );
+    const descInput = screen.getByLabelText('Project description');
+    await user.clear(descInput);
+    fireEvent.keyDown(descInput, {
+      key: 'Enter',
+      code: 'Enter',
+      shiftKey: false,
+    });
+    expect(
+      await screen.findByText('Description is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    // add achievement via UI
+    const addBtns = screen.getAllByRole('button', { name: 'Add achievement' });
+    await user.click(addBtns[0]);
+    expect(
+      screen.getByRole('dialog', { name: 'Add achievement' }),
+    ).toBeInTheDocument();
+    const achInput = screen.getByLabelText('Achievement');
+    await user.type(achInput, 'new project ach');
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const nextAch = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(nextAch.projects[0].achievements).toContain('new project ach');
+    onChange.mockClear();
+    // remove achievement via UI
+    const removeBtn = screen.getAllByLabelText('Remove achievement')[0];
+    await user.click(removeBtn);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const nextRemove = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(nextRemove.projects[0].achievements).toEqual([]);
+  });
+
+  it('ContactDetails add link trims, validates URL and nulls blank label with generated id', async () => {
+    const empty = makeProfile({
+      personalInfo: {
+        fullName: 'Ada',
+        email: 'a@a.com',
+        phone: null,
+        links: [],
+        location: null as unknown as components['schemas']['Location'],
+      } as unknown as components['schemas']['PersonalInfo'],
+    });
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <ContactDetails profile={empty} onProfileChange={onChange} />,
+    );
+    expect(screen.getByText('No links yet')).toBeInTheDocument();
+    const addBtn = screen.getByRole('button', { name: /Add link/i });
+    await user.click(addBtn);
+    const dialog = await screen.findByRole('dialog', { name: /Add link/i });
+    expect(dialog).toBeInTheDocument();
+    const urlInput = screen.getByLabelText('URL');
+    await user.type(urlInput, 'ftp://bad.example');
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    expect(
+      await screen.findByText('Enter a valid http(s) URL'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.clear(urlInput);
+    await user.type(urlInput, '  https://example.com/new  ');
+    const labelInput = screen.getByLabelText('Label');
+    await user.clear(labelInput);
+    await user.type(labelInput, '   ');
+    const githubOption = await screen.findByText('GitHub');
+    await user.click(githubOption);
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.personalInfo.links).toHaveLength(1);
+    expect(next.personalInfo.links[0].url).toBe('https://example.com/new');
+    expect(next.personalInfo.links[0].type).toBe('github');
+    expect(next.personalInfo.links[0].label).toBeNull();
+    expect(next.personalInfo.links[0]).not.toHaveProperty('id');
+    expect(empty.personalInfo.links).toHaveLength(0);
+    unmount();
+  });
+
+  it('ContactDetails remove link calls onProfileChange without removed link', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <ContactDetails profile={profile} onProfileChange={onChange} />,
+    );
+    const removeBtn = screen.getByLabelText(
+      'Remove github link https://github.com/ada',
+    );
+    await user.click(removeBtn);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.personalInfo.links).toHaveLength(1);
+    expect(next.personalInfo.links[0].url).toBe('https://ada.dev');
+    expect(profile.personalInfo.links).toHaveLength(2);
+    unmount();
+  });
+
+  it('ContactDetails label empty and whitespace becomes null on submit', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <ContactDetails profile={profile} onProfileChange={onChange} />,
+    );
+    const labelDisplay = screen.getAllByLabelText('Edit Label')[0];
+    await user.dblClick(labelDisplay);
+    const labelInput = screen.getByLabelText('Label');
+    await user.clear(labelInput);
+    await user.type(labelInput, '   ');
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.personalInfo.links[0].label).toBeNull();
+    expect(profile.personalInfo.links[0].label).toBe('GitHub');
+    onChange.mockClear();
+    unmount();
+    const profile2 = makeProfile();
+    const onChange2 = vi.fn();
+    const user2 = userEvent.setup();
+    const { unmount: unmount2 } = render(
+      <ContactDetails profile={profile2} onProfileChange={onChange2} />,
+    );
+    const labelDisplay2 = screen.getAllByLabelText('Edit Label')[0];
+    await user2.dblClick(labelDisplay2);
+    const labelInput2 = screen.getByLabelText('Label');
+    await user2.clear(labelInput2);
+    await user2.type(labelInput2, '  My Label  ');
+    await user2.keyboard('{Enter}');
+    await waitFor(() => expect(onChange2).toHaveBeenCalledTimes(1));
+    expect(onChange2.mock.calls[0][0].personalInfo.links[0].label).toBe(
+      'My Label',
+    );
+    unmount2();
+  });
+
+  it('ContactDetails empty state shows No links yet and Add link affordance', async () => {
+    const empty = makeProfile({
+      personalInfo: {
+        fullName: 'Ada',
+        email: 'a@a.com',
+        links: [],
+        location: null as unknown as components['schemas']['Location'],
+      } as unknown as components['schemas']['PersonalInfo'],
+    });
+    const noop = vi.fn();
+    render(<ContactDetails profile={empty} onProfileChange={noop} />);
+    expect(screen.getByText('No links yet')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Add link/i }),
+    ).toBeInTheDocument();
+  });
+  it('ExperienceSection companyLocation edits via UI are immutable and blank -> null', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    const cityDisplay = screen.getAllByLabelText('Edit City')[0];
+    await user.dblClick(cityDisplay);
+    const cityInput = screen.getByLabelText('City');
+    await user.clear(cityInput);
+    await user.type(cityInput, 'Berlin');
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].companyLocation?.city).toBe('Berlin');
+    expect(profile.experience[0].companyLocation).toBeNull();
+    onChange.mockClear();
+    const regionDisplay = screen.getAllByLabelText('Edit Region')[0];
+    await user.dblClick(regionDisplay);
+    const regionInput = screen.getByLabelText('Region');
+    await user.clear(regionInput);
+    await user.type(regionInput, 'BerlinRegion');
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(
+      onChange.mock.calls[0][0].experience[0].companyLocation?.region,
+    ).toBe('BerlinRegion');
+    onChange.mockClear();
+    const countryDisplay = screen.getAllByLabelText('Edit Country code')[0];
+    await user.dblClick(countryDisplay);
+    const countryInput = screen.getByLabelText('Country code');
+    await user.clear(countryInput);
+    await user.type(countryInput, 'DE');
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(
+      onChange.mock.calls[0][0].experience[0].companyLocation?.countryCode,
+    ).toBe('DE');
+    onChange.mockClear();
+    // blank -> null
+    await user.dblClick(screen.getAllByLabelText('Edit City')[0]);
+    const cityInput2 = screen.getByLabelText('City');
+    await user.clear(cityInput2);
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(
+      onChange.mock.calls[0][0].experience[0].companyLocation?.city,
+    ).toBeNull();
+  });
+
+  it('ExperienceSection responsibilities add/remove via UI are immutable', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    const addBtn = screen.getAllByRole('button', {
+      name: 'Add responsibility',
+    })[0];
+    await user.click(addBtn);
+    const dialog = await screen.findByRole('dialog', {
+      name: /Add responsibility/i,
+    });
+    expect(dialog).toBeInTheDocument();
+    const input = screen.getByLabelText('Responsibility');
+    await user.type(input, 'new resp via profile');
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].responsibilities).toContain(
+      'new resp via profile',
+    );
+    expect(profile.experience[0].responsibilities).toEqual([
+      'resp one',
+      'resp two',
+    ]);
+    onChange.mockClear();
+    const removeBtn = screen.getAllByRole('button', {
+      name: /Remove responsibility/i,
+    })[0];
+    await user.click(removeBtn);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const nextRem = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(nextRem.experience[0].responsibilities).toEqual(['resp two']);
+  });
+
+  it('ExperienceSection achievements add/remove via UI handle empty and immutable', async () => {
+    const emptyAchProfile = makeProfile({
+      experience: [
+        {
+          id: '10000000-0000-4000-a000-000000000001',
+          company: 'OldCo',
+          companyLocation: null,
+          position: 'Developer',
+          employmentType: 'full-time',
+          locationType: 'remote',
+          startDate: '2020-01',
+          endDate: null,
+          summary: 'exp summary',
+          responsibilities: null,
+          achievements: [],
+          skillRefs: ['a1b2c3d4-e5f6-4a7b-8c9d-111111111111'],
+        },
+      ],
+    } as unknown as CandidateProfileV1);
+    const onChange = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(
+      <ExperienceSection
+        profile={emptyAchProfile}
+        onProfileChange={onChange}
+      />,
+    );
+    const addBtn = screen.getByRole('button', { name: 'Add achievement' });
+    await user.click(addBtn);
+    const dialog = await screen.findByRole('dialog', {
+      name: /Add achievement/i,
+    });
+    expect(dialog).toBeInTheDocument();
+    const input = screen.getByLabelText('Achievement');
+    await user.type(input, 'added ach');
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].achievements).toEqual(['added ach']);
+    expect(emptyAchProfile.experience[0].achievements).toEqual([]);
+    onChange.mockClear();
+    // remove path with existing achievement
+    const profile2 = makeProfile();
+    const onChange2 = vi.fn();
+    const user2 = userEvent.setup();
+    const { unmount } = render(
+      <ExperienceSection profile={profile2} onProfileChange={onChange2} />,
+    );
+    const removeBtn = screen.getAllByRole('button', {
+      name: /Remove achievement/i,
+    })[0];
+    await user2.click(removeBtn);
+    await waitFor(() => expect(onChange2).toHaveBeenCalledTimes(1));
+    const nextRem = onChange2.mock.calls[0][0] as CandidateProfileV1;
+    expect(nextRem.experience[0].achievements).toEqual([]);
+    expect(profile2.experience[0].achievements).toEqual(['ach one']);
+    unmount();
+  });
 });

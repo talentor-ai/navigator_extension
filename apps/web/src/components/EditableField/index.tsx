@@ -32,6 +32,7 @@ export function EditableField({
   disabled = false,
   pending = false,
   error,
+  validate,
   onSubmit,
 }: EditableFieldProps) {
   const {
@@ -41,6 +42,7 @@ export function EditableField({
     isBlocked,
     displayValue,
     isEmptyDisplay,
+    validationError,
     beginEditing,
     handleDisplayKeyDown,
     handleSubmit,
@@ -58,6 +60,7 @@ export function EditableField({
     pending,
     disabled,
     onSubmit,
+    validate,
     purpose,
     weight,
     tone,
@@ -72,7 +75,7 @@ export function EditableField({
     displayValue
   );
 
-  const errorNode = <EditableError error={error} />;
+  const errorNode = <EditableError error={error ?? validationError} />;
 
   if (isEditing) {
     if (editor === 'select') {

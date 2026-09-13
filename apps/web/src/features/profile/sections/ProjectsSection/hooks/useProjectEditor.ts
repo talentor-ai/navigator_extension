@@ -91,6 +91,28 @@ export function useProjectEditor(
     return onProfileChange(next);
   };
 
+  const addAchievement = (id: string, value: string) => {
+    const trimmed = value.trim();
+    const nextProjects = profile.projects.map((p) => {
+      if (p.id !== id) return p;
+      const prev = p.achievements ?? [];
+      return { ...p, achievements: [...prev, trimmed] };
+    });
+    const next: CandidateProfileV1 = { ...profile, projects: nextProjects };
+    return onProfileChange(next);
+  };
+
+  const removeAchievement = (id: string, index: number) => {
+    const nextProjects = profile.projects.map((p) => {
+      if (p.id !== id) return p;
+      const prev = p.achievements ?? [];
+      const nextAch = prev.filter((_, i) => i !== index);
+      return { ...p, achievements: nextAch };
+    });
+    const next: CandidateProfileV1 = { ...profile, projects: nextProjects };
+    return onProfileChange(next);
+  };
+
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [draft, setDraft] = useState<ProjectDraft>({ ...INITIAL_DRAFT });
   const [addErrors, setAddErrors] = useState<ProjectAddErrors>({});
@@ -195,6 +217,8 @@ export function useProjectEditor(
     updateUrl,
     updateRepository,
     updateAchievement,
+    addAchievement,
+    removeAchievement,
     isAddOpen,
     openAdd,
     closeAdd,

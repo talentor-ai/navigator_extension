@@ -22,4 +22,6 @@ export type ProjectItemProps = {
   onUrlSubmit: (value: string) => void | Promise<void>;
   onRepositorySubmit: (value: string) => void | Promise<void>;
   onAchievementSubmit: (index: number, value: string) => void | Promise<void>;
+  onAchievementAdd: (value: string) => void | Promise<void>;
+  onAchievementRemove: (index: number) => void | Promise<void>;
 };

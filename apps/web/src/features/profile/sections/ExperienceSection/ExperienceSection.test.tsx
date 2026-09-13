@@ -3,6 +3,10 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { components } from '@talentor/contracts';
 import { renderHook, act } from '@testing-library/react';
+import {
+  validateOptionalYearMonth,
+  validateYearMonth,
+} from '@/features/profile/validation';
 
 vi.mock('@/components/ui/select', () => {
   let currentOnValueChange: ((v: string) => void) | undefined;
@@ -240,6 +244,7 @@ describe('ExperienceSection – Wave 3A', () => {
     expect(added.startDate).toBe('2022-05');
     expect(added.achievements).toEqual([]);
     expect(added.skillRefs).toEqual([]);
+    expect(added.companyLocation).toBeNull();
     // original preserved
     expect(profile.experience).toHaveLength(2);
     expect(next).not.toBe(profile);
@@ -605,5 +610,345 @@ describe('ExperienceSection – Wave 3A', () => {
     onProfileChange.mockClear();
     act(() => result.current.handleReorder(1, 1));
     expect(onProfileChange).not.toHaveBeenCalled();
+  });
+  it('companyLocation hook creates location when null and blank -> null', () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const { result } = renderHook(() =>
+      useExperienceEditor(profile, onProfileChange),
+    );
+    const id = profile.experience[0].id;
+    act(() => {
+      result.current.updateCompanyLocationCity(id, 'Berlin');
+    });
+    expect(onProfileChange).toHaveBeenCalledTimes(1);
+    const next1 = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next1.experience[0].companyLocation?.city).toBe('Berlin');
+    expect(next1.experience[0].companyLocation?.region).toBeUndefined();
+    expect(next1).not.toBe(profile);
+    expect(next1.experience).not.toBe(profile.experience);
+    onProfileChange.mockClear();
+    // blank -> null
+    act(() => {
+      result.current.updateCompanyLocationCity(id, '   ');
+    });
+    const next2 = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next2.experience[0].companyLocation?.city).toBeNull();
+    expect(profile.experience[0].companyLocation).toBeNull();
+  });
+
+  it('companyLocation region and countryCode hook handle blank -> null and preserve other fields', () => {
+    const profile = makeProfile({
+      experience: [
+        {
+          id: '10000000-0000-4000-a000-000000000001',
+          company: 'OldCo',
+          companyLocation: {
+            city: 'Madrid',
+            region: 'Madrid',
+            countryCode: 'ES',
+          } as unknown as components['schemas']['Location'],
+          position: 'Developer',
+          employmentType: null,
+          locationType: null,
+          startDate: '2020-01',
+          endDate: null,
+          summary: null,
+          responsibilities: null,
+          achievements: [],
+          skillRefs: [],
+        },
+      ],
+    } as unknown as CandidateProfileV1);
+    const onProfileChange = vi.fn();
+    const { result } = renderHook(() =>
+      useExperienceEditor(profile, onProfileChange),
+    );
+    const id = profile.experience[0].id;
+    act(() => {
+      result.current.updateCompanyLocationRegion(id, 'Catalonia');
+    });
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].companyLocation?.region,
+    ).toBe('Catalonia');
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].companyLocation?.city,
+    ).toBe('Madrid');
+    onProfileChange.mockClear();
+    act(() => {
+      result.current.updateCompanyLocationCountryCode(id, '');
+    });
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].companyLocation
+        ?.countryCode,
+    ).toBeNull();
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].companyLocation?.city,
+    ).toBe('Madrid');
+    onProfileChange.mockClear();
+    act(() => {
+      result.current.updateCompanyLocationCountryCode(id, 'US');
+    });
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].companyLocation
+        ?.countryCode,
+    ).toBe('US');
+  });
+
+  it('companyLocation inline editing via UI is immutable', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    const cityDisplay = screen.getAllByLabelText('Edit City')[0];
+    await user.dblClick(cityDisplay);
+    const cityInput = screen.getByLabelText('City');
+    await user.clear(cityInput);
+    await user.type(cityInput, 'Berlin');
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].companyLocation?.city).toBe('Berlin');
+    expect(profile.experience[0].companyLocation).toBeNull();
+    expect(next).not.toBe(profile);
+  });
+
+  it('responsibilities add/remove via hook handle null prev and are immutable', () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const { result } = renderHook(() =>
+      useExperienceEditor(profile, onProfileChange),
+    );
+    const id = profile.experience[0].id;
+    act(() => {
+      result.current.addResponsibility(id, 'new resp');
+    });
+    expect(onProfileChange).toHaveBeenCalledTimes(1);
+    const nextAdd = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(nextAdd.experience[0].responsibilities).toEqual(['new resp']);
+    expect(profile.experience[0].responsibilities).toBeNull();
+    onProfileChange.mockClear();
+    const profileWithTwo = {
+      ...profile,
+      experience: profile.experience.map((e) =>
+        e.id === id ? { ...e, responsibilities: ['a', 'b'] } : e,
+      ),
+    } as unknown as CandidateProfileV1;
+    const { result: r2 } = renderHook(() =>
+      useExperienceEditor(profileWithTwo, onProfileChange),
+    );
+    act(() => {
+      r2.current.updateResponsibility(id, 0, 'updated');
+    });
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].responsibilities?.[0],
+    ).toBe('updated');
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].responsibilities?.[1],
+    ).toBe('b');
+    onProfileChange.mockClear();
+    act(() => {
+      r2.current.removeResponsibility(id, 0);
+    });
+    const nextRem = onProfileChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(nextRem.experience[0].responsibilities).toEqual(['b']);
+    expect(profileWithTwo.experience[0].responsibilities).toEqual(['a', 'b']);
+    onProfileChange.mockClear();
+    act(() => {
+      r2.current.addResponsibility(id, 'c');
+    });
+    expect(
+      onProfileChange.mock.calls[0][0].experience[0].responsibilities,
+    ).toEqual(['a', 'b', 'c']);
+  });
+
+  it('achievements add/remove via hook are immutable', () => {
+    const profile = makeProfile();
+    const onProfileChange = vi.fn();
+    const { result } = renderHook(() =>
+      useExperienceEditor(profile, onProfileChange),
+    );
+    const id = profile.experience[1].id; // second has achievements []
+    act(() => {
+      result.current.addAchievement(id, 'new ach');
+    });
+    expect(onProfileChange.mock.calls[0][0].experience[1].achievements).toEqual(
+      ['new ach'],
+    );
+    expect(profile.experience[1].achievements).toEqual([]);
+    onProfileChange.mockClear();
+    // Use original profile with ach one
+    const id2 = profile.experience[0].id;
+    act(() => {
+      result.current.addAchievement(id2, 'second ach');
+    });
+    expect(onProfileChange.mock.calls[0][0].experience[0].achievements).toEqual(
+      ['ach one', 'second ach'],
+    );
+    onProfileChange.mockClear();
+    act(() => {
+      result.current.removeAchievement(id2, 0);
+    });
+    expect(onProfileChange.mock.calls[0][0].experience[0].achievements).toEqual(
+      [],
+    );
+    onProfileChange.mockClear();
+    act(() => {
+      result.current.updateAchievement(id2, 0, 'updated ach');
+    });
+    expect(onProfileChange.mock.calls[0][0].experience[0].achievements[0]).toBe(
+      'updated ach',
+    );
+  });
+
+  it('responsibilities add via UI dialog appends immutably', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    const addButtons = screen.getAllByRole('button', {
+      name: 'Add responsibility',
+    });
+    expect(addButtons.length).toBeGreaterThan(0);
+    await user.click(addButtons[0]);
+    const dialog = await screen.findByRole('dialog', {
+      name: /Add responsibility/i,
+    });
+    expect(dialog).toBeInTheDocument();
+    const textarea = screen.getByLabelText('Responsibility');
+    await user.type(textarea, 'new responsibility via ui');
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].responsibilities).toEqual([
+      'new responsibility via ui',
+    ]);
+    expect(profile.experience[0].responsibilities).toBeNull();
+  });
+
+  it('responsibilities remove via UI button filters', async () => {
+    const profile = makeProfile({
+      experience: [
+        {
+          id: '10000000-0000-4000-a000-000000000001',
+          company: 'OldCo',
+          companyLocation: null,
+          position: 'Developer',
+          employmentType: null,
+          locationType: null,
+          startDate: '2020-01',
+          endDate: null,
+          summary: null,
+          responsibilities: ['resp one', 'resp two'],
+          achievements: [],
+          skillRefs: [],
+        },
+      ],
+    } as unknown as CandidateProfileV1);
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    const removeButtons = screen.getAllByRole('button', {
+      name: /Remove responsibility/i,
+    });
+    expect(removeButtons.length).toBe(2);
+    await user.click(removeButtons[0]);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].responsibilities).toEqual(['resp two']);
+    expect(profile.experience[0].responsibilities).toEqual([
+      'resp one',
+      'resp two',
+    ]);
+  });
+
+  it('achievements add via UI dialog appends when empty', async () => {
+    const profile = makeProfile({
+      experience: [
+        {
+          id: '10000000-0000-4000-a000-000000000001',
+          company: 'OldCo',
+          companyLocation: null,
+          position: 'Developer',
+          employmentType: null,
+          locationType: null,
+          startDate: '2020-01',
+          endDate: null,
+          summary: null,
+          responsibilities: null,
+          achievements: [],
+          skillRefs: [],
+        },
+      ],
+    } as unknown as CandidateProfileV1);
+    const onChange = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    const addBtn = screen.getByRole('button', { name: 'Add achievement' });
+    await user.click(addBtn);
+    const dialog = await screen.findByRole('dialog', {
+      name: /Add achievement/i,
+    });
+    expect(dialog).toBeInTheDocument();
+    const textarea = screen.getByLabelText('Achievement');
+    await user.type(textarea, 'ach via ui');
+    await user.click(screen.getByRole('button', { name: /^Add$/ }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].achievements).toEqual(['ach via ui']);
+  });
+
+  it('achievements remove via UI filters', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    const removeBtns = screen.getAllByRole('button', {
+      name: /Remove achievement/i,
+    });
+    expect(removeBtns.length).toBe(1);
+    await user.click(removeBtns[0]);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].achievements).toEqual([]);
+    expect(profile.experience[0].achievements).toEqual(['ach one']);
+  });
+
+  it('startDate validation blocks invalid submit and endDate blank allowed', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    // startDate invalid
+    const startDisplay = screen.getAllByLabelText('Edit Start date')[0];
+    await user.dblClick(startDisplay);
+    const startInput = screen.getByLabelText('Start date');
+    await user.clear(startInput);
+    await user.type(startInput, '2022-13');
+    fireEvent.submit(startInput.closest('form')!);
+    await new Promise((r) => setTimeout(r, 20));
+    expect(onChange).not.toHaveBeenCalled();
+    expect(await screen.findByText('Use YYYY-MM')).toBeInTheDocument();
+    // valid startDate should work
+    await user.clear(startInput);
+    await user.type(startInput, '2022-02');
+    fireEvent.submit(startInput.closest('form')!);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(onChange.mock.calls[0][0].experience[0].startDate).toBe('2022-02');
+    onChange.mockClear();
+    // endDate blank allowed -> null
+    const endDisplay = screen.getAllByLabelText('Edit End date')[0];
+    await user.dblClick(endDisplay);
+    const endInput = screen.getByLabelText('End date');
+    await user.clear(endInput);
+    fireEvent.submit(endInput.closest('form')!);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(onChange.mock.calls[0][0].experience[0].endDate).toBeNull();
+    onChange.mockClear();
+    // endDate invalid should block (via validateOptionalYearMonth, blank allowed so test with invalid month)
+    // For optional, blank is allowed, so we test that valid month passes and blank passes, and that direct validation works
+    expect(validateOptionalYearMonth('2022-13')).toBe('Use YYYY-MM');
+    expect(validateOptionalYearMonth('')).toBeNull();
+    expect(validateYearMonth('2022-13')).toBe('Use YYYY-MM');
   });
 });
