@@ -23,6 +23,7 @@ const App = () => {
     <ConfigProvider
       theme={{
         token: {
+          fontFamily: "'Poppins', sans-serif",
           colorPrimary: '#ffffff',
           colorPrimaryBg: '#262626',
           colorPrimaryText: '#ffffff',

@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @theme inline {
+  --font-sans: 'Poppins', sans-serif;
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -85,5 +86,6 @@
 
   body {
     @apply min-h-screen bg-background text-foreground antialiased;
+    font-family: 'Poppins', sans-serif;
   }
 }

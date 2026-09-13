@@ -55,7 +55,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                   aria-label={item.label}
                   aria-current={isCurrent ? 'page' : undefined}
                   className={[
-                    'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     isCurrent
                       ? '!bg-lime !text-lime-foreground'
                       : 'text-white/70 hover:bg-white/[0.06] hover:text-foreground',
@@ -64,6 +64,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                   <Icons
                     type={item.icon}
                     aria-hidden="true"
+                    strokeWidth={2.6}
                     className="h-4 w-4 shrink-0"
                   />
                   <span>{item.label}</span>
