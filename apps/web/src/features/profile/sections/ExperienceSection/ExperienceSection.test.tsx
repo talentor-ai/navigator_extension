@@ -429,6 +429,57 @@ describe('ExperienceSection – Wave 3A', () => {
     expect(next).not.toBe(profile);
   });
 
+  it('inline edit blank Company is blocked', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    await user.dblClick(screen.getAllByLabelText('Edit Company')[0]);
+    const input = screen.getByLabelText('Company');
+    await user.clear(input);
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Company is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Company is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('inline edit blank Position is blocked', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    await user.dblClick(screen.getAllByLabelText('Edit Position')[0]);
+    const input = screen.getByLabelText('Position');
+    await user.clear(input);
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Position is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Position is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('optional fields show placeholders when empty', () => {
+    const profile = makeProfile();
+    render(<ExperienceSection profile={profile} onProfileChange={vi.fn()} />);
+    expect(
+      screen.getAllByLabelText('Edit Employment type')[0],
+    ).toHaveTextContent('Add employment type');
+    expect(screen.getAllByLabelText('Edit Location type')[0]).toHaveTextContent(
+      'Add location type',
+    );
+    expect(screen.getAllByLabelText('Edit End date')[0]).toHaveTextContent(
+      'Add end date',
+    );
+    expect(
+      screen.getAllByLabelText('Edit Experience summary')[0],
+    ).toHaveTextContent('Add experience summary');
+  });
+
   it('reorder via hook produces immutable reorder and calls once', async () => {
     const profile = makeProfile();
     const onProfileChange = vi.fn();
@@ -950,5 +1001,26 @@ describe('ExperienceSection – Wave 3A', () => {
     expect(validateOptionalYearMonth('2022-13')).toBe('Use YYYY-MM');
     expect(validateOptionalYearMonth('')).toBeNull();
     expect(validateYearMonth('2022-13')).toBe('Use YYYY-MM');
+  });
+
+  it('still working hides End date and clears it to null', async () => {
+    const base = makeProfile();
+    const profile: CandidateProfileV1 = {
+      ...base,
+      experience: base.experience.map((e, i) =>
+        i === 0 ? { ...e, endDate: '2023-05' } : e,
+      ),
+    };
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ExperienceSection profile={profile} onProfileChange={onChange} />);
+    expect(screen.getAllByText('2023-05').length).toBeGreaterThan(0);
+
+    await user.click(screen.getAllByLabelText('Still working')[0]);
+
+    await waitFor(() => expect(onChange).toHaveBeenCalled());
+    const next = onChange.mock.calls[0][0] as CandidateProfileV1;
+    expect(next.experience[0].endDate).toBeNull();
+    expect(screen.queryByText('2023-05')).not.toBeInTheDocument();
   });
 });

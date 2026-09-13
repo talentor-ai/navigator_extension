@@ -67,9 +67,11 @@ export function EditableField({
     align,
   });
 
+  const defaultEmptyText = `Add ${label.charAt(0).toLowerCase()}${label.slice(1)}`;
+
   const displayContent = isEmptyDisplay ? (
-    <span className="text-muted-foreground">
-      {emptyText ?? `No ${label.toLowerCase()} provided`}
+    <span className="text-muted-foreground/70 italic">
+      {emptyText ?? defaultEmptyText}
     </span>
   ) : (
     displayValue

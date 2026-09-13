@@ -38,7 +38,9 @@ export function LocationFields({
   const countryCode = location?.countryCode ?? '';
 
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
+    <div
+      className={cn('flex flex-wrap items-center gap-x-3 gap-y-1', className)}
+    >
       <EditableField
         value={city}
         label={labels?.city ?? 'City'}

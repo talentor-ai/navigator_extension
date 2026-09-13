@@ -58,7 +58,7 @@ const ExperienceSection = ({
           readOnly={readOnly}
         />
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 divide-y divide-border">
+      <CardContent className="flex flex-col gap-4">
         {experiences.length === 0 ? (
           <p className="text-sm text-muted-foreground">No experience yet</p>
         ) : (
@@ -67,7 +67,7 @@ const ExperienceSection = ({
             getId={(e) => e.id}
             onReorder={handleReorder}
           >
-            {(item) => (
+            {(item, index) => (
               <SortableCollectionItem
                 key={item.id}
                 id={item.id}
@@ -76,7 +76,9 @@ const ExperienceSection = ({
                 dragLabel="Drag to reorder experience"
                 removeLabel="Remove experience"
                 onRemove={() => requestRemove(item.id)}
-                className="pt-4 first:pt-0"
+                className={
+                  index === 0 ? 'pt-0' : 'border-t border-border mt-8 pt-8'
+                }
               >
                 <ExperienceItem
                   item={item}

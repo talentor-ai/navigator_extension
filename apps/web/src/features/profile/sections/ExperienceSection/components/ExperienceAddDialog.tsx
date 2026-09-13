@@ -76,8 +76,7 @@ export function ExperienceAddDialog({
             <Label htmlFor="exp-add-startDate">Start date</Label>
             <Input
               id="exp-add-startDate"
-              type="text"
-              placeholder="YYYY-MM"
+              type="month"
               value={draft.startDate}
               onChange={(e) => onDraftChange('startDate', e.target.value)}
               disabled={pending}

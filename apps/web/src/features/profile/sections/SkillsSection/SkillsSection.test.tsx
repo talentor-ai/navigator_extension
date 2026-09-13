@@ -157,7 +157,7 @@ describe('SkillsSection', () => {
       screen.getByRole('dialog', { name: 'Add skill' }),
     ).toBeInTheDocument();
 
-    const nameInput = screen.getByLabelText('Name');
+    const nameInput = screen.getByLabelText('Skill name');
     const categoryInput = screen.getByLabelText('Category');
     await user.type(nameInput, 'TypeScript');
     await user.type(categoryInput, 'Language');
@@ -195,7 +195,7 @@ describe('SkillsSection', () => {
     ).toBeInTheDocument();
 
     // fill only name
-    await user.type(screen.getByLabelText('Name'), 'Go');
+    await user.type(screen.getByLabelText('Skill name'), 'Go');
     await user.click(screen.getByRole('button', { name: /^Add$/i }));
     expect(onChange).not.toHaveBeenCalled();
 
@@ -411,6 +411,50 @@ describe('SkillsSection', () => {
       (onChange.mock.calls[0][0] as CandidateProfileV1).skills[0]
         .yearsOfExperience,
     ).toBe(0);
+  });
+
+  it('inline edit blank skill name is blocked', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<SkillsSection profile={profile} onProfileChange={onChange} />);
+
+    await user.dblClick(screen.getAllByLabelText('Edit Skill name')[0]);
+    const input = screen.getByLabelText('Skill name') as HTMLInputElement;
+    await user.clear(input);
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Skill name is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.clear(input);
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Skill name is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('inline edit blank category is blocked', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<SkillsSection profile={profile} onProfileChange={onChange} />);
+
+    await user.dblClick(screen.getAllByLabelText('Edit Category')[0]);
+    const input = screen.getByLabelText('Category') as HTMLInputElement;
+    await user.clear(input);
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Category is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.clear(input);
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Category is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it('inline edit preserves styling and empty text, no forbidden fields', () => {

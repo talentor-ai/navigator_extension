@@ -57,8 +57,8 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                   className={[
                     'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     isCurrent
-                      ? '!bg-lime !text-lime-foreground'
-                      : 'text-white/70 hover:bg-white/[0.06] hover:text-foreground',
+                      ? 'bg-lime! text-lime-foreground!'
+                      : 'text-white/70 hover:bg-white/6 hover:text-foreground',
                   ].join(' ')}
                 >
                   <Icons

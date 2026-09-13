@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { EditableField } from '@/components/EditableField';
 import { EditableStringList } from '@/features/profile/components/EditableStringList';
 import { LocationFields } from '@/features/profile/components/LocationFields';
 import {
+  validateNonBlank,
   validateOptionalYearMonth,
   validateYearMonth,
 } from '@/features/profile/validation';
@@ -32,6 +34,15 @@ export const ExperienceItem = ({
   onAchievementAdd,
   onAchievementRemove,
 }: ExperienceItemProps) => {
+  const [stillWorking, setStillWorking] = useState(false);
+
+  const handleStillWorkingChange = (checked: boolean) => {
+    setStillWorking(checked);
+    if (checked) {
+      void onEndDateSubmit('');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-3 pt-4 first:pt-0">
       <EditableField
@@ -42,6 +53,7 @@ export const ExperienceItem = ({
         weight="semibold"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Company')}
         onSubmit={onCompanySubmit}
       />
       <EditableField
@@ -53,6 +65,7 @@ export const ExperienceItem = ({
         tone="muted"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Position')}
         onSubmit={onPositionSubmit}
       />
       <LocationFields
@@ -87,31 +100,47 @@ export const ExperienceItem = ({
           onSubmit={onLocationTypeSubmit}
         />
       </div>
-      <div className="flex flex-wrap gap-2">
-        <EditableField
-          value={item.startDate ?? ''}
-          label="Start date"
-          purpose="meta"
-          tone="muted"
-          editor="input"
-          inputType="month"
-          pending={pending}
-          disabled={readOnly}
-          validate={validateYearMonth}
-          onSubmit={onStartDateSubmit}
-        />
-        <EditableField
-          value={item.endDate ?? ''}
-          label="End date"
-          purpose="meta"
-          tone="muted"
-          editor="input"
-          inputType="month"
-          pending={pending}
-          disabled={readOnly}
-          validate={validateOptionalYearMonth}
-          onSubmit={onEndDateSubmit}
-        />
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <EditableField
+            value={item.startDate ?? ''}
+            label="Start date"
+            purpose="meta"
+            tone="muted"
+            editor="input"
+            inputType="month"
+            pending={pending}
+            disabled={readOnly}
+            validate={validateYearMonth}
+            onSubmit={onStartDateSubmit}
+          />
+          <label className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={stillWorking}
+              disabled={pending || readOnly}
+              onChange={(event) =>
+                handleStillWorkingChange(event.target.checked)
+              }
+              className="h-3.5 w-3.5 rounded border-border accent-primary"
+            />
+            Still working
+          </label>
+        </div>
+        {!stillWorking ? (
+          <EditableField
+            value={item.endDate ?? ''}
+            label="End date"
+            purpose="meta"
+            tone="muted"
+            editor="input"
+            inputType="month"
+            pending={pending}
+            disabled={readOnly}
+            validate={validateOptionalYearMonth}
+            onSubmit={onEndDateSubmit}
+          />
+        ) : null}
       </div>
       <EditableField
         value={item.summary ?? ''}

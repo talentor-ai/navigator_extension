@@ -555,4 +555,47 @@ describe('CertificationsSection', () => {
     expect(screen.getByLabelText('Edit Issuer')).toBeInTheDocument();
     expect(screen.queryByText(/credential/i)).not.toBeInTheDocument();
   });
+
+  it('blank name and issuer blocked and empty dates show placeholder', async () => {
+    const profile = makeProfile({
+      certifications: [
+        {
+          id: 'cert-1',
+          name: 'Cert A',
+          issuer: 'Issuer A',
+          issueDate: null,
+          expirationDate: null,
+          credentialId: null,
+          credentialUrl: null,
+        },
+      ],
+    });
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <CertificationsSection profile={profile} onProfileChange={onChange} />,
+    );
+
+    expect(screen.getByText('Add issue date')).toBeInTheDocument();
+    expect(screen.getByText('Add expiration date')).toBeInTheDocument();
+
+    await user.dblClick(screen.getByLabelText('Edit Certification name'));
+    const nameInput = screen.getByLabelText('Certification name');
+    await user.clear(nameInput);
+    await user.type(nameInput, '   ');
+    fireEvent.submit(nameInput.closest('form')!);
+    expect(
+      await screen.findByText('Certification name is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.keyDown(nameInput, { key: 'Escape', code: 'Escape' });
+
+    await user.dblClick(screen.getByLabelText('Edit Issuer'));
+    const issuerInput = screen.getByLabelText('Issuer');
+    await user.clear(issuerInput);
+    await user.type(issuerInput, '   ');
+    fireEvent.submit(issuerInput.closest('form')!);
+    expect(await screen.findByText('Issuer is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

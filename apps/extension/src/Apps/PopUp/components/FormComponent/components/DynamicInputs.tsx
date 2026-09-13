@@ -1,8 +1,10 @@
 import { FieldConfig } from '@popup:models/model.form';
 import {
   useFieldArray,
+  useWatch,
   Control,
   UseFormRegister,
+  UseFormSetValue,
   FieldErrors,
 } from 'react-hook-form';
 import { Input, Textarea, DatePicker } from './index';
@@ -43,6 +45,7 @@ interface DynamicInputsProps {
   name: string;
   control: Control<any>;
   register: UseFormRegister<any>;
+  setValue: UseFormSetValue<any>;
   errors: FieldErrors<any>;
   subFormFields: {
     formId: string;
@@ -56,6 +59,7 @@ const DynamicInputs = ({
   name,
   control,
   register,
+  setValue,
   errors,
   subFormFields,
 }: DynamicInputsProps) => {
@@ -63,6 +67,9 @@ const DynamicInputs = ({
     control,
     name,
   });
+
+  const watchedValues = useWatch({ control, name }) as
+    Record<string, any>[] | undefined;
 
   const addNewField = () => {
     const newField = subFormFields.reduce(
@@ -116,6 +123,47 @@ const DynamicInputs = ({
                   // Add default validation rules if none provided
                   const validationRules = fieldConfig.validationRules || {};
 
+                  const isStillWorking = Boolean(
+                    watchedValues?.[index]?.stillWorking,
+                  );
+
+                  if (fieldConfig.type === InputFieldType.checkbox) {
+                    const checked = Boolean(
+                      watchedValues?.[index]?.[fieldConfig.name],
+                    );
+                    return (
+                      <div
+                        key={fieldConfig.name}
+                        className="tai:flex tai:items-center tai:gap-2 tai:mb-2"
+                      >
+                        <input
+                          id={fieldName}
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(event) => {
+                            const nextChecked = event.target.checked;
+                            setValue(fieldName, nextChecked, {
+                              shouldDirty: true,
+                            });
+                            if (nextChecked) {
+                              setValue(`${name}.${index}.endDate`, '');
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor={fieldName}
+                          className="tai:text-txt2 tai:text-sm"
+                        >
+                          {fieldConfig.label}
+                        </label>
+                      </div>
+                    );
+                  }
+
+                  if (fieldConfig.name === 'endDate' && isStillWorking) {
+                    return null;
+                  }
+
                   if (fieldConfig.type === InputFieldType.textarea) {
                     return (
                       <Textarea
@@ -129,7 +177,10 @@ const DynamicInputs = ({
                     );
                   }
 
-                  if (fieldConfig.type === InputFieldType.date) {
+                  if (
+                    fieldConfig.type === InputFieldType.date ||
+                    fieldConfig.type === InputFieldType.month
+                  ) {
                     return (
                       <DatePicker
                         key={fieldConfig.name}

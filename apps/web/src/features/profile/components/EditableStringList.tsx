@@ -119,6 +119,7 @@ export function EditableStringList({
           size="sm"
           disabled={pending}
           onClick={handleOpen}
+          className="self-start"
         >
           <Icons type="add" />
           {addLabel}

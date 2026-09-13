@@ -1,7 +1,7 @@
 import { DatePicker as AntDatePicker } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { FieldConfig } from '@popup:models/model.form';
+import { FieldConfig, InputFieldType } from '@popup:models/model.form';
 import { Controller } from 'react-hook-form';
 
 interface DatePickerProps extends FieldConfig {
@@ -13,12 +13,17 @@ interface DatePickerProps extends FieldConfig {
 const DatePicker = ({
   name,
   label,
-  placeholder = 'Select date',
+  type,
+  placeholder,
   errorMessage = '',
   validationRules,
   control,
 }: DatePickerProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const isMonth = type === InputFieldType.month;
+  const format = isMonth ? 'YYYY-MM' : 'YYYY-MM-DD';
+  const inputPlaceholder =
+    placeholder ?? (isMonth ? 'Seleccione el mes y año' : 'Select date');
 
   const borderColor = () => {
     if (errorMessage) return 'tai:border-errorColor';
@@ -35,7 +40,7 @@ const DatePicker = ({
         )}
       </label>
       <div
-        className={`tai:border ${borderColor()} tai:px-4 tai:text-txt1 tai:flex tai:justify-between 
+        className={`tai:border ${borderColor()} tai:px-4 tai:text-txt1 tai:flex tai:justify-between
          tai:items-center tai:h-boxHeight tai:bg-secondary tai:rounded-md`}
       >
         <Controller
@@ -46,15 +51,20 @@ const DatePicker = ({
             <AntDatePicker
               id={name}
               className="tai:w-full tai:border-none tai:bg-transparent"
-              placeholder={placeholder}
+              placeholder={inputPlaceholder}
+              picker={isMonth ? 'month' : undefined}
               value={field.value ? dayjs(field.value) : null}
               onChange={(date) => {
-                const isoString = date ? date.toISOString() : '';
-                field.onChange(isoString);
+                const value = date
+                  ? isMonth
+                    ? date.format('YYYY-MM')
+                    : date.toISOString()
+                  : '';
+                field.onChange(value);
               }}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              format="YYYY-MM-DD"
+              format={format}
               size="small"
               style={{
                 border: 'none',
@@ -67,7 +77,7 @@ const DatePicker = ({
         />
       </div>
       {errorMessage && (
-        <span className="tai:text-errorColor tai:text-small tai:absolute tai:top-[100%] tai:right-0">
+        <span className="tai:text-errorColor tai:text-small tai:absolute tai:top-full tai:right-0">
           {errorMessage}
         </span>
       )}

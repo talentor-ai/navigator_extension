@@ -1,5 +1,6 @@
 import { EditableField } from '@/components/EditableField';
 import { LANGUAGE_PROFICIENCY_OPTIONS } from '../../../profile.constants';
+import { validateNonBlank } from '../../../validation';
 import type { Language } from '../types';
 
 type Props = {
@@ -27,6 +28,7 @@ export const LanguageItem = ({
         weight="semibold"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Language')}
         onSubmit={onLanguageSubmit}
       />
       <EditableField

@@ -1,4 +1,7 @@
-import { EMAIL_RE } from './constants';
+import {
+  validateBcp47Locale,
+  validateEmail,
+} from '@/features/profile/validation';
 import type { FieldErrors, FormValues } from './types';
 
 export const validate = (values: FormValues): FieldErrors => {
@@ -20,12 +23,16 @@ export const validate = (values: FormValues): FieldErrors => {
 
   if (!email) {
     errors.email = 'Email is required';
-  } else if (!EMAIL_RE.test(email)) {
-    errors.email = 'Enter a valid email';
+  } else {
+    const err = validateEmail(email);
+    if (err) errors.email = err;
   }
 
   if (!locale) {
     errors.locale = 'Locale is required';
+  } else {
+    const err = validateBcp47Locale(locale);
+    if (err) errors.locale = err;
   }
 
   return errors;

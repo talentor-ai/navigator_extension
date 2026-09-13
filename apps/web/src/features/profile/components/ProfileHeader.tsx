@@ -1,6 +1,7 @@
 import type { components } from '@talentor/contracts';
 import { Card, CardHeader } from '@/components/ui/card';
 import { EditableField } from '@/components/EditableField';
+import { validateNonBlank } from '@/features/profile/validation';
 
 type CandidateProfileV1 = components['schemas']['CandidateProfileV1'];
 
@@ -28,6 +29,7 @@ const ProfileHeader = ({
           weight="bold"
           pending={pending}
           disabled={readOnly}
+          validate={(v) => validateNonBlank(v, 'Full name')}
           onSubmit={(value) => {
             const next: CandidateProfileV1 = {
               ...profile,

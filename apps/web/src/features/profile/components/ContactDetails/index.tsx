@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/Icons';
 import { EditableField } from '@/components/EditableField';
 import { LocationFields } from '../LocationFields';
+import { validateEmail } from '@/features/profile/validation';
 import { useContactDetails } from './hooks/useContactDetails';
 import { LinkRow } from './components/LinkRow';
 import { AddLinkDialog } from './components/AddLinkDialog';
@@ -58,6 +59,7 @@ const ContactDetails = ({
             inputType="email"
             pending={pending}
             disabled={readOnly}
+            validate={validateEmail}
             onSubmit={handleEmailSubmit}
           />
           <EditableField

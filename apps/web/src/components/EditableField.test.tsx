@@ -364,8 +364,8 @@ describe('EditableField controlled inline editor', () => {
     render(<EditableField value="" label="Name" />);
     const display = screen.getByLabelText('Edit Name');
     expect(display).toBeInTheDocument();
-    expect(display).toHaveTextContent('No name provided');
-    expect(screen.getByText('No name provided')).toBeInTheDocument();
+    expect(display).toHaveTextContent('Add name');
+    expect(screen.getByText('Add name')).toBeInTheDocument();
     // aria-label remains Edit Name, not replaced
     expect(display).toHaveAttribute('aria-label', 'Edit Name');
     await user.dblClick(display);
@@ -389,7 +389,7 @@ describe('EditableField controlled inline editor', () => {
       />,
     );
     const display = screen.getByLabelText('Edit Choice');
-    expect(display).toHaveTextContent('No choice provided');
+    expect(display).toHaveTextContent('Add choice');
   });
 
   it('custom empty text overrides the generated fallback', () => {

@@ -1,6 +1,7 @@
 export const YEAR_MONTH_REGEX = /^[0-9]{4}-(0[1-9]|1[0-2])$/;
 export const LOCALE_REGEX = /^[a-zA-Z]{2,3}(?:-[A-Z]{2})?$/;
 export const COUNTRY_CODE_REGEX = /^[A-Z]{2}$/;
+export const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 
 export const YEAR_MONTH_PATTERN = YEAR_MONTH_REGEX;
 export const LOCALE_PATTERN = LOCALE_REGEX;
@@ -11,6 +12,11 @@ export function validateNonBlank(
   label = 'Value',
 ): string | null {
   if (value.trim() === '') return `${label} is required`;
+  return null;
+}
+
+export function validateEmail(value: string): string | null {
+  if (!EMAIL_REGEX.test(value.trim())) return 'Enter a valid email';
   return null;
 }
 

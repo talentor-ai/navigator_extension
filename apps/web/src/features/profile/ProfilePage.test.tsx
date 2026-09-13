@@ -147,7 +147,7 @@ vi.mock('./components/VersionSwitcher', async () => {
       const [confirm, setConfirm] = React.useState<number | null>(null);
       return (
         <div>
-          <h2>Versions</h2>
+          <h2>History</h2>
           {previewVersion !== null && (
             <div>
               Previewing version {previewVersion} — read-only{' '}
@@ -692,7 +692,7 @@ describe('ProfilePage', () => {
       'false',
     );
 
-    const versionSwitcher = await screen.findByText(/versions/i);
+    const versionSwitcher = await screen.findByText(/history/i);
     expect(versionSwitcher).toBeInTheDocument();
     const previewBtn =
       screen.getAllByRole('button', { name: /preview/i })[1] ??
@@ -769,7 +769,7 @@ describe('ProfilePage', () => {
 
     const qc = createWrapper();
     renderPage([`/profile/${PROFILE_ID}`], qc);
-    await screen.findByText(/versions/i);
+    await screen.findByText(/history/i);
     const previewBtns = screen.getAllByRole('button', { name: /preview/i });
     const user = userEvent.setup();
     await user.click(previewBtns[1] ?? previewBtns[0]);
@@ -835,7 +835,7 @@ describe('ProfilePage', () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    await screen.findByText(/versions/i);
+    await screen.findByText(/history/i);
     const user2 = userEvent.setup();
     const pBtns2 = screen.getAllByRole('button', { name: /preview/i });
     await user2.click(pBtns2[1] ?? pBtns2[0]);
@@ -974,7 +974,7 @@ describe('ProfilePage', () => {
 
     const qc = createWrapper();
     renderPage([`/profile/${PROFILE_ID}`], qc);
-    await screen.findByText(/versions/i);
+    await screen.findByText(/history/i);
     const user = userEvent.setup();
     await user.click(
       screen.getAllByRole('button', { name: /preview/i })[1] ??
@@ -1014,7 +1014,7 @@ describe('ProfilePage', () => {
     expect(screen.queryByText(/no versions yet/i)).not.toBeInTheDocument();
     resolveVersions!([]);
     await waitFor(() =>
-      expect(screen.getByText(/versions/i)).toBeInTheDocument(),
+      expect(screen.getByText(/history/i)).toBeInTheDocument(),
     );
   });
 
@@ -1127,7 +1127,7 @@ describe('ProfilePage', () => {
     } as any);
     const qc = createWrapper();
     renderPage([`/profile/${PROFILE_ID}`], qc);
-    await screen.findByText(/versions/i);
+    await screen.findByText(/history/i);
     const user = userEvent.setup();
     await user.click(screen.getAllByRole('button', { name: /preview/i })[0]);
     await waitFor(() => {
@@ -1183,7 +1183,7 @@ describe('ProfilePage', () => {
       );
     const qc = createWrapper();
     renderPage([`/profile/${PROFILE_ID}`], qc);
-    await screen.findByText(/versions/i);
+    await screen.findByText(/history/i);
     const user = userEvent.setup();
     await user.click(
       screen.getAllByRole('button', { name: /preview/i })[1] ??

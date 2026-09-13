@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import VersionSwitcher from './VersionSwitcher';
 import type { components } from '@talentor/contracts';
@@ -23,20 +23,48 @@ const versions: Meta[] = [
   makeVersion({ versionNumber: 1, sourceType: 'IMPORT' }),
 ];
 
+type Props = Partial<React.ComponentProps<typeof VersionSwitcher>>;
+
+const renderSwitcher = (overrides: Props = {}) => {
+  const props: React.ComponentProps<typeof VersionSwitcher> = {
+    versions,
+    currentVersion: 3,
+    previewVersion: null,
+    pendingVersion: null,
+    error: null,
+    onPreview: vi.fn(),
+    onActivate: vi.fn(),
+    onExitPreview: vi.fn(),
+    ...overrides,
+  };
+  const view = render(<VersionSwitcher {...props} />);
+  return { ...view, props };
+};
+
+const expand = () => {
+  fireEvent.click(screen.getByRole('button', { name: /expand history/i }));
+};
+
 describe('VersionSwitcher', () => {
+  it('renders History collapsed by default and toggles open', () => {
+    renderSwitcher();
+    expect(
+      screen.getByRole('heading', { name: 'History' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Version 3')).not.toBeInTheDocument();
+
+    const toggle = screen.getByRole('button', { name: /expand history/i });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expand();
+    expect(screen.getByText('Version 3')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /collapse history/i }),
+    ).toHaveAttribute('aria-expanded', 'true');
+  });
+
   it('shows version number, date, source and current marker', () => {
-    render(
-      <VersionSwitcher
-        versions={versions}
-        currentVersion={3}
-        previewVersion={null}
-        pendingVersion={null}
-        error={null}
-        onPreview={vi.fn()}
-        onActivate={vi.fn()}
-        onExitPreview={vi.fn()}
-      />,
-    );
+    renderSwitcher();
+    expand();
     expect(screen.getByText('Version 3')).toBeInTheDocument();
     expect(screen.getByText('Version 2')).toBeInTheDocument();
     expect(screen.getByText(/MANUAL/)).toBeInTheDocument();
@@ -48,18 +76,8 @@ describe('VersionSwitcher', () => {
   it('calls onPreview when preview clicked', async () => {
     const user = userEvent.setup();
     const onPreview = vi.fn();
-    render(
-      <VersionSwitcher
-        versions={versions}
-        currentVersion={3}
-        previewVersion={null}
-        pendingVersion={null}
-        error={null}
-        onPreview={onPreview}
-        onActivate={vi.fn()}
-        onExitPreview={vi.fn()}
-      />,
-    );
+    renderSwitcher({ onPreview });
+    await user.click(screen.getByRole('button', { name: /expand history/i }));
     await user.click(screen.getAllByRole('button', { name: /preview/i })[1]);
     expect(onPreview).toHaveBeenCalledWith(2);
   });
@@ -67,18 +85,7 @@ describe('VersionSwitcher', () => {
   it('shows preview banner and exit', async () => {
     const user = userEvent.setup();
     const onExitPreview = vi.fn();
-    render(
-      <VersionSwitcher
-        versions={versions}
-        currentVersion={3}
-        previewVersion={2}
-        pendingVersion={null}
-        error={null}
-        onPreview={vi.fn()}
-        onActivate={vi.fn()}
-        onExitPreview={onExitPreview}
-      />,
-    );
+    renderSwitcher({ previewVersion: 2, onExitPreview });
     expect(screen.getByText(/previewing version 2/i)).toBeInTheDocument();
     expect(screen.getByText(/read-only/i)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /exit preview/i }));
@@ -88,25 +95,13 @@ describe('VersionSwitcher', () => {
   it('requires confirmation before activation', async () => {
     const user = userEvent.setup();
     const onActivate = vi.fn();
-    render(
-      <VersionSwitcher
-        versions={versions}
-        currentVersion={3}
-        previewVersion={null}
-        pendingVersion={null}
-        error={null}
-        onPreview={vi.fn()}
-        onActivate={onActivate}
-        onExitPreview={vi.fn()}
-      />,
-    );
-    // click activate on version 2 (not current)
+    renderSwitcher({ onActivate });
+    await user.click(screen.getByRole('button', { name: /expand history/i }));
     const activateButtons = screen.getAllByRole('button', {
       name: /activate version 2/i,
     });
     expect(activateButtons.length).toBeGreaterThan(0);
     await user.click(activateButtons[0]);
-    // should now show confirm, not yet called
     expect(onActivate).not.toHaveBeenCalled();
     expect(screen.getByText(/confirm activation\?/i)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /^confirm$/i }));
@@ -116,18 +111,8 @@ describe('VersionSwitcher', () => {
   it('cancel confirmation does not activate', async () => {
     const user = userEvent.setup();
     const onActivate = vi.fn();
-    render(
-      <VersionSwitcher
-        versions={versions}
-        currentVersion={3}
-        previewVersion={null}
-        pendingVersion={null}
-        error={null}
-        onPreview={vi.fn()}
-        onActivate={onActivate}
-        onExitPreview={vi.fn()}
-      />,
-    );
+    renderSwitcher({ onActivate });
+    await user.click(screen.getByRole('button', { name: /expand history/i }));
     await user.click(
       screen.getByRole('button', { name: /activate version 2/i }),
     );
@@ -137,39 +122,25 @@ describe('VersionSwitcher', () => {
   });
 
   it('shows error and pending state', () => {
-    render(
-      <VersionSwitcher
-        versions={versions}
-        currentVersion={3}
-        previewVersion={null}
-        pendingVersion={2}
-        error="Activate failed"
-        onPreview={vi.fn()}
-        onActivate={vi.fn()}
-        onExitPreview={vi.fn()}
-      />,
-    );
+    renderSwitcher({ pendingVersion: 2, error: 'Activate failed' });
     expect(screen.getByRole('alert')).toHaveTextContent('Activate failed');
+    expand();
     expect(
       screen.getByRole('button', { name: /activating/i }),
     ).toBeInTheDocument();
   });
 
   it('disables activate for current version', () => {
-    render(
-      <VersionSwitcher
-        versions={versions}
-        currentVersion={3}
-        previewVersion={null}
-        pendingVersion={null}
-        error={null}
-        onPreview={vi.fn()}
-        onActivate={vi.fn()}
-        onExitPreview={vi.fn()}
-      />,
-    );
+    renderSwitcher();
+    expand();
     expect(
       screen.getByRole('button', { name: /activate version 3/i }),
     ).toBeDisabled();
+  });
+
+  it('shows empty history when there are no versions', () => {
+    renderSwitcher({ versions: [], currentVersion: 0 });
+    expand();
+    expect(screen.getByText(/no history yet/i)).toBeInTheDocument();
   });
 });

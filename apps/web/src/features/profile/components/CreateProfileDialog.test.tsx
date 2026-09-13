@@ -149,4 +149,57 @@ describe('CreateProfileDialog', () => {
     await user.click(screen.getByRole('button', { name: /cancel/i }));
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
+
+  it('validates locale BCP47 and blocks invalid', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<CreateProfileDialog {...baseProps} onSubmit={onSubmit} />);
+    await user.type(screen.getByLabelText(/profile name/i), 'My profile');
+    await user.type(screen.getByLabelText(/^full name/i), 'Ada Lovelace');
+    await user.type(screen.getByLabelText(/^email/i), 'ada@example.com');
+    await user.type(screen.getByLabelText(/locale/i), 'invalid_locale');
+    await user.click(screen.getByRole('button', { name: /^create$/i }));
+    expect(
+      await screen.findByText('Use a locale like en-US'),
+    ).toBeInTheDocument();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('locale valid and invalid edge cases via utils directly', async () => {
+    const { validate } = await import('./CreateProfileDialog/utils');
+    expect(
+      validate({
+        name: 'a',
+        fullName: 'b',
+        email: 'ada@example.com',
+        locale: 'en-US',
+      }).locale,
+    ).toBeUndefined();
+    expect(
+      validate({
+        name: 'a',
+        fullName: 'b',
+        email: 'ada@example.com',
+        locale: 'en',
+      }).locale,
+    ).toBeUndefined();
+    expect(
+      validate({
+        name: 'a',
+        fullName: 'b',
+        email: 'ada@example.com',
+        locale: 'bad_locale',
+      }).locale,
+    ).toBe('Use a locale like en-US');
+    expect(
+      validate({ name: 'a', fullName: 'b', email: 'a@b.c', locale: '' }).locale,
+    ).toBe('Locale is required');
+    expect(
+      validate({ name: 'a', fullName: 'b', email: 'bad', locale: 'en-US' })
+        .email,
+    ).toBe('Enter a valid email');
+    expect(
+      validate({ name: 'a', fullName: 'b', email: '', locale: 'en-US' }).email,
+    ).toBe('Email is required');
+  });
 });

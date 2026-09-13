@@ -926,4 +926,216 @@ describe('profile editing - immutable saves', () => {
     expect(profile2.experience[0].achievements).toEqual(['ach one']);
     unmount();
   });
+
+  it('ProfileHeader fullName blank is blocked (validateNonBlank)', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <ProfileHeader profile={profile} onProfileChange={onChange} />,
+    );
+    await user.dblClick(screen.getByLabelText('Edit Full name'));
+    const input = screen.getByLabelText('Full name');
+    await user.clear(input);
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Full name is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.clear(input);
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Full name is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.clear(input);
+    await user.type(input, 'Alice Cooper');
+    fireEvent.submit(input.closest('form')!);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(onChange.mock.calls[0][0].personalInfo.fullName).toBe(
+      'Alice Cooper',
+    );
+    unmount();
+  });
+
+  it('ContactDetails email invalid is blocked (validateEmail)', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <ContactDetails profile={profile} onProfileChange={onChange} />,
+    );
+    await user.dblClick(screen.getByLabelText('Edit Email'));
+    const input = screen.getByLabelText('Email');
+    await user.clear(input);
+    await user.type(input, 'notanemail');
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Enter a valid email')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.clear(input);
+    await user.type(input, 'bad@');
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Enter a valid email')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.clear(input);
+    await user.type(input, 'valid@example.com');
+    fireEvent.submit(input.closest('form')!);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(onChange.mock.calls[0][0].personalInfo.email).toBe(
+      'valid@example.com',
+    );
+    unmount();
+  });
+
+  it('empty optional profile fields show placeholder and blank required fields blocked', async () => {
+    const emptyEduProfile = makeProfile({
+      education: [
+        {
+          id: '50000000-0000-4000-a000-000000000005',
+          institution: 'Uni',
+          degree: null,
+          fieldOfStudy: null,
+          location: null,
+          startDate: null,
+          endDate: null,
+        },
+      ],
+      projects: [
+        {
+          id: '60000000-0000-4000-a000-000000000006',
+          name: 'Proj',
+          role: null,
+          description: 'Desc',
+          startDate: null,
+          endDate: null,
+          url: null,
+          repository: null,
+          achievements: null,
+          skillRefs: null,
+        },
+      ],
+      certifications: [
+        {
+          id: '80000000-0000-4000-a000-000000000008',
+          name: 'Cert',
+          issuer: 'Issuer',
+          issueDate: null,
+          expirationDate: null,
+          credentialId: null,
+          credentialUrl: null,
+        },
+      ],
+    });
+    const noop = vi.fn();
+    const { unmount: u1 } = render(
+      <EducationSection profile={emptyEduProfile} onProfileChange={noop} />,
+    );
+    expect(screen.getByText('Add degree')).toBeInTheDocument();
+    u1();
+    const { unmount: u2 } = render(
+      <ProjectsSection profile={emptyEduProfile} onProfileChange={noop} />,
+    );
+    expect(screen.getByText('Add project role')).toBeInTheDocument();
+    u2();
+    const { unmount: u3 } = render(
+      <CertificationsSection
+        profile={emptyEduProfile}
+        onProfileChange={noop}
+      />,
+    );
+    expect(screen.getByText('Add issue date')).toBeInTheDocument();
+    u3();
+
+    // blank institution blocked
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { unmount: uEdu } = render(
+      <EducationSection profile={emptyEduProfile} onProfileChange={onChange} />,
+    );
+    await user.dblClick(screen.getByLabelText('Edit Institution'));
+    const instInput = screen.getByLabelText('Institution');
+    await user.clear(instInput);
+    await user.type(instInput, '   ');
+    fireEvent.submit(instInput.closest('form')!);
+    expect(
+      await screen.findByText('Institution is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.keyDown(instInput, { key: 'Escape', code: 'Escape' });
+    uEdu();
+
+    // blank certification name blocked
+    const onChange2 = vi.fn();
+    const user2 = userEvent.setup();
+    const { unmount: u4 } = render(
+      <CertificationsSection
+        profile={emptyEduProfile}
+        onProfileChange={onChange2}
+      />,
+    );
+    await user2.dblClick(screen.getByLabelText('Edit Certification name'));
+    const certInput = screen.getByLabelText('Certification name');
+    await user2.clear(certInput);
+    await user2.type(certInput, '   ');
+    fireEvent.submit(certInput.closest('form')!);
+    expect(
+      await screen.findByText('Certification name is required'),
+    ).toBeInTheDocument();
+    expect(onChange2).not.toHaveBeenCalled();
+    fireEvent.keyDown(certInput, { key: 'Escape', code: 'Escape' });
+
+    await user2.dblClick(screen.getByLabelText('Edit Issuer'));
+    const issuerInput = screen.getByLabelText('Issuer');
+    await user2.clear(issuerInput);
+    await user2.type(issuerInput, '   ');
+    fireEvent.submit(issuerInput.closest('form')!);
+    expect(await screen.findByText('Issuer is required')).toBeInTheDocument();
+    expect(onChange2).not.toHaveBeenCalled();
+    u4();
+
+    // blank project name blocked
+    const onChange3 = vi.fn();
+    const user3 = userEvent.setup();
+    render(
+      <ProjectsSection profile={emptyEduProfile} onProfileChange={onChange3} />,
+    );
+    await user3.dblClick(screen.getByLabelText('Edit Project name'));
+    const projInput = screen.getByLabelText('Project name');
+    await user3.clear(projInput);
+    await user3.type(projInput, '   ');
+    fireEvent.submit(projInput.closest('form')!);
+    expect(
+      await screen.findByText('Project name is required'),
+    ).toBeInTheDocument();
+    expect(onChange3).not.toHaveBeenCalled();
+  });
+
+  it('CreateProfileDialog utils locale and email validation', async () => {
+    const { validate } = await import('./components/CreateProfileDialog/utils');
+    expect(
+      validate({
+        name: 'a',
+        fullName: 'b',
+        email: 'ada@example.com',
+        locale: 'invalid_locale',
+      }).locale,
+    ).toBe('Use a locale like en-US');
+    expect(
+      validate({
+        name: 'a',
+        fullName: 'b',
+        email: 'ada@example.com',
+        locale: 'en-US',
+      }).locale,
+    ).toBeUndefined();
+    expect(
+      validate({
+        name: 'a',
+        fullName: 'b',
+        email: 'bad-email',
+        locale: 'en-US',
+      }).email,
+    ).toBe('Enter a valid email');
+  });
 });

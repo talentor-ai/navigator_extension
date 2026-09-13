@@ -42,6 +42,7 @@ const FormComponent = ({
     reset,
     watch,
     control,
+    setValue,
   } = useForm({
     defaultValues,
   });
@@ -102,6 +103,7 @@ const FormComponent = ({
           {...field}
           register={register}
           control={control}
+          setValue={setValue}
           errors={errors}
           errorMessage={String(get(errors, `${field.name}.message`, ''))}
         />

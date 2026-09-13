@@ -69,18 +69,22 @@ export const JOB_PROFILE_FIELDS: FieldConfig[] = [
           {
             name: 'startDate',
             label: 'Fecha de inicio',
-            type: InputFieldType.date,
+            type: InputFieldType.month,
+            placeholder: 'Seleccione el mes y año de inicio',
             validationRules: {
               required: 'Este campo es obligatorio',
             },
           },
           {
+            name: 'stillWorking',
+            label: 'Actualmente trabajo aquí',
+            type: InputFieldType.checkbox,
+          },
+          {
             name: 'endDate',
             label: 'Fecha de fin',
-            type: InputFieldType.date,
-            validationRules: {
-              required: 'Este campo es obligatorio',
-            },
+            type: InputFieldType.month,
+            placeholder: 'Seleccione el mes y año de fin',
           },
           {
             name: 'jobType',

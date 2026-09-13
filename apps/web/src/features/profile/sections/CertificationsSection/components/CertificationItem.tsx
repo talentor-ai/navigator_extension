@@ -1,4 +1,5 @@
 import { EditableField } from '@/components/EditableField';
+import { validateNonBlank } from '@/features/profile/validation';
 import type { CertificationItemProps } from '../types';
 
 export const CertificationItem = ({
@@ -20,6 +21,7 @@ export const CertificationItem = ({
         weight="semibold"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Certification name')}
         onSubmit={onNameSubmit}
       />
       <EditableField
@@ -31,6 +33,7 @@ export const CertificationItem = ({
         tone="muted"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Issuer')}
         onSubmit={onIssuerSubmit}
       />
       <div className="flex flex-wrap gap-2">

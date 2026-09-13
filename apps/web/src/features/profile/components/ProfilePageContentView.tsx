@@ -70,6 +70,13 @@ const ProfilePageContentView = ({
         </div>
       ) : null}
 
+      <ProfilePageEditorLayout
+        profile={profile}
+        pending={pending}
+        readOnly={readOnly}
+        onProfileChange={onProfileChange}
+      />
+
       {versionsLoading ? (
         <div
           role="status"
@@ -93,13 +100,6 @@ const ProfilePageContentView = ({
           />
         </Suspense>
       )}
-
-      <ProfilePageEditorLayout
-        profile={profile}
-        pending={pending}
-        readOnly={readOnly}
-        onProfileChange={onProfileChange}
-      />
     </>
   );
 };

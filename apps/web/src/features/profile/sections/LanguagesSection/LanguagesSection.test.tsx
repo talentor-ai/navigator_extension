@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { components } from '@talentor/contracts';
 import LanguagesSection from './index';
@@ -314,6 +314,26 @@ describe('LanguagesSection', () => {
     expect(next.languages[0].language).toBe('Deutsch');
     expect(next.languages[1].language).toBe('Spanish');
     expect(next.languages[0].id).toBe('lang-1');
+  });
+
+  it('inline edit blank language is blocked', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<LanguagesSection profile={profile} onProfileChange={onChange} />);
+
+    await user.dblClick(screen.getAllByLabelText('Edit Language')[0]);
+    const input = screen.getByLabelText('Language') as HTMLInputElement;
+    await user.clear(input);
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Language is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.clear(input);
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(await screen.findByText('Language is required')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it('preserves empty text and styling, no forbidden fields', () => {

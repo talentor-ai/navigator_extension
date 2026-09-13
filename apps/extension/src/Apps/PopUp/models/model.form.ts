@@ -30,6 +30,7 @@ export enum InputFieldType {
   number = 'number',
   date = 'date',
   datetime = 'datetime',
+  month = 'month',
   hidden = 'hidden',
 
   textarea = 'textarea',

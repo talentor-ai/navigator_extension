@@ -82,14 +82,14 @@ export const AddSkillDialog = ({
         </p>
         <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="skill-name">Name</Label>
+            <Label htmlFor="skill-name">Skill name</Label>
             <Input
               id="skill-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. React"
               disabled={pending}
-              aria-label="Name"
+              aria-label="Skill name"
             />
           </div>
           <div className="flex flex-col gap-1.5">

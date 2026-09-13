@@ -521,4 +521,68 @@ describe('EducationSection', () => {
     expect(screen.getByLabelText('Edit City')).toBeInTheDocument();
     expect(screen.queryByText(/credential/i)).not.toBeInTheDocument();
   });
+
+  it('blank institution blocked and empty optional fields show placeholder', async () => {
+    const profile = makeProfile({
+      education: [
+        {
+          id: 'edu-1',
+          institution: 'Uni A',
+          degree: null,
+          fieldOfStudy: null,
+          location: null,
+          startDate: null,
+          endDate: null,
+        },
+      ],
+    });
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<EducationSection profile={profile} onProfileChange={onChange} />);
+
+    // empty optional fields show placeholders
+    expect(screen.getByText('Add degree')).toBeInTheDocument();
+    expect(screen.getByText('Add field of study')).toBeInTheDocument();
+    expect(screen.getByText('Add start date')).toBeInTheDocument();
+    expect(screen.getByText('Add end date')).toBeInTheDocument();
+
+    // blank institution blocked
+    await user.dblClick(screen.getByLabelText('Edit Institution'));
+    const input = screen.getByLabelText('Institution');
+    await user.clear(input);
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Institution is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+
+    // invalid month validator check (jsdom sanitizes month input, so test validator directly)
+    const { validateOptionalYearMonth } =
+      await import('@/features/profile/validation');
+    expect(validateOptionalYearMonth('2020-13')).toBe('Use YYYY-MM');
+    expect(validateOptionalYearMonth('')).toBeNull();
+    fireEvent.keyDown(input, { key: 'Escape', code: 'Escape' });
+  });
+
+  it('LocationFields integration renders via EducationItem', async () => {
+    const profile = makeProfile();
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<EducationSection profile={profile} onProfileChange={onChange} />);
+    // LocationFields renders City, Region, Country code labels
+    expect(screen.getAllByLabelText('Edit City').length).toBeGreaterThan(0);
+    expect(screen.getAllByLabelText('Edit Region').length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByLabelText('Edit Country code').length,
+    ).toBeGreaterThan(0);
+
+    // editing via LocationFields still calls hook
+    await user.dblClick(screen.getAllByLabelText('Edit City')[0]);
+    const input = screen.getByLabelText('City');
+    await user.clear(input);
+    await user.type(input, 'Barcelona');
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onChange).toHaveBeenCalled());
+  });
 });

@@ -1,4 +1,9 @@
 import { EditableField } from '@/components/EditableField';
+import { LocationFields } from '@/features/profile/components/LocationFields';
+import {
+  validateNonBlank,
+  validateOptionalYearMonth,
+} from '@/features/profile/validation';
 import type { EducationItemProps } from '../types';
 
 export const EducationItem = ({
@@ -24,6 +29,7 @@ export const EducationItem = ({
         weight="semibold"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Institution')}
         onSubmit={onInstitutionSubmit}
       />
       <EditableField
@@ -47,32 +53,13 @@ export const EducationItem = ({
         disabled={readOnly}
         onSubmit={onFieldOfStudySubmit}
       />
-      <EditableField
-        value={item.location?.city ?? ''}
-        label="City"
-        purpose="meta"
-        tone="muted"
+      <LocationFields
+        location={item.location}
         pending={pending}
-        disabled={readOnly}
-        onSubmit={onCitySubmit}
-      />
-      <EditableField
-        value={item.location?.region ?? ''}
-        label="Region"
-        purpose="meta"
-        tone="muted"
-        pending={pending}
-        disabled={readOnly}
-        onSubmit={onRegionSubmit}
-      />
-      <EditableField
-        value={item.location?.countryCode ?? ''}
-        label="Country code"
-        purpose="meta"
-        tone="muted"
-        pending={pending}
-        disabled={readOnly}
-        onSubmit={onCountryCodeSubmit}
+        readOnly={readOnly}
+        onCitySubmit={onCitySubmit}
+        onRegionSubmit={onRegionSubmit}
+        onCountryCodeSubmit={onCountryCodeSubmit}
       />
       <div className="flex flex-wrap gap-2">
         <EditableField
@@ -84,6 +71,7 @@ export const EducationItem = ({
           inputType="month"
           pending={pending}
           disabled={readOnly}
+          validate={validateOptionalYearMonth}
           onSubmit={onStartDateSubmit}
         />
         <EditableField
@@ -95,6 +83,7 @@ export const EducationItem = ({
           inputType="month"
           pending={pending}
           disabled={readOnly}
+          validate={validateOptionalYearMonth}
           onSubmit={onEndDateSubmit}
         />
       </div>

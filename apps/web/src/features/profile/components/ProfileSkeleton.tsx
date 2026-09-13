@@ -12,7 +12,7 @@ const ProfileSkeleton = () => {
       aria-label="Loading profile"
       aria-busy="true"
       aria-live="polite"
-      className="mx-auto w-full max-w-[1200px] px-4 md:px-6 py-6 pt-20"
+      className="mx-auto w-full max-w-300 px-4 md:px-6 py-6 pt-20"
     >
       <span className="sr-only">Loading profile...</span>
       <div className="grid grid-cols-12 gap-6">

@@ -1,4 +1,5 @@
 import { EditableField } from '@/components/EditableField';
+import { validateNonBlank } from '../../../validation';
 import type { Skill } from '../types';
 
 type Props = {
@@ -30,6 +31,7 @@ export const SkillItem = ({
         weight="semibold"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Skill name')}
         onSubmit={onNameSubmit}
       />
       <EditableField
@@ -39,6 +41,7 @@ export const SkillItem = ({
         tone="muted"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Category')}
         onSubmit={onCategorySubmit}
       />
       <div className="flex flex-wrap gap-2">

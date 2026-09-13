@@ -32,6 +32,7 @@ export const ProjectItem = ({
         weight="semibold"
         pending={pending}
         disabled={readOnly}
+        validate={(v) => validateNonBlank(v, 'Project name')}
         onSubmit={onNameSubmit}
       />
       <EditableField

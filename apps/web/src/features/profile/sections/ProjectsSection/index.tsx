@@ -52,7 +52,7 @@ const ProjectsSection = ({
           readOnly={readOnly}
         />
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 divide-y divide-border">
+      <CardContent className="flex flex-col gap-4">
         {projects.length === 0 ? (
           <p className="text-sm text-muted-foreground">No projects yet</p>
         ) : (
@@ -61,7 +61,7 @@ const ProjectsSection = ({
             getId={(p) => p.id}
             onReorder={handleReorder}
           >
-            {(project) => (
+            {(project, index) => (
               <SortableCollectionItem
                 key={project.id}
                 id={project.id}
@@ -70,7 +70,9 @@ const ProjectsSection = ({
                 dragLabel="Drag to reorder project"
                 removeLabel="Remove project"
                 onRemove={() => requestRemove(project.id)}
-                className="pt-4 first:pt-0"
+                className={
+                  index === 0 ? 'pt-0' : 'border-t border-border mt-8 pt-8'
+                }
               >
                 <ProjectItem
                   item={project}

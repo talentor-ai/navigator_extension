@@ -634,4 +634,41 @@ describe('ProjectsSection – Wave 3A', () => {
     expect(validateOptionalYearMonth('')).toBeNull();
     expect(validateOptionalYearMonth('2021-01')).toBeNull();
   });
+
+  it('blank project name blocked and empty optionals show placeholder', async () => {
+    const profile = makeProfile({
+      projects: [
+        {
+          id: '60000000-0000-4000-a000-000000000006',
+          name: 'Proj',
+          role: null,
+          description: 'Desc',
+          startDate: null,
+          endDate: null,
+          url: null,
+          repository: null,
+          achievements: null,
+          skillRefs: null,
+        },
+      ],
+    });
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ProjectsSection profile={profile} onProfileChange={onChange} />);
+
+    // empty optionals show placeholders
+    expect(screen.getByText('Add project role')).toBeInTheDocument();
+    expect(screen.getByText('Add project URL')).toBeInTheDocument();
+    expect(screen.getByText('Add repository URL')).toBeInTheDocument();
+
+    await user.dblClick(screen.getByLabelText('Edit Project name'));
+    const input = screen.getByLabelText('Project name');
+    await user.clear(input);
+    await user.type(input, '   ');
+    fireEvent.submit(input.closest('form')!);
+    expect(
+      await screen.findByText('Project name is required'),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });
