@@ -9,12 +9,7 @@ export { InputFieldType } from './model.form';
 export type { FieldConfig } from './model.form';
 export { IconSize } from './model.icons';
 export type { iInfo, iProfile } from './model.info';
-export { UserRole } from './model.session';
-export type {
-  Authority,
-  IUserSessionInfo,
-  ILoginRequest,
-} from './model.session';
+export type { IUserSessionInfo, ILoginRequest } from './model.session';
 export type {
   UserJobProfile,
   UserJobProfileExperience,

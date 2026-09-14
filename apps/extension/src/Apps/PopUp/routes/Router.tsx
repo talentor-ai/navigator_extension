@@ -7,15 +7,8 @@ import {
   MAIN_PATH,
   PROFILE_CONFIG_PATH,
   PROFILE_SETTINGS_PATH,
-  SIGNUP_PATH,
 } from '@popup:constants/paths';
-import {
-  Home,
-  LoginScreen,
-  RegisterScreen,
-  Profile,
-  History,
-} from '@popup:pages';
+import { Home, LoginScreen, Profile, History } from '@popup:pages';
 import ConditionalRedirect from '@popup/hoc/RenderAuthComponent';
 import { GeneratePost, NoJobPostMessage } from '@popup/pages/Home/screens';
 import { EditProfileList, ProfileList } from '@popup/pages/Profile/Screens';
@@ -77,7 +70,6 @@ const Router = () => {
       </Route>
 
       <Route path={LOGIN_PATH} index element={<LoginScreen />} />
-      <Route path={SIGNUP_PATH} element={<RegisterScreen />} />
     </Routes>
   );
 };

@@ -17,12 +17,16 @@ The extension is an assistant around resume preparation. It does not apply to jo
 
 ## User Journeys
 
-### 1. Authenticate
+### 1. Authenticate (login-only)
 
 1. Seeker opens the extension popup.
-2. Seeker logs in or registers.
-3. The returned token and user session are persisted in the `session` Zustand store.
+2. Seeker logs in with username and password.
+3. The returned token and `UserResponse` user are persisted in the `session` Zustand store.
 4. Axios reads the persisted token and sends it as a Bearer token on later API requests.
+
+Account registration happens on the website, not in the popup: the login screen links to `${VITE_WEB_URL}/register`. The extension does not call the backend `POST /api/v1/auth/register` endpoint.
+
+Refresh uses an HttpOnly `refresh_token` cookie. Extension refresh-token handling is out of scope, so an expired access token requires logging in again. CORS for the extension origin depends on backend work not present in this repository.
 
 ### 2. Create and select profile
 
@@ -99,6 +103,8 @@ Generated output must be reviewed by the seeker because the model can produce in
 - Resume history must be scoped to the authenticated user's selected profile on the backend.
 - `/my-cvs` route is not consistently wrapped by the authentication redirect.
 - Profile display still contains hardcoded/mock presentation data in `InformationGrid`.
+- `GET /api/v1/user` returns `UserResponse` without `userJobProfile`; the extension type adds it optionally and must not assume profiles are embedded.
+- The popup has no account-registration flow; signup lives on the website at `${VITE_WEB_URL}/register`.
 
 ## Trust And Privacy Expectations
 

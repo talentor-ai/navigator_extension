@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { IUserSessionInfo, UserRole } from '@popup/models/model.session';
+import { IUserSessionInfo } from '@popup/models/model.session';
 
 interface State {
   session: IUserSessionInfo;
@@ -16,32 +16,16 @@ const sessionInitialState: IUserSessionInfo = {
   email: '',
   username: '',
   accountVerified: false,
-  role: UserRole.USER,
-  isAccountNonExpired: true,
-  isAccountNonLocked: true,
-  isCredentialsNonExpired: true,
-  isEnabled: true,
-  firstName: '',
-  lastName: '',
-  birthDate: undefined,
-  profileUrl: '',
-  address: '',
-  phoneNumber: '',
-  gender: '',
-  country: '',
-  identificationNumber: '',
-  identificationType: '',
-  userJobProfile: [],
-  authorities: [],
+  role: 'USER',
+  createdAt: '',
+  updatedAt: '',
 };
-
-const token: string = localStorage.getItem('token') || ''; // TODO: Possibly it doesn't work
 
 // Store configuration
 const useSessionStore = create<State>()(
   persist(
     (set) => ({
-      token,
+      token: '',
       session: sessionInitialState,
       setSession: (session: IUserSessionInfo) =>
         set((state: State) => ({ ...state, session })),
