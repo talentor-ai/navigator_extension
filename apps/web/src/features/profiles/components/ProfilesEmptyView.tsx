@@ -1,12 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/Icons';
 
 type Props = {
   onCreate: () => void;
+  onImport: () => void;
   creating?: boolean;
 };
 
-const ProfilesEmptyView = ({ onCreate, creating = false }: Props) => {
+const ProfilesEmptyView = ({ onCreate, onImport, creating = false }: Props) => {
   return (
     <Card className="rounded-2xl bg-card border-border">
       <CardContent className="flex flex-col items-center gap-4 px-6 py-10 text-center md:px-8 md:py-14">
@@ -19,16 +21,27 @@ const ProfilesEmptyView = ({ onCreate, creating = false }: Props) => {
             later and keep versions as you iterate.
           </p>
         </div>
-        <Button
-          type="button"
-          variant="lime"
-          onClick={onCreate}
-          disabled={creating}
-          aria-busy={creating}
-          className="min-w-36"
-        >
-          {creating ? 'Creating...' : 'Create profile'}
-        </Button>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onImport}
+            className="min-w-36 gap-2"
+          >
+            <Icons type="upload" className="h-4 w-4" aria-hidden="true" />
+            Import resume
+          </Button>
+          <Button
+            type="button"
+            variant="lime"
+            onClick={onCreate}
+            disabled={creating}
+            aria-busy={creating}
+            className="min-w-36"
+          >
+            {creating ? 'Creating...' : 'Create profile'}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

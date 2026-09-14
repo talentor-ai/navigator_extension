@@ -20,6 +20,7 @@ const ProfilesPage = () => {
     createError,
     handleCreateSubmit,
     handleRetry,
+    handleImport,
   } = useProfilesPage();
 
   const renderCreateDialog = () => (
@@ -52,6 +53,7 @@ const ProfilesPage = () => {
     content = (
       <ProfilesEmptyView
         onCreate={() => setCreateOpen(true)}
+        onImport={handleImport}
         creating={createMutation.isPending}
       />
     );
@@ -65,6 +67,7 @@ const ProfilesPage = () => {
         <ProfilesHeader
           count={profilesQuery.isSuccess ? profiles.length : 0}
           onCreate={() => setCreateOpen(true)}
+          onImport={handleImport}
         />
         {content}
       </div>

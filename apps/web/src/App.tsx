@@ -7,7 +7,9 @@ import { ProtectedRoute, PublicOnlyRoute } from './components/ProtectedRoute';
 import { useAuthStore } from './store/auth';
 import { ProfilePage } from '@/features/profile';
 import { ProfilesPage } from '@/features/profiles';
+import { ResumeImportRoute } from '@/features/resume-import';
 import { DashboardHome, DashboardLayout } from '@/features/dashboard';
+import { Toaster } from '@/components/ui/sonner';
 
 const App = () => {
   const bootstrap = useAuthStore((s) => s.bootstrap);
@@ -45,6 +47,7 @@ const App = () => {
       }}
     >
       <AntApp>
+        <Toaster />
         <Routes>
           <Route
             element={
@@ -55,6 +58,7 @@ const App = () => {
           >
             <Route index element={<DashboardHome />} />
             <Route path="profiles" element={<ProfilesPage />} />
+            <Route path="profiles/import" element={<ResumeImportRoute />} />
             <Route path="profile/:profileId?" element={<ProfilePage />} />
           </Route>
           <Route

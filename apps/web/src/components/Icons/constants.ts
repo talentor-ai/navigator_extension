@@ -6,7 +6,9 @@ import {
   LuChevronUp,
   LuCodeXml,
   LuContact,
+  LuDownload,
   LuFileText,
+  LuFileUp,
   LuFolderKanban,
   LuGraduationCap,
   LuGripVertical,
@@ -17,6 +19,7 @@ import {
   LuMenu,
   LuPlus,
   LuTrash2,
+  LuUpload,
   LuUser,
   LuX,
 } from 'react-icons/lu';
@@ -42,4 +45,7 @@ export const ICON_COMPONENTS = {
   education: LuGraduationCap,
   certifications: LuAward,
   history: LuHistory,
+  upload: LuUpload,
+  download: LuDownload,
+  file: LuFileUp,
 } as const;

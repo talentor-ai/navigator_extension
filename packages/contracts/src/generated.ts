@@ -195,6 +195,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/profiles/resume-import/draft': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Generate Resume Draft */
+    post: operations['generate_resume_draft_api_v1_profiles_resume_import_draft_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/profiles/resume-import/confirm': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Confirm Resume Draft */
+    post: operations['confirm_resume_draft_api_v1_profiles_resume_import_confirm_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/health': {
     parameters: {
       query?: never;
@@ -268,6 +302,19 @@ export interface components {
       date?: string;
       response?: components['schemas']['ProfileVersionSnapshot'] | null;
     };
+    /** ApiResponse[ResumeDraftResponse] */
+    ApiResponse_ResumeDraftResponse_: {
+      /** Message */
+      message: string;
+      /** Status */
+      status: string;
+      /**
+       * Date
+       * Format: date-time
+       */
+      date?: string;
+      response?: components['schemas']['ResumeDraftResponse'] | null;
+    };
     /** ApiResponse[UserResponse] */
     ApiResponse_UserResponse_: {
       /** Message */
@@ -315,6 +362,16 @@ export interface components {
       token: string;
       user: components['schemas']['UserResponse'];
     };
+    /** Body_generate_resume_draft_api_v1_profiles_resume_import_draft_post */
+    Body_generate_resume_draft_api_v1_profiles_resume_import_draft_post: {
+      /** File */
+      file: string;
+      /**
+       * Locale
+       * @default en-US
+       */
+      locale: string;
+    };
     /** CandidateProfileV1 */
     CandidateProfileV1: {
       /**
@@ -361,6 +418,12 @@ export interface components {
       credentialId?: string | null;
       /** Credentialurl */
       credentialUrl?: string | null;
+    };
+    /** ConfirmResumeDraftRequest */
+    ConfirmResumeDraftRequest: {
+      /** Name */
+      name: string;
+      profile: components['schemas']['CandidateProfileV1'];
     };
     /**
      * CreateProfileRequest
@@ -638,6 +701,12 @@ export interface components {
     RenameProfileRequest: {
       /** Name */
       name: string;
+    };
+    /** ResumeDraftResponse */
+    ResumeDraftResponse: {
+      profile: components['schemas']['CandidateProfileV1'];
+      /** Warnings */
+      warnings?: string[];
     };
     /** Skill */
     Skill: {
@@ -1241,6 +1310,153 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  generate_resume_draft_api_v1_profiles_resume_import_draft_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': components['schemas']['Body_generate_resume_draft_api_v1_profiles_resume_import_draft_post'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiResponse_ResumeDraftResponse_'];
+        };
+      };
+      /** @description Authentication required */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Resume file is too large */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Unsupported resume file type */
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Invalid or unreadable resume */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Too many resume import requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Resume generation failed */
+      502: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Resume generation is unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Resume generation timed out */
+      504: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  confirm_resume_draft_api_v1_profiles_resume_import_confirm_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConfirmResumeDraftRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiResponse_ProfileSnapshot_'];
+        };
+      };
+      /** @description Authentication required */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Conflict: duplicate active profile name */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Invalid or unreadable resume */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
     };

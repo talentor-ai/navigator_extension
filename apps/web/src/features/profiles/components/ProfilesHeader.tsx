@@ -4,9 +4,10 @@ import { Icons } from '@/components/Icons';
 type Props = {
   count: number;
   onCreate: () => void;
+  onImport: () => void;
 };
 
-const ProfilesHeader = ({ count, onCreate }: Props) => {
+const ProfilesHeader = ({ count, onCreate, onImport }: Props) => {
   return (
     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div className="space-y-1">
@@ -19,15 +20,26 @@ const ProfilesHeader = ({ count, onCreate }: Props) => {
             : `${count} ${count === 1 ? 'profile' : 'profiles'} total`}
         </p>
       </div>
-      <Button
-        type="button"
-        variant="lime"
-        onClick={onCreate}
-        className="shrink-0 gap-2"
-      >
-        <Icons type="add" className="h-4 w-4" aria-hidden="true" />
-        New profile
-      </Button>
+      <div className="flex shrink-0 flex-wrap gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onImport}
+          className="gap-2"
+        >
+          <Icons type="upload" className="h-4 w-4" aria-hidden="true" />
+          Import resume
+        </Button>
+        <Button
+          type="button"
+          variant="lime"
+          onClick={onCreate}
+          className="gap-2"
+        >
+          <Icons type="add" className="h-4 w-4" aria-hidden="true" />
+          New profile
+        </Button>
+      </div>
     </div>
   );
 };

@@ -19,9 +19,11 @@ describe('Icons', () => {
         'close',
         'contact',
         'delete',
+        'download',
         'drag',
         'education',
         'experience',
+        'file',
         'history',
         'home',
         'languages',
@@ -31,6 +33,7 @@ describe('Icons', () => {
         'projects',
         'skills',
         'summary',
+        'upload',
       ].sort(),
     );
   });

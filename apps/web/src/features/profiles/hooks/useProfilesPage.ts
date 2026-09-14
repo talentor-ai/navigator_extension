@@ -29,6 +29,10 @@ export function useProfilesPage() {
     void profilesQuery.refetch();
   };
 
+  const handleImport = () => {
+    navigate('/profiles/import');
+  };
+
   return {
     profiles: profilesQuery.data ?? [],
     profilesQuery,
@@ -38,5 +42,6 @@ export function useProfilesPage() {
     createError,
     handleCreateSubmit,
     handleRetry,
+    handleImport,
   };
 }

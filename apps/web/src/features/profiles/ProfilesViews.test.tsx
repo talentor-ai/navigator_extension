@@ -68,7 +68,7 @@ describe('ProfilesErrorView', () => {
 
 describe('ProfilesEmptyView', () => {
   it('renders empty text and create button', () => {
-    render(<ProfilesEmptyView onCreate={vi.fn()} />);
+    render(<ProfilesEmptyView onCreate={vi.fn()} onImport={vi.fn()} />);
     expect(screen.getByText(/no profiles yet/i)).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /create profile/i }),
@@ -78,13 +78,15 @@ describe('ProfilesEmptyView', () => {
   it('calls onCreate when clicked', async () => {
     const user = userEvent.setup();
     const onCreate = vi.fn();
-    render(<ProfilesEmptyView onCreate={onCreate} />);
+    render(<ProfilesEmptyView onCreate={onCreate} onImport={vi.fn()} />);
     await user.click(screen.getByRole('button', { name: /create profile/i }));
     expect(onCreate).toHaveBeenCalledTimes(1);
   });
 
   it('disables button when creating', () => {
-    render(<ProfilesEmptyView onCreate={vi.fn()} creating />);
+    render(
+      <ProfilesEmptyView onCreate={vi.fn()} onImport={vi.fn()} creating />,
+    );
     const btn = screen.getByRole('button', { name: /creating/i });
     expect(btn).toBeDisabled();
     expect(btn).toHaveAttribute('aria-busy', 'true');
@@ -93,15 +95,32 @@ describe('ProfilesEmptyView', () => {
   it('does not call onCreate when creating', async () => {
     const user = userEvent.setup();
     const onCreate = vi.fn();
-    render(<ProfilesEmptyView onCreate={onCreate} creating />);
+    render(
+      <ProfilesEmptyView onCreate={onCreate} onImport={vi.fn()} creating />,
+    );
     await user.click(screen.getByRole('button', { name: /creating/i }));
     expect(onCreate).not.toHaveBeenCalled();
+  });
+
+  it('renders import resume button', () => {
+    render(<ProfilesEmptyView onCreate={vi.fn()} onImport={vi.fn()} />);
+    expect(
+      screen.getByRole('button', { name: /import resume/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('calls onImport when import clicked', async () => {
+    const user = userEvent.setup();
+    const onImport = vi.fn();
+    render(<ProfilesEmptyView onCreate={vi.fn()} onImport={onImport} />);
+    await user.click(screen.getByRole('button', { name: /import resume/i }));
+    expect(onImport).toHaveBeenCalledTimes(1);
   });
 });
 
 describe('ProfilesHeader', () => {
   it('shows title and zero profiles subtitle', () => {
-    render(<ProfilesHeader count={0} onCreate={vi.fn()} />);
+    render(<ProfilesHeader count={0} onCreate={vi.fn()} onImport={vi.fn()} />);
     expect(
       screen.getByRole('heading', { name: 'Profiles' }),
     ).toBeInTheDocument();
@@ -113,19 +132,36 @@ describe('ProfilesHeader', () => {
 
   it('shows count for 1 and plural', () => {
     const { rerender } = render(
-      <ProfilesHeader count={1} onCreate={vi.fn()} />,
+      <ProfilesHeader count={1} onCreate={vi.fn()} onImport={vi.fn()} />,
     );
     expect(screen.getByText(/1 profile total/i)).toBeInTheDocument();
-    rerender(<ProfilesHeader count={3} onCreate={vi.fn()} />);
+    rerender(
+      <ProfilesHeader count={3} onCreate={vi.fn()} onImport={vi.fn()} />,
+    );
     expect(screen.getByText(/3 profiles total/i)).toBeInTheDocument();
   });
 
   it('calls onCreate when new profile clicked', async () => {
     const user = userEvent.setup();
     const onCreate = vi.fn();
-    render(<ProfilesHeader count={0} onCreate={onCreate} />);
+    render(<ProfilesHeader count={0} onCreate={onCreate} onImport={vi.fn()} />);
     await user.click(screen.getByRole('button', { name: /new profile/i }));
     expect(onCreate).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders import resume button', () => {
+    render(<ProfilesHeader count={0} onCreate={vi.fn()} onImport={vi.fn()} />);
+    expect(
+      screen.getByRole('button', { name: /import resume/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('calls onImport when import clicked', async () => {
+    const user = userEvent.setup();
+    const onImport = vi.fn();
+    render(<ProfilesHeader count={0} onCreate={vi.fn()} onImport={onImport} />);
+    await user.click(screen.getByRole('button', { name: /import resume/i }));
+    expect(onImport).toHaveBeenCalledTimes(1);
   });
 });
 
