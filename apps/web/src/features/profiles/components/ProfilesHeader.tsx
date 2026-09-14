@@ -36,7 +36,12 @@ const ProfilesHeader = ({ count, onCreate, onImport }: Props) => {
           onClick={onCreate}
           className="gap-2"
         >
-          <Icons type="add" className="h-4 w-4" aria-hidden="true" />
+          <Icons
+            type="addProfile"
+            strokeWidth={2.8}
+            className="h-4 w-4"
+            aria-hidden="true"
+          />
           New profile
         </Button>
       </div>
