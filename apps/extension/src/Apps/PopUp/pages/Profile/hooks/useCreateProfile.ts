@@ -8,7 +8,7 @@ const useCreateProfile = () => {
     mutationFn: (data: UserJobProfile) => createJobProfileApi(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['RESUME_HISTORY', 'USER_INFO'],
+        queryKey: ['USER_INFO'],
       });
     },
     onError: (error: unknown) => {

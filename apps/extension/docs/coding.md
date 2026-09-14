@@ -2,100 +2,106 @@
 
 ## Technology
 
-- React 18 and TypeScript
-- Vite 5 with `@crxjs/vite-plugin`
+- React 19 and TypeScript 6
+- Vite 8 with `@crxjs/vite-plugin`
 - Manifest V3
 - TanStack Query for server state
 - Zustand for local and persisted state
 - Axios for HTTP
 - React Hook Form for dynamic forms
-- Ant Design 5 and Tailwind CSS for UI
+- Ant Design 6 and Tailwind CSS for UI
 - i18next and `react-i18next` for localization
 - CSS Modules for component-local styles
 
 ## Module Boundaries
 
-| Module                      | Responsibility                                      | Rule                                                                                 |
-| --------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `src/Apps/PopUp/api`        | Axios instance, auth interceptor, endpoint clients. | Keep HTTP details here; pages call hooks or API adapters.                            |
-| `src/Apps/PopUp/models`     | API, form, session, user, and UI types.             | Session/auth types come from `@talentor/contracts`; extend locally only when needed. |
-| `src/Apps/PopUp/store`      | Zustand stores and browser persistence.             | Keep durable UI/session state separate from server cache.                            |
-| `src/Apps/PopUp/pages`      | Route-level screens and use-case UI.                | Compose reusable components; avoid direct DOM scraping.                              |
-| `src/Apps/PopUp/components` | Shared visual and form components.                  | Keep components presentation-focused where possible.                                 |
-| `src/Apps/PopUp/hooks`      | Reusable popup data behavior.                       | Encapsulate Query and mutation behavior in hooks.                                    |
-| `src/Apps/PopUp/routes`     | HashRouter route tree and path constants.           | Preserve hash routes for extension popup navigation.                                 |
-| `src/Apps/HTMLInjector`     | LinkedIn selectors, DOM scraping, injected UI.      | Treat selectors as unstable integration code.                                        |
-| `src/Apps/ServiceWorker`    | Runtime message and popup-port bridge.              | Do not put UI or API business logic in worker.                                       |
-| `src/Apps/constants.ts`     | Shared cross-context protocol constants.            | Change sender, bridge, and receiver together.                                        |
+| Module                      | Responsibility                            | Rule                                                                                 |
+| --------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| `src/Apps/PopUp/api`        | Axios instance, auth, endpoint clients.   | Keep HTTP details here; pages call hooks or API adapters.                            |
+| `src/Apps/PopUp/models`     | API, form, session, user, and UI types.   | Session/auth types come from `@talentor/contracts`; extend locally only when needed. |
+| `src/Apps/PopUp/store`      | Zustand stores and browser persistence.   | Keep durable UI/session state separate from server cache.                            |
+| `src/Apps/PopUp/pages`      | Route-level screens and use-case UI.      | Compose reusable components; keep orchestration in hooks.                            |
+| `src/Apps/PopUp/components` | Shared visual and form components.        | Keep components presentation-focused where possible.                                 |
+| `src/Apps/PopUp/hooks`      | Reusable data behavior.                   | Encapsulate Query and mutation behavior in hooks.                                    |
+| `src/Apps/PopUp/routes`     | HashRouter route tree and path constants. | Preserve hash routes for extension-host navigation.                                  |
+
+`src/Apps/HTMLInjector`, `src/Apps/ServiceWorker`, and `src/Apps/constants.ts`
+no longer exist. Do not recreate scraper or message-bridge modules.
 
 ## Patterns In Use
 
-### Context-separated extension architecture
-
-Popup, content script, and service worker have separate lifecycles and communication APIs. Share only serializable data and protocol constants. Do not assume DOM, React state, or popup globals exist in the worker.
-
 ### Container and presentation components
 
-Pages and containers coordinate data and navigation. Reusable components such as `Button`, `Box`, `BaseLayout`, and form controls render UI from props.
+Pages and containers coordinate data and navigation. Reusable components such as
+`Button`, `Box`, `BaseLayout`, and form controls render UI from props.
 
 ### Custom hooks
 
-`useApplyToJob`, `useResumeHistory`, and `useLogin` isolate mutations, queries, navigation, and error handling from screen markup. Login is the only auth mutation in the popup; registration is handled by the website.
+`useLogin` and the profile hooks isolate mutations, queries, navigation, and
+error handling from screen markup. Login is the only auth mutation; registration
+is handled by the website.
 
 ### Zustand plus persistence
 
-Zustand stores hold session, selected profile, and form state. Persistence makes a popup reopen with prior context, but storage keys are part of the behavior and must remain unique.
+Zustand stores hold session and selected profile state. Persistence makes the app
+reopen with prior context, but storage keys are part of the behavior and must
+remain unique.
 
 ### React Query server state
 
-Remote user and resume data belong in TanStack Query. Mutations invalidate the relevant query after writes. Query keys must include every identity parameter, especially selected profile ID.
+Remote user data belongs in TanStack Query. Mutations invalidate
+`['USER_INFO']` after writes.
 
 ### Configured form rendering
 
-`FormComponent` receives field configuration and uses React Hook Form. Add fields through typed configuration where possible instead of duplicating field markup.
-
-### Message protocol
-
-The scrape bridge uses the constants `JOB_POST_SCRAPPED_ACTION`, `UPDATE_JOB_SCRAPPED_ACTION`, `UPDATE_JOB_SCRAPPED_CONFIRMATION_ACTION`, and port name `popup`. Keep payloads JSON-serializable.
+`FormComponent` receives field configuration and uses React Hook Form. Add fields
+through typed configuration where possible instead of duplicating field markup.
 
 ## Rules For New Code
 
-- Keep `manifest.config.ts` as source of truth for entry points and permissions.
-- Use existing path aliases: `@popup:...`, `@injector:...`, and `@all/*`.
-- Keep Tailwind utility classes in the extension prefixed with `tai:` (Tailwind 4 variant-style). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`, `tai:active:scale-95`, `tai:last:border-none`. Never use unprefixed or dash-form `tai-`/`ik-` utilities; `apps/web` stays unprefixed.
-- Keep shared popup CSS compatible with both popup rendering and content-script shadow-root injection.
-- Keep LinkedIn selectors in `HTMLInjector/constants.ts`; isolate selector changes from scraping behavior.
+- Keep `manifest.config.ts` as the source of truth for entry points and permissions.
+- Use existing path aliases: `@popup:...` and `@lang/*`. The `@injector/*` and
+  `@all/*` aliases were removed with the scraper.
+- Keep Tailwind utility classes in the extension prefixed with `tai:` (Tailwind 4
+  variant-style). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants the
+  prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`,
+  `tai:active:scale-95`, `tai:last:border-none`. Never use unprefixed or dash-form
+  `tai-`/`ik-` utilities; `apps/web` stays unprefixed.
 - Type API payloads and response data. Replace `any` at boundaries as code is touched.
-- Keep the API base URL in `VITE_SERVICE_URL`; never hardcode deployment credentials or bearer tokens. Website links (for example `${WEB_URL}/register`) use `VITE_WEB_URL`, exposed as `WEB_URL` from `@popup:api`, and must not be hardcoded.
-- Use shared session/auth contracts from `@talentor/contracts` (`UserResponse`, `LoginRequest`). `useSessionStore` persists the `UserResponse` user and token under the `session` key; the store may extend `UserResponse` with an optional `userJobProfile`.
-- Treat localStorage keys as public state contracts: `session`, `jobProfile`, `job-post-form`, and `current-path` must not collide.
-- Use `HashRouter` paths; do not switch popup navigation to browser history without extension-host support.
-- Keep popup-to-worker and worker-to-content messages explicit and versionable.
+- Keep the API base URL in `VITE_SERVICE_URL`; never hardcode deployment credentials
+  or bearer tokens. Website links use `VITE_WEB_URL`, exposed as `WEB_URL` from
+  `@popup:api`.
+- Use shared session/auth contracts from `@talentor/contracts` (`UserResponse`,
+  `LoginRequest`). `useSessionStore` persists the `UserResponse` user and token under
+  the `session` key.
+- Treat localStorage keys as public state contracts: `session`, `jobProfile`, and
+  `current-path` must not collide.
+- Use `HashRouter` paths; do not switch navigation to browser history without
+  extension-host support.
 - Do not hand-edit `dist/`; it is generated by the build.
 - Review authentication and profile ownership before rendering or mutating user data.
-- Show generated resume content as user-reviewable output. Do not imply that generation guarantees ATS acceptance.
 
 ## Current Implementation Risks
 
-- `GET /api/v1/user` returns a `UserResponse` without an embedded `userJobProfile`; consumers must not assume profiles are included.
-- Extension refresh-token handling is out of scope: the HttpOnly `refresh_token` cookie is not used, so access-token expiry forces a re-login. CORS for the extension origin is backend work not present in this repository.
-- `useJobPostFormStore` and `useJobProfileResumeFormStore` both persist under `job-post-form`.
-- `useResumeHistory` omits profile ID from its query key, so switching profiles can reuse stale cache data.
-- Profile and history invalidation keys do not consistently match the query keys used by consumers.
+- `GET /api/v1/user` returns a `UserResponse` without an embedded `userJobProfile`;
+  consumers must not assume profiles are included.
+- Extension refresh-token handling is out of scope: the HttpOnly `refresh_token`
+  cookie is not used, so access-token expiry forces a re-login.
+- `useJobProfileResumeFormStore` is currently unused and persists under `job-post-form`.
 - Several API and form surfaces use `any`; backend field names and types are not fully aligned.
-- `linkedInUrl` in extension models differs from backend `linkedinUrl`; `skills` is typed/entered differently across layers.
-- The extension declares profile delete and resume download paths that the backend does not implement.
-- `HistoryItem` cannot build a reliable download link because backend download data is absent.
+- The extension declares a profile delete path that the backend does not implement.
+- `index.html` is retained for the upcoming overlay but is not yet a manifest entry,
+  so the production build currently emits only the manifest and icons.
 
 ## Commands
 
-`package.json` declares `pnpm@9.14.4`, while the repository `AGENTS.md` instructs contributors to use Bun. Resolve that package-manager mismatch before standardizing onboarding commands.
+Use Bun from the repository root.
 
 ```bash
-pnpm install
-pnpm run dev
-pnpm run lint
-pnpm run build
+bun install
+bun run dev:extension      # Vite dev server on port 5174
+bun run --cwd apps/extension lint
+bun run --cwd apps/extension typecheck
+bun run --cwd apps/extension build
+bun run verify             # format:check -> lint -> typecheck -> build
 ```
-
-The intended verification sequence in `AGENTS.md` is `format check -> lint -> typecheck -> build`; use the repository's actual package-manager scripts once the mismatch is resolved.

@@ -3,17 +3,11 @@ export {
   SERVICE_PATH,
   WEB_URL,
   BASE_PATH,
-  PROFILE_ID,
   AUTH_PATH,
   LOGIN_PATH,
-  JOBS_PATH,
-  APPLY_PATH,
   USER_PATH,
-  RESUME_PATH,
-  RESUME_HISTORY_BY_PROFILE_PATH,
 } from './constants';
 export { loginApi } from './fetchSession';
 export { getUserApi } from './fetchUser';
-export { getResumeHistory, applyToJob } from './resumeApi';
 export { updateJobProfileApi, createJobProfileApi } from './jobProfileApi';
 export { deleteJobProfileApi } from './deleteJobProfile';

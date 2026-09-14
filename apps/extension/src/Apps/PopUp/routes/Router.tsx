@@ -1,16 +1,13 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import {
-  GENERATE_MANUALLY_PATH,
-  HISTORY_PATH,
   ID,
   LOGIN_PATH,
   MAIN_PATH,
   PROFILE_CONFIG_PATH,
   PROFILE_SETTINGS_PATH,
 } from '@popup:constants/paths';
-import { Home, LoginScreen, Profile, History } from '@popup:pages';
+import { LoginScreen, Profile } from '@popup:pages';
 import ConditionalRedirect from '@popup/hoc/RenderAuthComponent';
-import { GeneratePost, NoJobPostMessage } from '@popup/pages/Home/screens';
 import { EditProfileList, ProfileList } from '@popup/pages/Profile/Screens';
 
 const Router = () => {
@@ -18,30 +15,8 @@ const Router = () => {
     <Routes>
       <Route
         path={MAIN_PATH}
-        element={
-          <ConditionalRedirect>
-            <Home />
-          </ConditionalRedirect>
-        }
-      >
-        <Route
-          index
-          element={
-            <ConditionalRedirect>
-              <NoJobPostMessage />
-            </ConditionalRedirect>
-          }
-        />
-        <Route
-          path={GENERATE_MANUALLY_PATH}
-          element={
-            <ConditionalRedirect>
-              <GeneratePost />
-            </ConditionalRedirect>
-          }
-        />
-      </Route>
-      <Route path={HISTORY_PATH} element={<History />} />
+        element={<Navigate to={PROFILE_SETTINGS_PATH} replace />}
+      />
       <Route path={PROFILE_SETTINGS_PATH} element={<Profile />}>
         <Route
           index

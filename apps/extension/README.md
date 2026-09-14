@@ -2,16 +2,19 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A smart Chrome extension that automates resume optimization using AI. Analyzes job postings, matches keywords with candidate profiles, and generates tailored resumes.
+A Chrome extension for Talentor. The legacy LinkedIn scraper, background service
+worker, and browser-action popup have been removed. The remaining source is the
+authenticated Talentor application (login and profile management), retained for
+an upcoming in-page overlay.
 
 ## Features
 
-- **Job Post Analysis**: Extracts key information from job descriptions
-- **Keyword Matching**: Identifies crucial skills and requirements
-- **Profile Comparison**: Analyzes candidate profiles against job requirements
-- **AI Resume Generation**: Creates optimized resumes using AI
-- **Resume download**: Instant downloads of generated resumes
+- **Login**: Sign in with an existing Talentor account (registration is handled on the website)
+- **Profile Management**: Create, edit, select, and delete candidate profiles
 - **Multi-language Support**: Built-in internationalization (i18n)
+
+> The popup application is not yet referenced by the manifest; the production
+> build currently emits only the manifest and icons while the overlay is built.
 
 ## Installation
 
