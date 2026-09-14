@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { SERVICE_PATH } from './constants';
 import { ApiClientOptions } from '@popup:models/model.api';
+import useSessionStore from '@popup/store/useSessionStore';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
@@ -15,12 +16,8 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // Add authentication token to headers if available
-    const session = localStorage.getItem('session');
-    let token;
+    const token = useSessionStore.getState().token;
 
-    if (session) {
-      token = JSON.parse(session)?.state?.token;
-    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -35,9 +32,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    if (error.status === 401) {
+    if (error.response?.status === 401) {
       // Handle 401 error globally
-      localStorage.removeItem('session');
+      useSessionStore.getState().resetSession();
       window.location.reload();
     }
     // Handle errors globally

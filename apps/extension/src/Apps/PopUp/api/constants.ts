@@ -1,5 +1,6 @@
 // ---------------------------------------- Service path
 export const SERVICE_PATH = import.meta.env.VITE_SERVICE_URL || '/';
+export const WEB_URL = import.meta.env.VITE_WEB_URL || 'http://localhost:5173';
 export const BASE_PATH = '/api/v1';
 
 // Params to replace in the path
@@ -10,7 +11,6 @@ export const JOB_PROFILE_ID = ':jobProfileId';
 // auth
 export const AUTH_PATH = BASE_PATH + '/auth';
 export const LOGIN_PATH = AUTH_PATH + '/login';
-export const REGISTER_PATH = AUTH_PATH + '/register';
 
 // Jobs paths
 export const JOBS_PATH = BASE_PATH + '/jobs';

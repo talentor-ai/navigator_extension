@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       // PopUp paths
       "@popup:components": ["./src/Apps/PopUp/components"],

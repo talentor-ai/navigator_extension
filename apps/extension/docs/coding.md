@@ -15,18 +15,18 @@
 
 ## Module Boundaries
 
-| Module                      | Responsibility                                      | Rule                                                      |
-| --------------------------- | --------------------------------------------------- | --------------------------------------------------------- |
-| `src/Apps/PopUp/api`        | Axios instance, auth interceptor, endpoint clients. | Keep HTTP details here; pages call hooks or API adapters. |
-| `src/Apps/PopUp/models`     | API, form, session, user, and UI types.             | Add contracts here instead of spreading inline shapes.    |
-| `src/Apps/PopUp/store`      | Zustand stores and browser persistence.             | Keep durable UI/session state separate from server cache. |
-| `src/Apps/PopUp/pages`      | Route-level screens and use-case UI.                | Compose reusable components; avoid direct DOM scraping.   |
-| `src/Apps/PopUp/components` | Shared visual and form components.                  | Keep components presentation-focused where possible.      |
-| `src/Apps/PopUp/hooks`      | Reusable popup data behavior.                       | Encapsulate Query and mutation behavior in hooks.         |
-| `src/Apps/PopUp/routes`     | HashRouter route tree and path constants.           | Preserve hash routes for extension popup navigation.      |
-| `src/Apps/HTMLInjector`     | LinkedIn selectors, DOM scraping, injected UI.      | Treat selectors as unstable integration code.             |
-| `src/Apps/ServiceWorker`    | Runtime message and popup-port bridge.              | Do not put UI or API business logic in worker.            |
-| `src/Apps/constants.ts`     | Shared cross-context protocol constants.            | Change sender, bridge, and receiver together.             |
+| Module                      | Responsibility                                      | Rule                                                                                 |
+| --------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `src/Apps/PopUp/api`        | Axios instance, auth interceptor, endpoint clients. | Keep HTTP details here; pages call hooks or API adapters.                            |
+| `src/Apps/PopUp/models`     | API, form, session, user, and UI types.             | Session/auth types come from `@talentor/contracts`; extend locally only when needed. |
+| `src/Apps/PopUp/store`      | Zustand stores and browser persistence.             | Keep durable UI/session state separate from server cache.                            |
+| `src/Apps/PopUp/pages`      | Route-level screens and use-case UI.                | Compose reusable components; avoid direct DOM scraping.                              |
+| `src/Apps/PopUp/components` | Shared visual and form components.                  | Keep components presentation-focused where possible.                                 |
+| `src/Apps/PopUp/hooks`      | Reusable popup data behavior.                       | Encapsulate Query and mutation behavior in hooks.                                    |
+| `src/Apps/PopUp/routes`     | HashRouter route tree and path constants.           | Preserve hash routes for extension popup navigation.                                 |
+| `src/Apps/HTMLInjector`     | LinkedIn selectors, DOM scraping, injected UI.      | Treat selectors as unstable integration code.                                        |
+| `src/Apps/ServiceWorker`    | Runtime message and popup-port bridge.              | Do not put UI or API business logic in worker.                                       |
+| `src/Apps/constants.ts`     | Shared cross-context protocol constants.            | Change sender, bridge, and receiver together.                                        |
 
 ## Patterns In Use
 
@@ -40,7 +40,7 @@ Pages and containers coordinate data and navigation. Reusable components such as
 
 ### Custom hooks
 
-`useApplyToJob`, `useResumeHistory`, `useLogin`, and `useRegister` isolate mutations, queries, navigation, and error handling from screen markup.
+`useApplyToJob`, `useResumeHistory`, and `useLogin` isolate mutations, queries, navigation, and error handling from screen markup. Login is the only auth mutation in the popup; registration is handled by the website.
 
 ### Zustand plus persistence
 
@@ -66,7 +66,8 @@ The scrape bridge uses the constants `JOB_POST_SCRAPPED_ACTION`, `UPDATE_JOB_SCR
 - Keep shared popup CSS compatible with both popup rendering and content-script shadow-root injection.
 - Keep LinkedIn selectors in `HTMLInjector/constants.ts`; isolate selector changes from scraping behavior.
 - Type API payloads and response data. Replace `any` at boundaries as code is touched.
-- Keep API base URL in `VITE_SERVICE_URL`; never hardcode deployment credentials or bearer tokens.
+- Keep the API base URL in `VITE_SERVICE_URL`; never hardcode deployment credentials or bearer tokens. Website links (for example `${WEB_URL}/register`) use `VITE_WEB_URL`, exposed as `WEB_URL` from `@popup:api`, and must not be hardcoded.
+- Use shared session/auth contracts from `@talentor/contracts` (`UserResponse`, `LoginRequest`). `useSessionStore` persists the `UserResponse` user and token under the `session` key; the store may extend `UserResponse` with an optional `userJobProfile`.
 - Treat localStorage keys as public state contracts: `session`, `jobProfile`, `job-post-form`, and `current-path` must not collide.
 - Use `HashRouter` paths; do not switch popup navigation to browser history without extension-host support.
 - Keep popup-to-worker and worker-to-content messages explicit and versionable.
@@ -76,9 +77,9 @@ The scrape bridge uses the constants `JOB_POST_SCRAPPED_ACTION`, `UPDATE_JOB_SCR
 
 ## Current Implementation Risks
 
-- `useSessionStore` initializes from `localStorage['token']`, while Zustand persists the token under `localStorage['session']`.
+- `GET /api/v1/user` returns a `UserResponse` without an embedded `userJobProfile`; consumers must not assume profiles are included.
+- Extension refresh-token handling is out of scope: the HttpOnly `refresh_token` cookie is not used, so access-token expiry forces a re-login. CORS for the extension origin is backend work not present in this repository.
 - `useJobPostFormStore` and `useJobProfileResumeFormStore` both persist under `job-post-form`.
-- `baseApi.ts` checks `error.status` instead of the usual Axios `error.response.status` for unauthorized responses.
 - `useResumeHistory` omits profile ID from its query key, so switching profiles can reuse stale cache data.
 - Profile and history invalidation keys do not consistently match the query keys used by consumers.
 - Several API and form surfaces use `any`; backend field names and types are not fully aligned.

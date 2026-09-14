@@ -1,5 +1,6 @@
-import { FormComponent, SocialMedia } from '@popup/components';
+import { FormComponent, Link, SocialMedia } from '@popup/components';
 import { H1 } from '@popup/components';
+import { WEB_URL } from '@popup:api';
 import { IconSize } from '@popup/models/model.icons';
 import styles from './login.module.css';
 import { loginFormSchema } from './constants';
@@ -33,6 +34,14 @@ const LoginScreen = () => {
         submitLabel="Iniciar sesión"
         isLoading={isPending}
       />
+      <Link
+        href={`${WEB_URL}/register`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tai:mt-2 tai:text-sm"
+      >
+        {t('login.signUp')}
+      </Link>
     </div>
   );
 };

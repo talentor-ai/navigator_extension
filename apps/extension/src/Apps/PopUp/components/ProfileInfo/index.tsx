@@ -44,9 +44,7 @@ const ProfileInfo = () => {
         </div>
         <div className={styles.textContainer}>
           <H2 className="tai:text-txt2">
-            {token
-              ? `${session?.firstName} ${session?.lastName}`
-              : t('header.title')}
+            {token ? session?.username : t('header.title')}
           </H2>
           <p>{token ? session?.email : t('header.subtitle')}</p>
         </div>

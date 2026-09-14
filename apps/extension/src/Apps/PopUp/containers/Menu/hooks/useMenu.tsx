@@ -36,7 +36,9 @@ const useMenu = () => {
   useEffect(() => {
     if (picked === null) {
       let firstChild: any = document.getElementById('menuContainer');
+      if (!firstChild) return;
       firstChild = firstChild.firstElementChild;
+      if (!firstChild) return;
       setPicked({
         width: firstChild.offsetWidth,
         left,

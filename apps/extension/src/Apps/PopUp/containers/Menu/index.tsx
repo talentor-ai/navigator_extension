@@ -1,4 +1,4 @@
-import { noLoginRoutes, authenticatedRoutes } from '@popup/routes';
+import { authenticatedRoutes } from '@popup/routes';
 import { Box } from '../../components';
 import useMenu from './hooks/useMenu';
 import styles from './menu.module.css';
@@ -11,11 +11,12 @@ const Menu = () => {
   const navigate = useNavigate();
   const { picked, width, left } = useMenu();
   const { token } = useSessionStore();
-  const routes = token ? authenticatedRoutes : noLoginRoutes;
+  const routes = authenticatedRoutes;
   const restoredPath = useRef(false);
 
   // Redirect to the last visited page
   useEffect(() => {
+    if (!token) return;
     const timeoutId = window.setTimeout(() => {
       try {
         localStorage.setItem('current-path', pathname);
@@ -27,17 +28,24 @@ const Menu = () => {
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [pathname]);
+  }, [pathname, token]);
 
   useEffect(() => {
     if (restoredPath.current) return;
+    if (!token) return;
     restoredPath.current = true;
 
     const lastPath = localStorage.getItem('current-path');
-    if (lastPath && lastPath !== pathname) {
+    if (
+      lastPath &&
+      lastPath !== pathname &&
+      authenticatedRoutes.some((r) => r.path === lastPath)
+    ) {
       navigate(lastPath);
     }
-  }, [navigate, pathname]);
+  }, [navigate, pathname, token]);
+
+  if (!token) return null;
 
   return (
     <Box className={styles.menuList} id="menuContainer" containerMode>
