@@ -40,6 +40,7 @@ src/
 ├── main.tsx                    React entry (mounted by index.html in the iframe)
 └── modules/
     ├── common/                 Cross-module: components/, constants/, hooks/, models/, utils/
+    │   ├── components/         Generic ButtonIcon
     │   └── models/             Generic types (CustomizableComponent, IconSize, ...)
     ├── injector/               Content script: shadow-DOM launcher + overlay iframe
     │   ├── index.tsx           Content-script entry (manifest js)
@@ -72,7 +73,9 @@ were deleted.
 
 1. `src/modules/injector/index.tsx` runs on every `http(s)` page (`document_idle`).
 2. It appends a single host element, attaches a shadow root, and mounts React.
-3. `LauncherButton` (fixed, bottom-right) opens `OverlayPanel`.
+3. `LauncherButton` (fixed, bottom-right) opens `OverlayPanel`; both the launcher
+   and the overlay close control are icon-only `ButtonIcon`s from
+   `@common/components`.
 4. `OverlayPanel` renders an iframe whose `src` is
    `chrome.runtime.getURL('index.html')`; the app uses `HashRouter`, so routes
    stay valid inside the frame.

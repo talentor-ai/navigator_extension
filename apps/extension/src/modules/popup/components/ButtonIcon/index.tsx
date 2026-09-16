@@ -1,5 +1,6 @@
-import { Icons } from '@modules/popup/components';
-import { CustomizableComponent } from '@common/models';
+import Icons from '../Icons';
+import BaseButtonIcon from '@common/components/ButtonIcon';
+import type { CustomizableComponent } from '@common/models';
 
 interface ButtonIconProps extends CustomizableComponent {
   icon?: string;
@@ -15,19 +16,14 @@ const ButtonIcon = ({
     console.warn('Click event not implemented');
   },
   className = '',
-}: ButtonIconProps) => {
-  return (
-    <button
-      disabled={disabled}
-      className={`tai:w-boxHeight tai:h-boxHeight tai:border tai:border-transparent tai:border-solid
-            tai:flex tai:justify-center tai:items-center tai:text-txt2 tai:cursor-pointer tai:rounded-full tai:bg-secondary
-            tai:hover:border-tertiary tai:duration-200 tai:disabled:text-txt3 tai:disabled:cursor-not-allowed
-            ${className}`}
-      onClick={onClick}
-    >
-      {icon && <Icons iconType={icon} className="tai:text-icon" />}
-    </button>
-  );
-};
+}: ButtonIconProps) => (
+  <BaseButtonIcon
+    disabled={disabled}
+    onClick={onClick}
+    className={`tai:h-boxHeight tai:w-boxHeight tai:border tai:border-solid tai:border-transparent tai:bg-secondary tai:text-txt2 tai:duration-200 tai:hover:border-tertiary tai:disabled:text-txt3 ${className}`}
+  >
+    {icon && <Icons iconType={icon} className="tai:text-icon" />}
+  </BaseButtonIcon>
+);
 
 export default ButtonIcon;

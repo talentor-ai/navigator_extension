@@ -44,6 +44,10 @@ keeps `tai:` utilities and preflight scoped to the overlay. Injector icons live 
 Pages and containers coordinate data and navigation. Reusable components such as
 `Button`, `Box`, `BaseLayout`, and form controls render UI from props.
 
+Icon-only buttons use the generic `ButtonIcon` from `@common/components`, which
+takes the icon as `children` and forwards native button props; the popup's
+`ButtonIcon` is a thin preset over it.
+
 ### Custom hooks
 
 `useLogin` and the profile hooks isolate mutations, queries, navigation, and

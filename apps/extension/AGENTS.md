@@ -16,7 +16,7 @@
 ## Structure
 
 - The source is modular: `src/modules/{common,injector,popup}`. New features belong in a module, not in `src/` directly.
-- `src/modules/common/` holds cross-module code (`components/`, `constants/`, `hooks/`, `models/`, `utils/`). Only put code here once more than one module needs it; do not promote single-use pieces.
+- `src/modules/common/` holds cross-module code (`components/`, `constants/`, `hooks/`, `models/`, `utils/`). Only put code here once more than one module needs it; do not promote single-use pieces. `common/components` currently exposes the generic icon-only `ButtonIcon` used by both popup presets and the injector launcher/close buttons.
 - `src/modules/popup/` is the application loaded in the overlay iframe.
 - `src/modules/injector/` is the content script that mounts the shadow-DOM launcher/overlay.
 - Path aliases: `@modules/*` -> `src/modules/*`, `@common/*` -> `src/modules/common/*`, `@lang/*` -> `src/modules/popup/lang/*`. Prefer aliases over deep relative paths; keep intra-module imports relative.
@@ -28,6 +28,7 @@
 - Because `index.html` is not a manifest HTML key, CRXJS `htmlFiles()` does not pick it up; `vite.config.ts` adds it via `build.rollupOptions.input.overlay`. Keep that input or the overlay ships an unbundled `index.html`.
 - Injector styling: `src/modules/injector/injector.css` (`@import 'tailwindcss'` + `@config` + a `:host` reset/theme-var block) is imported with `?inline` and appended as a `<style>` into the shadow root. Use `tai:` utilities only; never inject Tailwind into the page document (its preflight would reset host pages).
 - Injector icons mirror `apps/web/src/components/Icons`: `src/modules/injector/components/Icons` is type-driven over `react-icons/lu` with `strokeWidth` default `2.7`. Add icons to `ICON_COMPONENTS`, do not inline SVGs.
+- Icon-only buttons must use `ButtonIcon` from `@common/components` (generic: takes the icon as `children`, passes through button props). The popup's `src/modules/popup/components/ButtonIcon` is a thin preset over it (`icon` string + popup Icons + default styling).
 - The legacy LinkedIn scraper (`HTMLInjector`), the background service worker, the browser-action popup, the job-apply flow, and generated-resume history were removed. Do not recreate them.
 - The app is login-only. `src/modules/popup/routes/Router.tsx` sends `/` to `/profile`; `/auth/login` is the public route.
 
