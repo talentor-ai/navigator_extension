@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+@config '../../../tailwind.config.js';
+
+:host {
+  /* Block host-page styles from leaking in; preflight stays shadow-scoped. */
+  all: initial;
+
+  /* Mirror the popup theme vars (app.css) so tai: colors resolve here. */
+  --primary: #1e1e27;
+  --secondary: #2b2b37;
+  --tertiary: #fcaf58;
+  --border1: #f5f5f5;
+  --txt1: #f5f5f5;
+  --txt2: #fcaf58;
+  --txt3: #8e8e8e;
+  --highlight: rgba(255, 255, 255, 0.03);
+  --success-color: #60ed91;
+  --error-color: #fb4c69;
+  --info-color: #3ba8c4;
+
+  font-family: 'Poppins', system-ui, sans-serif;
+}

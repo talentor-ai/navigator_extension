@@ -9,9 +9,10 @@ repurposed for an in-page overlay (iframe) opened by a fixed launcher.
 
 Current runtime:
 
+- **Content script:** `src/Apps/Injector/index.tsx` runs on every `http(s)` page,
+  mounts a shadow-DOM launcher, and opens an extension-origin iframe overlay.
 - **Popup application source:** `index.html -> src/main.tsx -> src/Apps/PopUp/App.tsx`.
-  It is retained as the application that the upcoming in-page overlay will load.
-- **No content script.**
+  It is loaded by the overlay iframe via `chrome.runtime.getURL('index.html')`.
 - **No background service worker.**
 - **No `action.default_popup`.**
 
@@ -19,24 +20,32 @@ Current runtime:
 
 ```text
 manifest.config.ts
-└── name / version / icons only
-    (no action, no background, no content_scripts)
+└── content_scripts -> src/Apps/Injector/index.tsx   (http://*/*, https://*/*)
+└── web_accessible_resources -> index.html, assets/*
+    └── launcher + overlay iframe (shadow DOM)
 
 index.html
 └── src/main.tsx
-    └── src/Apps/PopUp/App.tsx      # retained application source
+    └── src/Apps/PopUp/App.tsx      # loaded inside the overlay iframe
 ```
 
-Because the popup HTML is not yet referenced by the manifest, the production
-build currently emits only `manifest.json` and the icons. The next phase will
-register the application as a web-accessible resource for the overlay iframe.
+CRXJS derives manifest HTML entries from `action`, `options_*`, `sandbox`, etc.,
+not from `web_accessible_resources`, so `vite.config.ts` adds `index.html` with
+`build.rollupOptions.input.overlay` to get it bundled.
 
 ## Source Hierarchy
 
 ```text
 src/
-├── main.tsx                    React entry (mounted by index.html)
+├── main.tsx                    React entry (mounted by index.html in the iframe)
 ├── Apps/
+│   ├── Injector/               Content script: shadow-DOM launcher + overlay iframe
+│   │   ├── index.tsx           Content-script entry (manifest js)
+│   │   ├── App.tsx             Launcher/overlay composition
+│   │   ├── constants.ts        Extension app URL
+│   │   ├── injector.css        Tailwind entry + `:host` reset/theme vars
+│   │   ├── components/         LauncherButton, OverlayPanel, Icons
+│   │   └── hooks/              useOverlay
 │   └── PopUp/
 │       ├── api/                Axios client, auth, user and profile endpoints
 │       ├── components/         Reusable visual/form components
@@ -53,6 +62,21 @@ src/
 
 `src/Apps/HTMLInjector/`, `src/Apps/ServiceWorker/`, and `src/Apps/constants.ts`
 were deleted.
+
+## In-Page Overlay
+
+1. `src/Apps/Injector/index.tsx` runs on every `http(s)` page (`document_idle`).
+2. It appends a single host element, attaches a shadow root, and mounts React.
+3. `LauncherButton` (fixed, bottom-right) opens `OverlayPanel`.
+4. `OverlayPanel` renders an iframe whose `src` is
+   `chrome.runtime.getURL('index.html')`; the app uses `HashRouter`, so routes
+   stay valid inside the frame.
+5. `index.html` and `assets/*` are listed in `web_accessible_resources`.
+6. `injector.css` (`@import 'tailwindcss'` + `:host` reset/theme vars) is imported
+   with Vite's `?inline` and appended as a `<style>` tag inside the shadow root,
+   so `tai:`-prefixed utilities and preflight apply only to the overlay and never
+   to the host page. Injector icons come from `components/Icons` (react-icons/Lucide,
+   type-driven `strokeWidth` default `2.7`), mirroring `apps/web`.
 
 ## Application Component Hierarchy
 

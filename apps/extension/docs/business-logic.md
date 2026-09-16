@@ -11,7 +11,7 @@ profile management), which the upcoming overlay will embed.
 
 - **Job seeker:** authenticates and maintains source profiles.
 - **Talentor service:** authenticates the seeker and stores profiles.
-- **Overlay (planned):** a fixed launcher on every page that opens the
+- **Overlay:** a fixed launcher injected on every `http(s)` page that opens the
   application in a panel via an extension-origin iframe.
 
 ## User Journeys
@@ -47,12 +47,12 @@ explicit decision:
 - Manual job-post entry and job-application submission (`POST /api/v1/jobs/apply`).
 - Generated-resume history (`/my-cvs`) and its store.
 
-The popup application source is retained only for the upcoming overlay iframe.
+The popup application source is retained as the overlay iframe target.
 
 ## Product Boundaries And Known Gaps
 
-- The extension currently declares no manifest entry for its UI; the production
-  build emits only the manifest and icons until the overlay phase wires the app.
+- The extension injects its overlay on every `http(s)` page; pages with a CSP
+  that blocks extension frames may prevent the panel from rendering.
 - `GET /api/v1/user` returns `UserResponse` without `userJobProfile`; the extension
   type adds it optionally and must not assume profiles are embedded.
 - Profile deletion uses a backend path that is not implemented yet.

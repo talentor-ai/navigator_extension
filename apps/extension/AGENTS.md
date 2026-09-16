@@ -15,8 +15,11 @@
 
 ## Wiring
 
-- `manifest.config.ts` is the source of truth for extension wiring. It currently declares only `name`, `version`, and `icons`: no browser action, no background worker, and no content script.
-- The application source is `index.html` -> `src/main.tsx` -> `src/Apps/PopUp/App.tsx`. It is retained for an upcoming in-page overlay (iframe) but is not yet referenced by the manifest, so the production build currently emits only `manifest.json` and the icons.
+- `manifest.config.ts` is the source of truth for extension wiring. It declares `name`, `version`, `icons`, a `content_scripts` entry for `src/Apps/Injector/index.tsx` on `http(s)://*/*`, and `web_accessible_resources` exposing `index.html` and `assets/*`. No browser action or background worker.
+- The application source is `index.html` -> `src/main.tsx` -> `src/Apps/PopUp/App.tsx`. The content script renders a shadow-DOM launcher/overlay (`src/Apps/Injector/`) that embeds the app in an extension-origin iframe (`chrome.runtime.getURL('index.html')`).
+- Because `index.html` is not a manifest HTML key, CRXJS `htmlFiles()` does not pick it up; `vite.config.ts` adds it via `build.rollupOptions.input.overlay`. Keep that input or the overlay ships an unbundled `index.html`.
+- Injector styling: `src/Apps/Injector/injector.css` (`@import 'tailwindcss'` + `@config` + a `:host` reset/theme-var block) is imported with `?inline` and appended as a `<style>` into the shadow root. Use `tai:` utilities only; never inject Tailwind into the page document (its preflight would reset host pages).
+- Injector icons mirror `apps/web/src/components/Icons`: `src/Apps/Injector/components/Icons` is type-driven over `react-icons/lu` with `strokeWidth` default `2.7`. Add icons to `ICON_COMPONENTS`, do not inline SVGs.
 - The legacy LinkedIn scraper (`HTMLInjector`), the background service worker, the browser-action popup, the job-apply flow, and generated-resume history were removed. Do not recreate them.
 - The app is login-only. `src/Apps/PopUp/routes/Router.tsx` sends `/` to `/profile`; `/auth/login` is the public route.
 
@@ -24,7 +27,7 @@
 
 - `src/Apps/PopUp/` contains the UI, routes, React Query data layer, and Zustand stores.
 - Auth state lives in `src/Apps/PopUp/store/useSessionStore.ts` (persist key `session`): it holds the authenticated `UserResponse` user and access token, using `@talentor/contracts` types. Registration and signup are owned by the website, not the extension.
-- There is no service worker or content-script bridge anymore; the app talks to the backend directly.
+- There is no service worker or message bridge; the content script only mounts the launcher/overlay and the app talks to the backend directly.
 
 ## Gotchas
 

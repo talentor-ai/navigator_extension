@@ -13,8 +13,8 @@ an upcoming in-page overlay.
 - **Profile Management**: Create, edit, select, and delete candidate profiles
 - **Multi-language Support**: Built-in internationalization (i18n)
 
-> The popup application is not yet referenced by the manifest; the production
-> build currently emits only the manifest and icons while the overlay is built.
+> The content script injects a launcher on every `http(s)` page; the panel embeds
+> the application in an extension-origin iframe.
 
 ## Installation
 

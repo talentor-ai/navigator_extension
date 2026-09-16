@@ -27,6 +27,13 @@
 
 `src/Apps/HTMLInjector`, `src/Apps/ServiceWorker`, and `src/Apps/constants.ts`
 no longer exist. Do not recreate scraper or message-bridge modules.
+`src/Apps/Injector` is the content-script overlay: it renders into a shadow root
+inside the host page, so it uses relative imports (no `@injector` alias). Its
+Tailwind entry is `injector.css` (`@import 'tailwindcss'` + `:host` theme vars),
+imported with `?inline` and appended as a `<style>` inside the shadow root — this
+keeps `tai:` utilities and preflight scoped to the overlay. Injector icons live in
+`components/Icons` (react-icons/Lucide, `strokeWidth` default `2.7`), mirroring
+`apps/web/src/components/Icons`.
 
 ## Patterns In Use
 
@@ -90,8 +97,9 @@ through typed configuration where possible instead of duplicating field markup.
 - `useJobProfileResumeFormStore` is currently unused and persists under `job-post-form`.
 - Several API and form surfaces use `any`; backend field names and types are not fully aligned.
 - The extension declares a profile delete path that the backend does not implement.
-- `index.html` is retained for the upcoming overlay but is not yet a manifest entry,
-  so the production build currently emits only the manifest and icons.
+- `index.html` is built as the overlay iframe target via
+  `build.rollupOptions.input.overlay`; CRXJS does not derive HTML entries from
+  `web_accessible_resources`, so keep that input in `vite.config.ts`.
 
 ## Commands
 
