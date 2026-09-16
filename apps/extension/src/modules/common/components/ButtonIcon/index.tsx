@@ -18,7 +18,7 @@ const ButtonIcon = ({
   <button
     type={type}
     style={style}
-    className={`tai:flex tai:cursor-pointer tai:items-center tai:justify-center tai:rounded-full tai:disabled:cursor-not-allowed ${className}`}
+    className={`tai:flex tai:items-center tai:justify-center tai:rounded-full tai:disabled:cursor-not-allowed ${className}`}
     {...rest}
   >
     {children}

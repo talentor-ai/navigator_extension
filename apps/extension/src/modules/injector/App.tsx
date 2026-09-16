@@ -1,14 +1,15 @@
 import { useOverlay } from './hooks/useOverlay';
+import { useDraggableLauncher } from './hooks/useDraggableLauncher';
 import { LauncherButton } from './components/LauncherButton';
 import { OverlayPanel } from './components/OverlayPanel';
 
 export const App = () => {
   const { isOpen, open, close } = useOverlay();
+  const drag = useDraggableLauncher();
 
-  return (
-    <>
-      {isOpen && <OverlayPanel onClose={close} />}
-      {!isOpen && <LauncherButton onClick={open} />}
-    </>
+  return isOpen ? (
+    <OverlayPanel side={drag.side} anchorY={drag.position.y} onClose={close} />
+  ) : (
+    <LauncherButton drag={drag} onClick={open} />
   );
 };

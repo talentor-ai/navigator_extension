@@ -23,11 +23,13 @@
 
 ## Wiring
 
-- `manifest.config.ts` is the source of truth for extension wiring. It declares `name`, `version`, `icons`, a `content_scripts` entry for `src/modules/injector/index.tsx` on `http(s)://*/*`, and `web_accessible_resources` exposing `index.html` and `assets/*`. No browser action or background worker.
+- `manifest.config.ts` is the source of truth for extension wiring. It declares `name`, `version`, `icons`, `permissions: ['storage']`, a `content_scripts` entry for `src/modules/injector/index.tsx` on `http(s)://*/*`, and `web_accessible_resources` exposing `index.html` and `assets/*`. No browser action or background worker.
 - The application source is `index.html` -> `src/main.tsx` -> `src/modules/popup/App.tsx`. The content script renders a shadow-DOM launcher/overlay (`src/modules/injector/`) that embeds the app in an extension-origin iframe (`chrome.runtime.getURL('index.html')`).
 - Because `index.html` is not a manifest HTML key, CRXJS `htmlFiles()` does not pick it up; `vite.config.ts` adds it via `build.rollupOptions.input.overlay`. Keep that input or the overlay ships an unbundled `index.html`.
 - Injector styling: `src/modules/injector/injector.css` (`@import 'tailwindcss'` + `@config` + a `:host` reset/theme-var block) is imported with `?inline` and appended as a `<style>` into the shadow root. Use `tai:` utilities only; never inject Tailwind into the page document (its preflight would reset host pages).
 - Injector icons mirror `apps/web/src/components/Icons`: `src/modules/injector/components/Icons` is type-driven over `react-icons/lu` with `strokeWidth` default `2.7`. Add icons to `ICON_COMPONENTS`, do not inline SVGs.
+- The launcher is draggable via pointer events (`useDraggableLauncher`, no drag library): it follows the cursor, then snaps to the nearest left/right edge and is clamped to the viewport. The chosen `{ side, y }` persists in `chrome.storage.local` under `launcher-position`, which is why the `storage` permission is required.
+- `App.tsx` owns `useDraggableLauncher` so `OverlayPanel` can open on the launcher's side (`left`/`right`) anchored to its vertical position, shrinking and clamping (`useViewport` + `EDGE_MARGIN`) so it never exceeds the viewport.
 - Icon-only buttons must use `ButtonIcon` from `@common/components` (generic: takes the icon as `children`, passes through button props). The popup's `src/modules/popup/components/ButtonIcon` is a thin preset over it (`icon` string + popup Icons + default styling).
 - The legacy LinkedIn scraper (`HTMLInjector`), the background service worker, the browser-action popup, the job-apply flow, and generated-resume history were removed. Do not recreate them.
 - The app is login-only. `src/modules/popup/routes/Router.tsx` sends `/` to `/profile`; `/auth/login` is the public route.

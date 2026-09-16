@@ -4,6 +4,7 @@ export default defineManifest(() => ({
   manifest_version: 3,
   name: 'Talentor AI',
   version: '1.0.0',
+  permissions: ['storage'],
   content_scripts: [
     {
       matches: ['http://*/*', 'https://*/*'],

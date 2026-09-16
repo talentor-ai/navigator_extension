@@ -76,11 +76,18 @@ were deleted.
 3. `LauncherButton` (fixed, bottom-right) opens `OverlayPanel`; both the launcher
    and the overlay close control are icon-only `ButtonIcon`s from
    `@common/components`.
-4. `OverlayPanel` renders an iframe whose `src` is
+4. The launcher is draggable (`useDraggableLauncher`, pointer events): it follows
+   the cursor, is clamped to the viewport, and on drop snaps to the nearest
+   left/right edge. `{ side, y }` persists in `chrome.storage.local` under
+   `launcher-position` (requires the `storage` permission). `App.tsx` owns the
+   hook so the panel can reuse the launcher's side/position.
+5. `OverlayPanel` renders an iframe whose `src` is
    `chrome.runtime.getURL('index.html')`; the app uses `HashRouter`, so routes
-   stay valid inside the frame.
-5. `index.html` and `assets/*` are listed in `web_accessible_resources`.
-6. `injector.css` (`@import 'tailwindcss'` + `:host` reset/theme vars) is imported
+   stay valid inside the frame. The panel opens on the launcher's side, aligned to
+   its vertical position, and is clamped (`useViewport` + `EDGE_MARGIN`) so it
+   never exceeds the viewport.
+6. `index.html` and `assets/*` are listed in `web_accessible_resources`.
+7. `injector.css` (`@import 'tailwindcss'` + `:host` reset/theme vars) is imported
    with Vite's `?inline` and appended as a `<style>` tag inside the shadow root,
    so `tai:`-prefixed utilities and preflight apply only to the overlay and never
    to the host page. Injector icons come from `components/Icons` (react-icons/Lucide,

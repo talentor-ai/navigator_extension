@@ -54,6 +54,15 @@ takes the icon as `children` and forwards native button props; the popup's
 error handling from screen markup. Login is the only auth mutation; registration
 is handled by the website.
 
+### Draggable launcher
+
+`useDraggableLauncher` uses pointer events (no drag library), clamps to the
+viewport, snaps to the nearest left/right edge on drop, and persists `{ side, y }`
+in `chrome.storage.local` under `launcher-position`. Keep drag logic in the hook;
+`LauncherButton` only wires handlers and classes. `App` owns the hook, and
+`OverlayPanel` uses the same `side`/`y` plus `useViewport` to open beside the
+launcher without exceeding the viewport.
+
 ### Zustand plus persistence
 
 Zustand stores hold session and selected profile state. Persistence makes the app

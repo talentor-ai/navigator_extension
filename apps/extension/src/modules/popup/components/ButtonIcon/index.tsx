@@ -20,7 +20,7 @@ const ButtonIcon = ({
   <BaseButtonIcon
     disabled={disabled}
     onClick={onClick}
-    className={`tai:h-boxHeight tai:w-boxHeight tai:border tai:border-solid tai:border-transparent tai:bg-secondary tai:text-txt2 tai:duration-200 tai:hover:border-tertiary tai:disabled:text-txt3 ${className}`}
+    className={`tai:h-boxHeight tai:w-boxHeight tai:cursor-pointer tai:border tai:border-solid tai:border-transparent tai:bg-secondary tai:text-txt2 tai:duration-200 tai:hover:border-tertiary tai:disabled:text-txt3 ${className}`}
   >
     {icon && <Icons iconType={icon} className="tai:text-icon" />}
   </BaseButtonIcon>

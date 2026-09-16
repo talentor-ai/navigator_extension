@@ -1,27 +1,49 @@
 import { ButtonIcon } from '@common/components';
-import { APP_URL } from '../../constants';
+import {
+  APP_URL,
+  EDGE_MARGIN,
+  LAUNCHER_SIZE,
+  PANEL_HEIGHT,
+  PANEL_WIDTH,
+} from '../../constants';
+import { clamp } from '../../utils';
+import { useViewport } from '../../hooks/useViewport';
 import { Icons } from '../Icons';
+import type { Side } from '../../hooks/useDraggableLauncher';
 
 interface OverlayPanelProps {
+  side: Side;
+  anchorY: number;
   onClose: () => void;
 }
 
-export const OverlayPanel = ({ onClose }: OverlayPanelProps) => (
-  <section
-    className="tai:fixed tai:right-6 tai:bottom-6 tai:z-[2147483647] tai:h-[600px] tai:max-h-[calc(100vh-3rem)] tai:w-[400px] tai:max-w-[calc(100vw-3rem)] tai:overflow-hidden tai:rounded-2xl tai:bg-primary tai:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
-    aria-label="Talentor AI"
-  >
-    <ButtonIcon
-      aria-label="Close Talentor AI"
-      onClick={onClose}
-      className="tai:absolute tai:top-2 tai:right-2 tai:z-[2] tai:h-7 tai:w-7 tai:border-0 tai:bg-black/35 tai:text-txt1 tai:hover:bg-black/55"
+export const OverlayPanel = ({ side, anchorY, onClose }: OverlayPanelProps) => {
+  const { width, height } = useViewport();
+  const panelWidth = Math.min(PANEL_WIDTH, width - EDGE_MARGIN * 2);
+  const panelHeight = Math.min(PANEL_HEIGHT, height - EDGE_MARGIN * 2);
+  const maxTop = Math.max(EDGE_MARGIN, height - panelHeight - EDGE_MARGIN);
+  const top = clamp(anchorY + LAUNCHER_SIZE - panelHeight, EDGE_MARGIN, maxTop);
+  const horizontal =
+    side === 'left' ? { left: EDGE_MARGIN } : { right: EDGE_MARGIN };
+
+  return (
+    <section
+      style={{ top, width: panelWidth, height: panelHeight, ...horizontal }}
+      className="tai:fixed tai:z-[2147483647] tai:overflow-hidden tai:rounded-2xl tai:bg-primary tai:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+      aria-label="Talentor AI"
     >
-      <Icons type="close" size={16} />
-    </ButtonIcon>
-    <iframe
-      className="tai:block tai:h-full tai:w-full tai:border-0 tai:bg-primary"
-      src={APP_URL}
-      title="Talentor AI"
-    />
-  </section>
-);
+      <ButtonIcon
+        aria-label="Close Talentor AI"
+        onClick={onClose}
+        className="tai:absolute tai:top-2 tai:right-2 tai:z-[2] tai:h-7 tai:w-7 tai:cursor-pointer tai:border-0 tai:bg-black/35 tai:text-txt1 tai:hover:bg-black/55"
+      >
+        <Icons type="close" size={16} />
+      </ButtonIcon>
+      <iframe
+        className="tai:block tai:h-full tai:w-full tai:border-0 tai:bg-primary"
+        src={APP_URL}
+        title="Talentor AI"
+      />
+    </section>
+  );
+};
