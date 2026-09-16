@@ -89,7 +89,10 @@ through typed configuration where possible instead of duplicating field markup.
   variant-style). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants the
   prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`,
   `tai:active:scale-95`, `tai:last:border-none`. Never use unprefixed or dash-form
-  `tai-`/`ik-` utilities; `apps/web` stays unprefixed.
+  `tai-`/`ik-` utilities; `apps/web` stays unprefixed. In the injector, keep
+  sizing px-based: `rem` follows the host page root font-size (LinkedIn uses
+  `62.5%`), so pin rem-based tokens (e.g. `--tai-spacing: 4px`) in `injector.css`
+  `:host` before relying on them.
 - Type API payloads and response data. Replace `any` at boundaries as code is touched.
 - Keep the API base URL in `VITE_SERVICE_URL`; never hardcode deployment credentials
   or bearer tokens. Website links use `VITE_WEB_URL`, exposed as `WEB_URL` from

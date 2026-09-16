@@ -18,5 +18,10 @@
   --error-color: #fb4c69;
   --info-color: #3ba8c4;
 
+  /* Pin rem-based tokens to px: rem resolves against the host page root
+     font-size (e.g. LinkedIn uses 62.5% -> 1rem = 10px), which shrinks us. */
+  --tai-spacing: 4px;
+  --tai-radius-2xl: 16px;
+
   font-family: 'Poppins', system-ui, sans-serif;
 }
