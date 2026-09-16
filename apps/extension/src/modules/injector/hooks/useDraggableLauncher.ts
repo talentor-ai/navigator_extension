@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { EDGE_MARGIN, LAUNCHER_SIZE } from '../constants';
-import { clamp } from '../utils';
+import { clamp, getViewportSize } from '../utils';
 
 const DRAG_THRESHOLD = 4;
 const STORAGE_KEY = 'launcher-position';
@@ -18,15 +18,19 @@ interface StoredPosition {
   y: number;
 }
 
-const getBounds = () => ({
-  maxX: Math.max(EDGE_MARGIN, window.innerWidth - LAUNCHER_SIZE - EDGE_MARGIN),
-  maxY: Math.max(EDGE_MARGIN, window.innerHeight - LAUNCHER_SIZE - EDGE_MARGIN),
-});
+const getBounds = () => {
+  const { width, height } = getViewportSize();
+  return {
+    maxX: Math.max(EDGE_MARGIN, width - LAUNCHER_SIZE - EDGE_MARGIN),
+    maxY: Math.max(EDGE_MARGIN, height - LAUNCHER_SIZE - EDGE_MARGIN),
+  };
+};
 
-const xForSide = (side: Side) =>
-  side === 'left'
-    ? EDGE_MARGIN
-    : Math.max(EDGE_MARGIN, window.innerWidth - LAUNCHER_SIZE - EDGE_MARGIN);
+const xForSide = (side: Side) => {
+  if (side === 'left') return EDGE_MARGIN;
+  const { width } = getViewportSize();
+  return Math.max(EDGE_MARGIN, width - LAUNCHER_SIZE - EDGE_MARGIN);
+};
 
 const defaultPosition = (): Position => ({
   x: xForSide('right'),
@@ -132,8 +136,9 @@ export const useDraggableLauncher = () => {
       setIsDragging(false);
       if (!drag.moved) return;
       const { y } = positionRef.current;
+      const { width } = getViewportSize();
       const snappedSide: Side =
-        positionRef.current.x + LAUNCHER_SIZE / 2 < window.innerWidth / 2
+        positionRef.current.x + LAUNCHER_SIZE / 2 < width / 2
           ? 'left'
           : 'right';
       sideRef.current = snappedSide;

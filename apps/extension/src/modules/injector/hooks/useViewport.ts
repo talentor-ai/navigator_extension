@@ -1,20 +1,16 @@
 import { useEffect, useState } from 'react';
+import { getViewportSize } from '../utils';
 
 export interface ViewportSize {
   width: number;
   height: number;
 }
 
-const getSize = (): ViewportSize => ({
-  width: window.innerWidth,
-  height: window.innerHeight,
-});
-
 export const useViewport = (): ViewportSize => {
-  const [size, setSize] = useState<ViewportSize>(getSize);
+  const [size, setSize] = useState<ViewportSize>(getViewportSize);
 
   useEffect(() => {
-    const handleResize = () => setSize(getSize());
+    const handleResize = () => setSize(getViewportSize());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
