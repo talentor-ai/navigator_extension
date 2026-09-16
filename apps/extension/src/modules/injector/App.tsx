@@ -7,6 +7,8 @@ export const App = () => {
   const { isOpen, open, close } = useOverlay();
   const drag = useDraggableLauncher();
 
+  if (!drag.isReady) return null;
+
   return isOpen ? (
     <OverlayPanel side={drag.side} anchorY={drag.position.y} onClose={close} />
   ) : (

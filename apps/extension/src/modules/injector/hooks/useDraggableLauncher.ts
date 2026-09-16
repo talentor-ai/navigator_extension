@@ -41,6 +41,7 @@ export const useDraggableLauncher = () => {
   const [position, setPosition] = useState<Position>(defaultPosition);
   const [side, setSide] = useState<Side>('right');
   const [isDragging, setIsDragging] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const positionRef = useRef(position);
   const sideRef = useRef<Side>('right');
   const didDragRef = useRef(false);
@@ -64,16 +65,20 @@ export const useDraggableLauncher = () => {
       try {
         const result = await chrome.storage?.local?.get(STORAGE_KEY);
         const stored = result?.[STORAGE_KEY] as StoredPosition | undefined;
-        if (!active || !stored) return;
-        const restoredSide: Side = stored.side === 'left' ? 'left' : 'right';
-        sideRef.current = restoredSide;
-        setSide(restoredSide);
-        updatePosition({
-          x: xForSide(restoredSide),
-          y: clamp(stored.y, EDGE_MARGIN, getBounds().maxY),
-        });
+        if (!active) return;
+        if (stored) {
+          const restoredSide: Side = stored.side === 'left' ? 'left' : 'right';
+          sideRef.current = restoredSide;
+          setSide(restoredSide);
+          updatePosition({
+            x: xForSide(restoredSide),
+            y: clamp(stored.y, EDGE_MARGIN, getBounds().maxY),
+          });
+        }
       } catch {
         /* storage unavailable; keep defaults */
+      } finally {
+        if (active) setIsReady(true);
       }
     };
     void restore();
@@ -155,6 +160,7 @@ export const useDraggableLauncher = () => {
     position,
     side,
     isDragging,
+    isReady,
     didDragRef,
     handlePointerDown,
     handlePointerMove,
