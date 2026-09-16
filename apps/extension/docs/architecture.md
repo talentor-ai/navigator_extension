@@ -9,9 +9,9 @@ repurposed for an in-page overlay (iframe) opened by a fixed launcher.
 
 Current runtime:
 
-- **Content script:** `src/Apps/Injector/index.tsx` runs on every `http(s)` page,
-  mounts a shadow-DOM launcher, and opens an extension-origin iframe overlay.
-- **Popup application source:** `index.html -> src/main.tsx -> src/Apps/PopUp/App.tsx`.
+- **Content script:** `src/modules/injector/index.tsx` runs on every `http(s)`
+  page, mounts a shadow-DOM launcher, and opens an extension-origin iframe overlay.
+- **Popup application source:** `index.html -> src/main.tsx -> src/modules/popup/App.tsx`.
   It is loaded by the overlay iframe via `chrome.runtime.getURL('index.html')`.
 - **No background service worker.**
 - **No `action.default_popup`.**
@@ -20,13 +20,13 @@ Current runtime:
 
 ```text
 manifest.config.ts
-└── content_scripts -> src/Apps/Injector/index.tsx   (http://*/*, https://*/*)
+└── content_scripts -> src/modules/injector/index.tsx   (http://*/*, https://*/*)
 └── web_accessible_resources -> index.html, assets/*
     └── launcher + overlay iframe (shadow DOM)
 
 index.html
 └── src/main.tsx
-    └── src/Apps/PopUp/App.tsx      # loaded inside the overlay iframe
+    └── src/modules/popup/App.tsx      # loaded inside the overlay iframe
 ```
 
 CRXJS derives manifest HTML entries from `action`, `options_*`, `sandbox`, etc.,
@@ -38,34 +38,39 @@ not from `web_accessible_resources`, so `vite.config.ts` adds `index.html` with
 ```text
 src/
 ├── main.tsx                    React entry (mounted by index.html in the iframe)
-├── Apps/
-│   ├── Injector/               Content script: shadow-DOM launcher + overlay iframe
-│   │   ├── index.tsx           Content-script entry (manifest js)
-│   │   ├── App.tsx             Launcher/overlay composition
-│   │   ├── constants.ts        Extension app URL
-│   │   ├── injector.css        Tailwind entry + `:host` reset/theme vars
-│   │   ├── components/         LauncherButton, OverlayPanel, Icons
-│   │   └── hooks/              useOverlay
-│   └── PopUp/
-│       ├── api/                Axios client, auth, user and profile endpoints
-│       ├── components/         Reusable visual/form components
-│       ├── containers/         Header and menu
-│       ├── constants/          Route paths and session keys
-│       ├── hoc/                Auth redirect wrapper
-│       ├── hooks/              Cross-page data hooks (useProfile)
-│       ├── lang/               i18next setup and translations
-│       ├── models/             TypeScript contracts
-│       ├── pages/              Login and profile screens
-│       ├── routes/             HashRouter route tree
-│       └── store/              Zustand state and persistence
+└── modules/
+    ├── common/                 Cross-module: components/, constants/, hooks/, models/, utils/
+    │   └── models/             Generic types (CustomizableComponent, IconSize, ...)
+    ├── injector/               Content script: shadow-DOM launcher + overlay iframe
+    │   ├── index.tsx           Content-script entry (manifest js)
+    │   ├── App.tsx             Launcher/overlay composition
+    │   ├── constants.ts        Extension app URL
+    │   ├── injector.css        Tailwind entry + `:host` reset/theme vars
+    │   ├── components/         LauncherButton, OverlayPanel, Icons
+    │   └── hooks/              useOverlay
+    └── popup/                  Application loaded in the overlay iframe
+        ├── api/                Axios client, auth, user and profile endpoints
+        ├── components/         Reusable visual/form components
+        ├── containers/         Header and menu
+        ├── constants/          Route paths and session keys
+        ├── hoc/                Auth redirect wrapper
+        ├── hooks/              Cross-page data hooks (useProfile)
+        ├── lang/               i18next setup and translations
+        ├── models/             Popup-specific TypeScript contracts
+        ├── pages/              Login and profile screens
+        ├── routes/             HashRouter route tree
+        └── store/              Zustand state and persistence
 ```
+
+Aliases: `@modules/*` -> `src/modules/*`, `@common/*` -> `src/modules/common/*`,
+`@lang/*` -> `src/modules/popup/lang/*`.
 
 `src/Apps/HTMLInjector/`, `src/Apps/ServiceWorker/`, and `src/Apps/constants.ts`
 were deleted.
 
 ## In-Page Overlay
 
-1. `src/Apps/Injector/index.tsx` runs on every `http(s)` page (`document_idle`).
+1. `src/modules/injector/index.tsx` runs on every `http(s)` page (`document_idle`).
 2. It appends a single host element, attaches a shadow root, and mounts React.
 3. `LauncherButton` (fixed, bottom-right) opens `OverlayPanel`.
 4. `OverlayPanel` renders an iframe whose `src` is

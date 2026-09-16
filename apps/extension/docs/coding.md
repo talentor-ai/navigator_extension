@@ -15,20 +15,22 @@
 
 ## Module Boundaries
 
-| Module                      | Responsibility                            | Rule                                                                                 |
-| --------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
-| `src/Apps/PopUp/api`        | Axios instance, auth, endpoint clients.   | Keep HTTP details here; pages call hooks or API adapters.                            |
-| `src/Apps/PopUp/models`     | API, form, session, user, and UI types.   | Session/auth types come from `@talentor/contracts`; extend locally only when needed. |
-| `src/Apps/PopUp/store`      | Zustand stores and browser persistence.   | Keep durable UI/session state separate from server cache.                            |
-| `src/Apps/PopUp/pages`      | Route-level screens and use-case UI.      | Compose reusable components; keep orchestration in hooks.                            |
-| `src/Apps/PopUp/components` | Shared visual and form components.        | Keep components presentation-focused where possible.                                 |
-| `src/Apps/PopUp/hooks`      | Reusable data behavior.                   | Encapsulate Query and mutation behavior in hooks.                                    |
-| `src/Apps/PopUp/routes`     | HashRouter route tree and path constants. | Preserve hash routes for extension-host navigation.                                  |
+| Module                         | Responsibility                                            | Rule                                                                                 |
+| ------------------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `src/modules/common`           | Cross-module components, constants, hooks, models, utils. | Put code here only when more than one module needs it.                               |
+| `src/modules/popup/api`        | Axios instance, auth, endpoint clients.                   | Keep HTTP details here; pages call hooks or API adapters.                            |
+| `src/modules/popup/models`     | API, form, session, user, and UI types.                   | Session/auth types come from `@talentor/contracts`; extend locally only when needed. |
+| `src/modules/popup/store`      | Zustand stores and browser persistence.                   | Keep durable UI/session state separate from server cache.                            |
+| `src/modules/popup/pages`      | Route-level screens and use-case UI.                      | Compose reusable components; keep orchestration in hooks.                            |
+| `src/modules/popup/components` | Shared visual and form components.                        | Keep components presentation-focused where possible.                                 |
+| `src/modules/popup/hooks`      | Reusable data behavior.                                   | Encapsulate Query and mutation behavior in hooks.                                    |
+| `src/modules/popup/routes`     | HashRouter route tree and path constants.                 | Preserve hash routes for extension-host navigation.                                  |
+| `src/modules/injector`         | Content-script shadow-DOM overlay.                        | Keep shadow styles in `injector.css`; do not inject Tailwind into the page.          |
 
 `src/Apps/HTMLInjector`, `src/Apps/ServiceWorker`, and `src/Apps/constants.ts`
 no longer exist. Do not recreate scraper or message-bridge modules.
-`src/Apps/Injector` is the content-script overlay: it renders into a shadow root
-inside the host page, so it uses relative imports (no `@injector` alias). Its
+`src/modules/injector` is the content-script overlay: it renders into a shadow root
+inside the host page, so it uses relative imports (no dedicated alias). Its
 Tailwind entry is `injector.css` (`@import 'tailwindcss'` + `:host` theme vars),
 imported with `?inline` and appended as a `<style>` inside the shadow root — this
 keeps `tai:` utilities and preflight scoped to the overlay. Injector icons live in
@@ -67,8 +69,9 @@ through typed configuration where possible instead of duplicating field markup.
 ## Rules For New Code
 
 - Keep `manifest.config.ts` as the source of truth for entry points and permissions.
-- Use existing path aliases: `@popup:...` and `@lang/*`. The `@injector/*` and
-  `@all/*` aliases were removed with the scraper.
+- Use existing path aliases: `@modules/*`, `@common/*`, and `@lang/*`. Prefer
+  aliases over deep relative paths; keep intra-module imports relative. The
+  `@popup:*`, `@injector/*`, and `@all/*` aliases no longer exist.
 - Keep Tailwind utility classes in the extension prefixed with `tai:` (Tailwind 4
   variant-style). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants the
   prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`,
@@ -77,7 +80,7 @@ through typed configuration where possible instead of duplicating field markup.
 - Type API payloads and response data. Replace `any` at boundaries as code is touched.
 - Keep the API base URL in `VITE_SERVICE_URL`; never hardcode deployment credentials
   or bearer tokens. Website links use `VITE_WEB_URL`, exposed as `WEB_URL` from
-  `@popup:api`.
+  `@modules/popup/api`.
 - Use shared session/auth contracts from `@talentor/contracts` (`UserResponse`,
   `LoginRequest`). `useSessionStore` persists the `UserResponse` user and token under
   the `session` key.

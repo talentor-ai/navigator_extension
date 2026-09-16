@@ -21,17 +21,10 @@
     "baseUrl": ".",
     "ignoreDeprecations": "6.0",
     "paths": {
-      // PopUp paths
-      "@popup:components": ["./src/Apps/PopUp/components"],
-      "@popup:models/*": ["./src/Apps/PopUp/models/*"],
-      "@popup:store": ["./src/Apps/PopUp/store"],
-      "@popup:constants/*": ["./src/Apps/PopUp/constants/*"],
-      "@popup:hooks": ["./src/Apps/PopUp/hooks"],
-      "@popup:pages": ["./src/Apps/PopUp/pages"],
-      "@popup:pages/*": ["./src/Apps/PopUp/pages/*"],
-      "@popup:api": ["./src/Apps/PopUp/api"],
-      "@popup/*": ["./src/Apps/PopUp/*"],
-      "@lang/*": ["./src/Apps/PopUp/lang/*"]
+      // Modules
+      "@common/*": ["./src/modules/common/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@lang/*": ["./src/modules/popup/lang/*"]
     }
   },
   "include": ["src", "src/**/*"]

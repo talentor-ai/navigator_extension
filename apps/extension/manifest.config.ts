@@ -7,7 +7,7 @@ export default defineManifest(() => ({
   content_scripts: [
     {
       matches: ['http://*/*', 'https://*/*'],
-      js: ['src/Apps/Injector/index.tsx'],
+      js: ['src/modules/injector/index.tsx'],
       run_at: 'document_idle',
     },
   ],
