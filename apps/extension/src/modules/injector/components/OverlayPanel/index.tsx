@@ -29,13 +29,13 @@ export const OverlayPanel = ({ side, anchorY, onClose }: OverlayPanelProps) => {
   return (
     <section
       style={{ top, width: panelWidth, height: panelHeight, ...horizontal }}
-      className="tai:fixed tai:z-[2147483647] tai:overflow-hidden tai:rounded-2xl tai:bg-primary tai:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+      className="tai:fixed tai:z-214748364 tai:overflow-hidden tai:rounded-2xl tai:bg-primary tai:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
       aria-label="Talentor AI"
     >
       <ButtonIcon
         aria-label="Close Talentor AI"
         onClick={onClose}
-        className="tai:absolute tai:top-2 tai:right-2 tai:z-[2] tai:h-7 tai:w-7 tai:cursor-pointer tai:border-0 tai:bg-black/35 tai:text-txt1 tai:hover:bg-black/55"
+        className="tai:absolute tai:top-2 tai:right-2 tai:z-2 tai:h-5 tai:w-5 tai:cursor-pointer tai:border-0 tai:bg-black/35 tai:text-txt1 tai:hover:bg-black/55"
       >
         <Icons type="close" size={16} />
       </ButtonIcon>

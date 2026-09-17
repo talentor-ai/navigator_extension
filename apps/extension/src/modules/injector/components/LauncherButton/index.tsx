@@ -37,7 +37,7 @@ export const LauncherButton = ({ drag, onClick }: LauncherButtonProps) => {
       className={`tai:fixed tai:z-[2147483647] tai:h-14 tai:w-14 tai:touch-none tai:select-none tai:border-0 tai:bg-tertiary tai:text-primary tai:shadow-[0_8px_24px_rgba(0,0,0,0.28)] ${
         isDragging
           ? 'tai:cursor-grabbing'
-          : 'tai:cursor-grab tai:transition-[left,top,transform] tai:duration-500 tai:ease-[cubic-bezier(0.85,0,0.19,1.5)] tai:hover:scale-105 tai:active:scale-95'
+          : 'tai:cursor-grab tai:transition-[left,top,transform] tai:duration-500 tai:ease-[cubic-bezier(0.85,0,0.19,1.3)] tai:hover:scale-105 tai:active:scale-95'
       }`}
     >
       <Icons type="sparkles" size={26} />
