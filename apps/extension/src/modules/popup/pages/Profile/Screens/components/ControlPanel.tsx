@@ -1,8 +1,7 @@
-import { get } from 'lodash';
 import { Select } from '@modules/popup/components/FormComponent/components';
 import { Button, ButtonIcon, Dialog } from '@modules/popup/components';
-import { useSessionStore, useJobProfile } from '@modules/popup/store';
-import { UserJobProfile } from '@modules/popup/models/model.user';
+import { useJobProfile } from '@modules/popup/store';
+import { useProfilesList } from '@modules/popup/hooks';
 import { useNavigate } from 'react-router-dom';
 import {
   MAIN_PATH,
@@ -16,19 +15,15 @@ import useDeleteProfile from '@modules/popup/pages/Profile/hooks/useDeleteProfil
 const ControlPanel = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { session } = useSessionStore();
   const { setJobProfile, jobProfileIdSelected } = useJobProfile();
   const [isDeleteProfileOpen, setIsDeleteProfileOpen] = useState(false);
   const { mutate: deleteProfile } = useDeleteProfile();
+  const { profileList, isLoading } = useProfilesList();
 
-  const profileList: UserJobProfile[] =
-    get(session, 'userJobProfile', []) || [];
-  const profileOptions = profileList.map(
-    (profile: UserJobProfile, index: number) => ({
-      value: profile?.id || index.toString(),
-      label: <span>{profile.briefDescription}</span>,
-    }),
-  );
+  const profileOptions = profileList.map((profile) => ({
+    value: profile.id,
+    label: <span>{profile.name || ''}</span>,
+  }));
 
   // -------------------------  Handlers
   const handleProfileChange = (value: string) => {
@@ -62,12 +57,14 @@ const ControlPanel = () => {
         <Select
           className="tai:w-[13rem]"
           options={
-            profileOptions.length > 0
-              ? profileOptions
-              : [{ label: <p>No hay perfiles</p>, value: '0' }]
+            isLoading
+              ? [{ label: <p>Cargando...</p>, value: '0' }]
+              : profileOptions.length > 0
+                ? profileOptions
+                : [{ label: <p>No hay perfiles</p>, value: '0' }]
           }
           onChange={handleProfileChange}
-          defaultValue={jobProfileIdSelected}
+          value={jobProfileIdSelected}
         />
         <ButtonIcon icon="plus" onClick={redirectToCreate} />
         <ButtonIcon icon="edit" onClick={redirectToEdit} />

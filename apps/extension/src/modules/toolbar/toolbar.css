@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+@config '../../../tailwind.config.js';
+
+#talentorToolbarContainer {
+  font-family: 'Poppins', system-ui, sans-serif;
+  margin: 0;
+  width: 280px;
+  box-sizing: border-box;
+  background-color: var(--primary);
+  color: var(--txt1);
+
+  --primary: #1e1e27;
+  --secondary: #2b2b37;
+  --tertiary: #fcaf58;
+  --txt1: #f5f5f5;
+  --txt2: #fcaf58;
+  --txt3: #8e8e8e;
+}

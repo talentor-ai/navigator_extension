@@ -1,6 +1,7 @@
 import { get } from 'lodash';
 import { UserJobProfile } from '@modules/popup/models/model.user';
 import { useJobProfile, useSessionStore } from '@modules/popup/store';
+import { useProfilesList } from '@modules/popup/hooks';
 import ControlPanel from './components/ControlPanel';
 import InformationGrid from '@modules/popup/containers/InformationGrid';
 import { H1 } from '@modules/popup/components';
@@ -14,15 +15,22 @@ const ProfileList = () => {
   const profileSelected =
     profileList.find((profile) => profile.id === jobProfileIdSelected) || null;
 
+  const { profileList: apiProfiles } = useProfilesList();
+  const profileIds = apiProfiles.map((profile) => profile.id).join('|');
+  const firstValidId = apiProfiles.find((profile) => profile.id)?.id;
+
   useEffect(() => {
-    if (!jobProfileIdSelected) {
-      const firstProfile = profileList[0];
-      if (firstProfile?.id) {
-        setJobProfile(firstProfile.id);
-      }
+    if (!profileIds || !firstValidId) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!jobProfileIdSelected) {
+      setJobProfile(firstValidId);
+      return;
+    }
+    if (!profileIds.split('|').includes(jobProfileIdSelected)) {
+      setJobProfile(firstValidId);
+    }
+  }, [jobProfileIdSelected, profileIds, firstValidId, setJobProfile]);
 
   return (
     <div className="">

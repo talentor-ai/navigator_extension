@@ -9,9 +9,9 @@ import { useEffect, useRef } from 'react';
 const Menu = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { picked, width, left } = useMenu();
-  const { token } = useSessionStore();
   const routes = authenticatedRoutes;
+  const { picked, width, left } = useMenu(routes.map((route) => route.path));
+  const { token } = useSessionStore();
   const restoredPath = useRef(false);
 
   // Redirect to the last visited page

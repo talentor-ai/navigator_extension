@@ -1,6 +1,18 @@
 {
   "menu": {
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "highlighter": "Resaltador"
+  },
+  "highlighter": {
+    "title": "Resaltador",
+    "description": "Resalta las habilidades clave en todo el contenido de la página.",
+    "enableLabel": "Activar resaltador",
+    "disableLabel": "Desactivar resaltador",
+    "skillsTitle": "Habilidades resaltadas",
+    "tonePositive": "Positivas",
+    "toneNegative": "Negativas",
+    "toneOrange": "Naranjas",
+    "tonePurple": "Moradas"
   },
   "header": {
     "title": "Talentor AI",
@@ -8,8 +20,7 @@
   },
   "login": {
     "login": "Iniciar sesión",
-    "signUp": "Registrarse",
-    "logout": "Cerrar sesión"
+    "signUp": "Registrarse"
   },
   "formFields": {
     "name": "Nombres",
@@ -45,5 +56,15 @@
     "deleteProfileDescription": "¿Estás seguro de querer eliminar este perfil?",
     "deleteProfileConfirm": "Eliminar",
     "deleteProfileCancel": "Cancelar"
+  },
+  "toolbar": {
+    "title": "Talentor AI",
+    "currentSite": "Sitio actual",
+    "enabled": "Talentor AI está activado en este sitio",
+    "disabled": "Talentor AI está desactivado en este sitio",
+    "enable": "Activar",
+    "disable": "Desactivar",
+    "unsupported": "Talentor AI no puede ejecutarse en esta página.",
+    "reloadHint": "Si el lanzador no aparece, recarga esta página para activar el script de contenido."
   }
 }

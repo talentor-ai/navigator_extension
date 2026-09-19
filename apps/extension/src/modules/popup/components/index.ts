@@ -5,7 +5,6 @@ export { default as ButtonIcon } from './ButtonIcon';
 export { default as Dialog } from './Dialog';
 export { default as FormComponent } from './FormComponent';
 export { default as Icons } from './Icons';
-export { default as KebabMenu } from './KebabMenu';
 export { default as Link } from './Link';
 export { default as ProfileInfo } from './ProfileInfo';
 export { default as SocialMedia } from './SocialMedia';

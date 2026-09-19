@@ -7,6 +7,7 @@ interface SelectProps extends CustomizableComponent {
   placeholder?: string;
   onChange?: (value: string) => void;
   defaultValue?: string | null;
+  value?: string | null;
 }
 
 const Select = ({
@@ -15,11 +16,28 @@ const Select = ({
   onChange,
   className = '',
   defaultValue = 'Select',
+  value,
 }: SelectProps) => {
   // ------------------------ Handlers
   const handleChange = (value: string) => {
     if (onChange) onChange(value);
   };
+
+  if (value !== undefined) {
+    return (
+      <div className="">
+        <SelectComponent
+          className={`tai:w-full ${className}`}
+          size="small"
+          style={{ height: '2.3rem' }}
+          placeholder={placeholder}
+          value={value ?? undefined}
+          options={options}
+          onChange={handleChange}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="">

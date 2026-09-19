@@ -3,7 +3,7 @@ import { ConfigProvider } from 'antd';
 import { Router } from './routes';
 import { BaseLayout } from './components';
 import '@modules/popup/app.css';
-import '@modules/popup/lang/i18n';
+import '@lang/i18n';
 import Header from './containers/Header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 

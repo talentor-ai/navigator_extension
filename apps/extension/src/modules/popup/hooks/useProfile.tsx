@@ -1,32 +1,21 @@
 import { getUserApi } from '@modules/popup/api';
+import { useSessionStore } from '@modules/popup/store';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
 
 const useProfile = () => {
-  const [enabled, setEnabled] = useState(false);
+  const token = useSessionStore((s) => s.token);
 
   const { data, error, isLoading, isFetched } = useQuery({
     queryKey: ['USER_INFO'],
     queryFn: getUserApi,
-    enabled,
+    enabled: !!token,
     retry: false,
   });
-
-  const handleFetchUser = () => {
-    setEnabled(true); // Enable the query to run
-  };
-
-  useEffect(() => {
-    if (isFetched) {
-      setEnabled(false); // Disable the query after fetching
-    }
-  }, [isFetched]);
 
   return {
     data,
     error,
     isLoading,
-    handleFetchUser,
     isFetched,
   };
 };

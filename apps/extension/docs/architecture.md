@@ -38,10 +38,25 @@ not from `web_accessible_resources`, so `vite.config.ts` adds `index.html` with
 ```text
 src/
 ├── main.tsx                    React entry (mounted by index.html in the iframe)
+├── lang/                       Shared i18n setup + translations (popup + injector)
+│   ├── i18n.ts                 i18next init, imported by both entries
+│   └── common/                 Translation JSON files (es_common.json, ...)
 └── modules/
     ├── common/                 Cross-module: components/, constants/, hooks/, models/, utils/
-    │   ├── components/         Generic ButtonIcon
-    │   └── models/             Generic types (CustomizableComponent, IconSize, ...)
+    │   ├── components/         Generic ButtonIcon + Switch
+    │   ├── hooks/              Shared hooks (useSiteEnabled)
+    │   ├── models/             Generic types (CustomizableComponent, IconSize, ...)
+    │   └── utils/              Shared helpers (siteAccess: per-site enable/disable)
+    ├── toolbar/                Browser-toolbar popup (toolbar.html via manifest action)
+    │   ├── main.tsx            Toolbar entry
+    │   ├── App.tsx             Current-site hostname + enable/disable toggle
+    │   └── toolbar.css         Tailwind entry + toolbar theme vars
+    ├── highlighter/            Resaltador: whole-page keyword highlighting
+    │   ├── constants/          Hardcoded keywords + whole-page defaults
+    │   ├── engine/             Patterns, matches, theme, range cache, DOM scan
+    │   ├── storage.ts          `highlighter-settings` in chrome.storage.local
+    │   ├── start.ts            Coordinator (enable/disable on settings change)
+    │   └── index.ts            Public surface
     ├── injector/               Content script: shadow-DOM launcher + overlay iframe
     │   ├── index.tsx           Content-script entry (manifest js)
     │   ├── App.tsx             Launcher/overlay composition
@@ -56,7 +71,6 @@ src/
         ├── constants/          Route paths and session keys
         ├── hoc/                Auth redirect wrapper
         ├── hooks/              Cross-page data hooks (useProfile)
-        ├── lang/               i18next setup and translations
         ├── models/             Popup-specific TypeScript contracts
         ├── pages/              Login and profile screens
         ├── routes/             HashRouter route tree
@@ -64,7 +78,8 @@ src/
 ```
 
 Aliases: `@modules/*` -> `src/modules/*`, `@common/*` -> `src/modules/common/*`,
-`@lang/*` -> `src/modules/popup/lang/*`.
+`@lang/*` -> `src/lang/*` (shared by popup and injector; both entries import
+`@lang/i18n`).
 
 `src/Apps/HTMLInjector/`, `src/Apps/ServiceWorker/`, and `src/Apps/constants.ts`
 were deleted.
@@ -72,22 +87,31 @@ were deleted.
 ## In-Page Overlay
 
 1. `src/modules/injector/index.tsx` runs on every `http(s)` page (`document_idle`).
-2. It appends a single host element, attaches a shadow root, and mounts React.
-3. `LauncherButton` (fixed, bottom-right) opens `OverlayPanel`; both the launcher
+2. It first checks the per-site preference (`enabled-hosts` in
+   `chrome.storage.local`, keyed by `location.hostname` via
+   `@common/utils/siteAccess`); sites are disabled by default, so on a site
+   that was never enabled it mounts nothing — not even the launcher. A
+   `chrome.storage.onChanged` subscription mounts/unmounts live when the
+   toolbar popup toggles the site, no reload needed. The content script also
+   answers `talentor:site-ping` / `talentor:site-changed` runtime messages so
+   the toolbar can detect a missing script (shows a reload hint) and force a
+   resync after toggling.
+3. It appends a single host element, attaches a shadow root, and mounts React.
+4. `LauncherButton` (fixed, bottom-right) opens `OverlayPanel`; both the launcher
    and the overlay close control are icon-only `ButtonIcon`s from
    `@common/components`.
-4. The launcher is draggable (`useDraggableLauncher`, pointer events): it follows
+5. The launcher is draggable (`useDraggableLauncher`, pointer events): it follows
    the cursor, is clamped to the viewport, and on drop snaps to the nearest
    left/right edge. `{ side, y }` persists in `chrome.storage.local` under
    `launcher-position` (requires the `storage` permission). `App.tsx` owns the
    hook so the panel can reuse the launcher's side/position.
-5. `OverlayPanel` renders an iframe whose `src` is
+6. `OverlayPanel` renders an iframe whose `src` is
    `chrome.runtime.getURL('index.html')`; the app uses `HashRouter`, so routes
    stay valid inside the frame. The panel opens on the launcher's side, aligned to
    its vertical position, and is clamped (`useViewport` + `EDGE_MARGIN`) so it
    never exceeds the viewport.
-6. `index.html` and `assets/*` are listed in `web_accessible_resources`.
-7. `injector.css` (`@import 'tailwindcss'` + `:host` reset/theme vars) is imported
+7. `index.html` and `assets/*` are listed in `web_accessible_resources`.
+8. `injector.css` (`@import 'tailwindcss'` + `:host` reset/theme vars) is imported
    with Vite's `?inline` and appended as a `<style>` tag inside the shadow root,
    so `tai:`-prefixed utilities and preflight apply only to the overlay and never
    to the host page. Injector icons come from `components/Icons` (react-icons/Lucide,
@@ -112,13 +136,14 @@ flowchart TD
 
 ## Routes
 
-| Path                  | Screen                                     |
-| --------------------- | ------------------------------------------ |
-| `/`                   | Redirects to `/profile`.                   |
-| `/profile`            | Profile list (`ProfileList`).              |
-| `/profile/config`     | Create profile (`EditProfileList`).        |
-| `/profile/config/:id` | Edit selected profile (`EditProfileList`). |
-| `/auth/login`         | Login screen.                              |
+| Path                   | Screen                                     |
+| ---------------------- | ------------------------------------------ |
+| `/`                    | Redirects to `/profile`.                   |
+| `/profile`             | Profile list (`ProfileList`).              |
+| `/profile/config`      | Create profile (`EditProfileList`).        |
+| `/profile/config/:id`  | Edit selected profile (`EditProfileList`). |
+| `/profile/highlighter` | Resaltador settings (`Highlighter`).       |
+| `/auth/login`          | Login screen.                              |
 
 Protected profile routes are wrapped by `RenderAuthComponent`, which redirects
 to `/auth/login` when no session token is present. Routing stays hash-based

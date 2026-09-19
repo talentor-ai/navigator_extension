@@ -1,58 +1,81 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const initialState: any = {
-  picked: null,
-  width: 0,
-  left: 0,
+export interface MenuSelection {
+  picked: number | null;
+  width: number;
+  left: number;
+}
+
+const EMPTY_SELECTION: MenuSelection = { picked: null, width: 0, left: 0 };
+
+const MENU_ITEM_SELECTOR = '[id^="menu-"]';
+
+const findActiveIndex = (
+  paths: readonly string[],
+  pathname: string,
+): number => {
+  let bestIndex = -1;
+  let bestLength = -1;
+
+  paths.forEach((path, index) => {
+    const isActive = pathname === path || pathname.startsWith(`${path}/`);
+    if (!isActive || path.length <= bestLength) return;
+    bestIndex = index;
+    bestLength = path.length;
+  });
+
+  return bestIndex;
 };
 
-const useMenu = () => {
-  const [{ picked, width, left }, setPicked] = useState(initialState);
+const useMenu = (paths: readonly string[]): MenuSelection => {
   const { pathname } = useLocation();
+  const [selection, setSelection] = useState<MenuSelection>(EMPTY_SELECTION);
+  const pathKey = paths.join('|');
 
-  useEffect(() => {
-    const menuContainer = document.getElementById('menuContainer');
-    if (!menuContainer) return;
+  const measure = useCallback(() => {
+    const container = document.getElementById('menuContainer');
+    if (!container) return;
 
-    Array.from(menuContainer.children).forEach((menuItem, index) => {
-      if (menuItem.id === `menu-${pathname}`) {
-        const left =
-          menuItem.getBoundingClientRect().left -
-          // @ts-expect-error - For some reason, getBoundingClientRect() is not recognized
-          menuItem?.parentNode?.getBoundingClientRect()?.left;
+    const routePaths = pathKey === '' ? [] : pathKey.split('|');
+    const activeIndex = findActiveIndex(routePaths, pathname);
 
-        setPicked({
-          // @ts-expect-error - For some reason, offsetWidth() is not recognized
-          width: menuItem?.offsetWidth,
-          picked: index,
-          left,
-        });
-        return;
-      }
-    });
-  }, [pathname]);
-
-  useEffect(() => {
-    if (picked === null) {
-      let firstChild: any = document.getElementById('menuContainer');
-      if (!firstChild) return;
-      firstChild = firstChild.firstElementChild;
-      if (!firstChild) return;
-      setPicked({
-        width: firstChild.offsetWidth,
-        left,
-        picked: 0,
-      });
+    if (activeIndex === -1) {
+      setSelection(EMPTY_SELECTION);
+      return;
     }
-  }, [left, pathname, picked]);
 
-  return {
-    picked,
-    width,
-    left,
-    setPicked,
-  };
+    const activeId = `menu-${routePaths[activeIndex]}`;
+    const items = Array.from(
+      container.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR),
+    );
+    const activeItem = items.find((item) => item.id === activeId);
+
+    if (!activeItem) {
+      setSelection(EMPTY_SELECTION);
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+
+    setSelection({
+      picked: items.indexOf(activeItem),
+      width: activeItem.offsetWidth,
+      left: itemRect.left - containerRect.left,
+    });
+  }, [pathKey, pathname]);
+
+  useLayoutEffect(() => {
+    measure();
+  }, [measure]);
+
+  useEffect(() => {
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [measure]);
+
+  return selection;
 };
 
 export default useMenu;
