@@ -16,14 +16,15 @@
 ## Structure
 
 - The source is modular: `src/modules/{common,injector,popup}` plus shared top-level `src/lang/`. New features belong in a module, not in `src/` directly.
-- `src/modules/common/` holds cross-module code (`components/`, `constants/`, `hooks/`, `models/`, `utils/`). Only put code here once more than one module needs it; do not promote single-use pieces. `common/components` currently exposes the generic icon-only `ButtonIcon` used by both popup presets and the injector launcher/close buttons.
+- `src/modules/common/` holds cross-module code (`components/`, `constants/`, `hooks/`, `models/`, `utils/`). Only put code here once more than one module needs it; do not promote single-use pieces. `common/components` currently exposes the generic icon-only `ButtonIcon` used by both popup presets and the injector launcher/close buttons, and the generic `Switch` (native checkbox, `role="switch"`) used by the toolbar site toggle.
 - `src/modules/popup/` is the application loaded in the overlay iframe.
-- `src/modules/injector/` is the content script that mounts the shadow-DOM launcher/overlay.
+- `src/modules/injector/` is the content script that mounts the shadow-DOM launcher/overlay. Sites are disabled by default; it mounts nothing until the site is enabled via the toolbar popup (`enabled-hosts` in `chrome.storage.local`); a storage subscription mounts/unmounts the launcher live without reload.
+- `src/modules/toolbar/` is the browser-toolbar popup (`toolbar.html`, picked up by CRXJS from the manifest `action`; no manual rollup input needed). It shows the active-tab hostname and toggles per-site enable/disable. Needs `activeTab` for the tab URL; unsupported pages (`chrome://`, new-tab, etc.) show a message with the toggle hidden.
 - Path aliases: `@modules/*` -> `src/modules/*`, `@common/*` -> `src/modules/common/*`, `@lang/*` -> `src/lang/*`. Prefer aliases over deep relative paths; keep intra-module imports relative.
 
 ## Wiring
 
-- `manifest.config.ts` is the source of truth for extension wiring. It declares `name`, `version`, `icons`, `permissions: ['storage']`, a `content_scripts` entry for `src/modules/injector/index.tsx` on `http(s)://*/*`, and `web_accessible_resources` exposing `index.html` and `assets/*`. No browser action or background worker.
+- `manifest.config.ts` is the source of truth for extension wiring. It declares `name`, `version`, `icons`, `permissions: ['storage', 'activeTab']`, an `action` toolbar popup (`toolbar.html`), a `content_scripts` entry for `src/modules/injector/index.tsx` on `http(s)://*/*`, and `web_accessible_resources` exposing `index.html` and `assets/*`. No browser action background worker.
 - The application source is `index.html` -> `src/main.tsx` -> `src/modules/popup/App.tsx`. The content script renders a shadow-DOM launcher/overlay (`src/modules/injector/`) that embeds the app in an extension-origin iframe (`chrome.runtime.getURL('index.html')`).
 - Because `index.html` is not a manifest HTML key, CRXJS `htmlFiles()` does not pick it up; `vite.config.ts` adds it via `build.rollupOptions.input.overlay`. Keep that input or the overlay ships an unbundled `index.html`.
 - Injector styling: `src/modules/injector/injector.css` (`@import 'tailwindcss'` + `@config` + a `:host` reset/theme-var block) is imported with `?inline` and appended as a `<style>` into the shadow root. Use `tai:` utilities only; never inject Tailwind into the page document (its preflight would reset host pages).

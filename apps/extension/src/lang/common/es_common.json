@@ -45,5 +45,15 @@
     "deleteProfileDescription": "¿Estás seguro de querer eliminar este perfil?",
     "deleteProfileConfirm": "Eliminar",
     "deleteProfileCancel": "Cancelar"
+  },
+  "toolbar": {
+    "title": "Talentor AI",
+    "currentSite": "Sitio actual",
+    "enabled": "Talentor AI está activado en este sitio",
+    "disabled": "Talentor AI está desactivado en este sitio",
+    "enable": "Activar",
+    "disable": "Desactivar",
+    "unsupported": "Talentor AI no puede ejecutarse en esta página.",
+    "reloadHint": "Si el lanzador no aparece, recarga esta página para activar el script de contenido."
   }
 }
