@@ -16,3 +16,6 @@ export const USER_PATH = BASE_PATH + '/user';
 export const USER_JOB_PROFILE_PATH = USER_PATH + '/job-profile';
 export const USER_JOB_PROFILE_PATH_SELECTED =
   USER_PATH + '/job-profile/' + JOB_PROFILE_ID;
+
+// Profiles paths
+export const PROFILES_PATH = BASE_PATH + '/profiles';
