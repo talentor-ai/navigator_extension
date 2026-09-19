@@ -1,6 +1,18 @@
 {
   "menu": {
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "highlighter": "Resaltador"
+  },
+  "highlighter": {
+    "title": "Resaltador",
+    "description": "Resalta las habilidades clave en todo el contenido de la página.",
+    "enableLabel": "Activar resaltador",
+    "disableLabel": "Desactivar resaltador",
+    "skillsTitle": "Habilidades resaltadas",
+    "tonePositive": "Positivas",
+    "toneNegative": "Negativas",
+    "toneOrange": "Naranjas",
+    "tonePurple": "Moradas"
   },
   "header": {
     "title": "Talentor AI",

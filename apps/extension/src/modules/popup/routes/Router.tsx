@@ -1,12 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import {
+  HIGHLIGHTER_CONFIG_PATH,
   ID,
   LOGIN_PATH,
   MAIN_PATH,
   PROFILE_CONFIG_PATH,
   PROFILE_SETTINGS_PATH,
 } from '@modules/popup/constants/paths';
-import { LoginScreen, Profile } from '@modules/popup/pages';
+import { Highlighter, LoginScreen, Profile } from '@modules/popup/pages';
 import ConditionalRedirect from '@modules/popup/hoc/RenderAuthComponent';
 import {
   EditProfileList,
@@ -42,6 +43,14 @@ const Router = () => {
           element={
             <ConditionalRedirect>
               <EditProfileList />
+            </ConditionalRedirect>
+          }
+        />
+        <Route
+          path={HIGHLIGHTER_CONFIG_PATH}
+          element={
+            <ConditionalRedirect>
+              <Highlighter />
             </ConditionalRedirect>
           }
         />

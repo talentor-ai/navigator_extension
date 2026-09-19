@@ -51,6 +51,12 @@ src/
     │   ├── main.tsx            Toolbar entry
     │   ├── App.tsx             Current-site hostname + enable/disable toggle
     │   └── toolbar.css         Tailwind entry + toolbar theme vars
+    ├── highlighter/            Resaltador: whole-page keyword highlighting
+    │   ├── constants/          Hardcoded keywords + whole-page defaults
+    │   ├── engine/             Patterns, matches, theme, range cache, DOM scan
+    │   ├── storage.ts          `highlighter-settings` in chrome.storage.local
+    │   ├── start.ts            Coordinator (enable/disable on settings change)
+    │   └── index.ts            Public surface
     ├── injector/               Content script: shadow-DOM launcher + overlay iframe
     │   ├── index.tsx           Content-script entry (manifest js)
     │   ├── App.tsx             Launcher/overlay composition
@@ -130,13 +136,14 @@ flowchart TD
 
 ## Routes
 
-| Path                  | Screen                                     |
-| --------------------- | ------------------------------------------ |
-| `/`                   | Redirects to `/profile`.                   |
-| `/profile`            | Profile list (`ProfileList`).              |
-| `/profile/config`     | Create profile (`EditProfileList`).        |
-| `/profile/config/:id` | Edit selected profile (`EditProfileList`). |
-| `/auth/login`         | Login screen.                              |
+| Path                   | Screen                                     |
+| ---------------------- | ------------------------------------------ |
+| `/`                    | Redirects to `/profile`.                   |
+| `/profile`             | Profile list (`ProfileList`).              |
+| `/profile/config`      | Create profile (`EditProfileList`).        |
+| `/profile/config/:id`  | Edit selected profile (`EditProfileList`). |
+| `/profile/highlighter` | Resaltador settings (`Highlighter`).       |
+| `/auth/login`          | Login screen.                              |
 
 Protected profile routes are wrapped by `RenderAuthComponent`, which redirects
 to `/auth/login` when no session token is present. Routing stays hash-based

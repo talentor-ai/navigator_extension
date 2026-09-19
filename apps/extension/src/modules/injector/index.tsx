@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 import '@lang/i18n';
 import { App } from './App';
+import { startHighlighter } from '@modules/highlighter';
 import {
   SITE_CHANGED,
   SITE_PING,
@@ -15,6 +16,7 @@ const HOST_ID = 'talentor-ai-root';
 const ROOT_ID = 'talentor-ai-shadow-root';
 
 let root: Root | null = null;
+let stopHighlighter: (() => void) | null = null;
 
 const mount = () => {
   if (document.getElementById(HOST_ID)) return;
@@ -40,9 +42,13 @@ const mount = () => {
       <App />
     </StrictMode>,
   );
+
+  stopHighlighter = startHighlighter();
 };
 
 const unmount = () => {
+  stopHighlighter?.();
+  stopHighlighter = null;
   root?.unmount();
   root = null;
   document.getElementById(HOST_ID)?.remove();
