@@ -2,12 +2,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEllipsis,
   faCaretDown,
-  faUser,
   faPlus,
   faPenToSquare,
   faTrashCan,
   faGlobe,
-  faArrowRightFromBracket,
   faPrint,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
@@ -25,9 +23,8 @@ interface iProps extends CustomizableComponent {
 
 const Icons = ({ iconType = '', className = '' }: iProps) => {
   const iconPack: { [key: string]: any } = {
-    itemMenu: faEllipsis,
+    default: faEllipsis,
     arrowDown: faCaretDown,
-    user: faUser,
     linkedin: faLinkedin,
     linkedIn: faLinkedinIn,
     facebook: faFacebookF,
@@ -37,14 +34,13 @@ const Icons = ({ iconType = '', className = '' }: iProps) => {
     delete: faTrashCan,
     github: faGithub,
     portfolio: faGlobe,
-    logout: faArrowRightFromBracket,
     print: faPrint,
     close: faXmark,
   };
 
   return (
     <FontAwesomeIcon
-      icon={iconPack[iconType] ?? iconPack.itemMenu}
+      icon={iconPack[iconType] ?? iconPack.default}
       className={className}
     />
   );
