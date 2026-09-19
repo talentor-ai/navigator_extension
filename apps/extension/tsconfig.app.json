@@ -24,7 +24,7 @@
       // Modules
       "@common/*": ["./src/modules/common/*"],
       "@modules/*": ["./src/modules/*"],
-      "@lang/*": ["./src/modules/popup/lang/*"]
+      "@lang/*": ["./src/lang/*"]
     }
   },
   "include": ["src", "src/**/*"]

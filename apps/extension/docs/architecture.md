@@ -38,6 +38,9 @@ not from `web_accessible_resources`, so `vite.config.ts` adds `index.html` with
 ```text
 src/
 ├── main.tsx                    React entry (mounted by index.html in the iframe)
+├── lang/                       Shared i18n setup + translations (popup + injector)
+│   ├── i18n.ts                 i18next init, imported by both entries
+│   └── common/                 Translation JSON files (es_common.json, ...)
 └── modules/
     ├── common/                 Cross-module: components/, constants/, hooks/, models/, utils/
     │   ├── components/         Generic ButtonIcon
@@ -56,7 +59,6 @@ src/
         ├── constants/          Route paths and session keys
         ├── hoc/                Auth redirect wrapper
         ├── hooks/              Cross-page data hooks (useProfile)
-        ├── lang/               i18next setup and translations
         ├── models/             Popup-specific TypeScript contracts
         ├── pages/              Login and profile screens
         ├── routes/             HashRouter route tree
@@ -64,7 +66,8 @@ src/
 ```
 
 Aliases: `@modules/*` -> `src/modules/*`, `@common/*` -> `src/modules/common/*`,
-`@lang/*` -> `src/modules/popup/lang/*`.
+`@lang/*` -> `src/lang/*` (shared by popup and injector; both entries import
+`@lang/i18n`).
 
 `src/Apps/HTMLInjector/`, `src/Apps/ServiceWorker/`, and `src/Apps/constants.ts`
 were deleted.

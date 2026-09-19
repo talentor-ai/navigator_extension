@@ -15,11 +15,11 @@
 
 ## Structure
 
-- The source is modular: `src/modules/{common,injector,popup}`. New features belong in a module, not in `src/` directly.
+- The source is modular: `src/modules/{common,injector,popup}` plus shared top-level `src/lang/`. New features belong in a module, not in `src/` directly.
 - `src/modules/common/` holds cross-module code (`components/`, `constants/`, `hooks/`, `models/`, `utils/`). Only put code here once more than one module needs it; do not promote single-use pieces. `common/components` currently exposes the generic icon-only `ButtonIcon` used by both popup presets and the injector launcher/close buttons.
 - `src/modules/popup/` is the application loaded in the overlay iframe.
 - `src/modules/injector/` is the content script that mounts the shadow-DOM launcher/overlay.
-- Path aliases: `@modules/*` -> `src/modules/*`, `@common/*` -> `src/modules/common/*`, `@lang/*` -> `src/modules/popup/lang/*`. Prefer aliases over deep relative paths; keep intra-module imports relative.
+- Path aliases: `@modules/*` -> `src/modules/*`, `@common/*` -> `src/modules/common/*`, `@lang/*` -> `src/lang/*`. Prefer aliases over deep relative paths; keep intra-module imports relative.
 
 ## Wiring
 
@@ -53,4 +53,4 @@
 - Persisted local state: `session` (the `UserResponse` user plus token), `jobProfile`, and `current-path`; `useJobProfileResumeFormStore` still uses the legacy `job-post-form` persist key and is currently unused.
 - `GET /api/v1/user` does not embed `userJobProfile`; the extension type adds it as optional, so do not assume profiles are present on the user response.
 - Extension refresh tokens are out of scope (the HttpOnly `refresh_token` cookie is not used); access-token expiry requires re-login. CORS for the extension origin is backend work not present in this repo.
-- `src/modules/popup/lang/i18n.ts` currently loads only `es_common.json`; non-`es` browsers fall back to the first available resource.
+- `src/lang/i18n.ts` is shared by popup and injector (imported by both `src/modules/popup/App.tsx` and `src/modules/injector/index.tsx`); it currently loads only `es_common.json` and non-`es` browsers fall back to the first available resource. Add new languages under `src/lang/common/`, never per-module.
