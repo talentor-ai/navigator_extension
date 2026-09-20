@@ -51,16 +51,18 @@ src/
     │   ├── main.tsx            Toolbar entry
     │   ├── App.tsx             Current-site hostname + enable/disable toggle
     │   └── toolbar.css         Tailwind entry + toolbar theme vars
-    ├── highlighter/            Resaltador: whole-page keyword highlighting
+    ├── highlighter/            Resaltador: keyword highlighting
     │   ├── constants/          Hardcoded keywords + whole-page defaults
-    │   ├── engine/             Patterns, matches, theme, range cache, DOM scan
+    │   ├── engine/             Patterns, matches, theme, range cache, DOM scan,
+    │   │                       `highlightKeywords(keywordLists, cssSelector)`
     │   ├── storage.ts          `highlighter-settings` in chrome.storage.local
-    │   ├── start.ts            Coordinator (enable/disable on settings change)
+    │   ├── selectors.ts        `highlighter-selectors` (hostname -> CSS selector)
+    │   ├── start.ts            Coordinator (per-host selector + settings changes)
     │   └── index.ts            Public surface
     ├── injector/               Content script: shadow-DOM launcher + overlay iframe
     │   ├── index.tsx           Content-script entry (manifest js)
     │   ├── App.tsx             Launcher/overlay composition
-    │   ├── constants.ts        Extension app URL
+    │   ├── constants.ts        Extension app URL (adds `?host=<hostname>`)
     │   ├── injector.css        Tailwind entry + `:host` reset/theme vars
     │   ├── components/         LauncherButton, OverlayPanel, Icons
     │   └── hooks/              useOverlay
@@ -106,7 +108,9 @@ were deleted.
    `launcher-position` (requires the `storage` permission). `App.tsx` owns the
    hook so the panel can reuse the launcher's side/position.
 6. `OverlayPanel` renders an iframe whose `src` is
-   `chrome.runtime.getURL('index.html')`; the app uses `HashRouter`, so routes
+   `chrome.runtime.getURL('index.html')` plus `?host=<hostname>` (the popup is
+   extension-origin, so the host page URL is forwarded as a query param for the
+   Resaltador per-site selector); the app uses `HashRouter`, so routes
    stay valid inside the frame. The panel opens on the launcher's side, aligned to
    its vertical position, and is clamped (`useViewport` + `EDGE_MARGIN`) so it
    never exceeds the viewport.
@@ -156,6 +160,8 @@ to `/auth/login` when no session token is present. Routing stays hash-based
 | `useSessionStore`              | Persisted as `session`       | Authenticated `UserResponse` user and access token. Axios reads the token via the store. |
 | `useJobProfile`                | Persisted as `jobProfile`    | Selected profile ID.                                                                     |
 | `useJobProfileResumeFormStore` | Persisted as `job-post-form` | Legacy form store; currently unused.                                                     |
+| `highlighter-settings`         | `chrome.storage.local`       | Resaltador enabled flag (popup + content script).                                        |
+| `highlighter-selectors`        | `chrome.storage.local`       | Per-hostname CSS selector for the Resaltador container (popup + content script).         |
 | TanStack Query                 | Query cache                  | Remote user data and mutation invalidation (`['USER_INFO']`).                            |
 | `localStorage['current-path']` | Browser storage              | Last popup route used by the menu.                                                       |
 

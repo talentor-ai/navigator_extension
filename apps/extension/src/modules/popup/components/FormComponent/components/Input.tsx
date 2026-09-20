@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 interface IFieldProps extends FieldConfig {
   errorMessage?: string;
+  disabled?: boolean;
   register: any;
 }
 
@@ -12,6 +13,7 @@ const Input = ({
   type,
   placeholder,
   errorMessage = '',
+  disabled = false,
   register,
   validationRules,
 }: IFieldProps) => {
@@ -25,7 +27,7 @@ const Input = ({
 
   return (
     <div className="tai:relative tai:w-full">
-      {type !== InputFieldType.hidden && (
+      {type !== InputFieldType.hidden && label && (
         <label htmlFor={name} className="tai:text-txt2 tai:block tai:mb-1.5">
           {label}
           {validationRules?.required && (
@@ -44,8 +46,9 @@ const Input = ({
           id={name}
           type={type}
           placeholder={placeholder}
+          disabled={disabled}
           {...register(name, validationRules)}
-          className="tai:w-full tai:border-none tai:bg-transparent tai:outline-none"
+          className="tai:w-full tai:border-none tai:bg-transparent tai:outline-none tai:disabled:cursor-not-allowed tai:disabled:text-txt3"
           autoComplete="off"
           onFocus={() => {
             setIsFocused(true);

@@ -1,11 +1,12 @@
 import {
+  DEFAULT_KEYWORD_LISTS,
   DEFAULT_ROOT_SELECTOR,
   DEFAULT_TEXT_SELECTOR,
   DEFAULT_THEME_MODE,
 } from '../constants/defaults';
 import type { HighlighterController, HighlighterOptions } from '../types';
 import { supportsCustomHighlights } from './dom';
-import { HIGHLIGHT_TONES } from './patterns';
+import { HIGHLIGHT_TONES, buildPatternSets } from './patterns';
 import { createScanner } from './scan';
 import {
   HIGHLIGHT_NAMES,
@@ -35,13 +36,23 @@ export const createHighlighter = (
     rootSelector = DEFAULT_ROOT_SELECTOR,
     textSelector = DEFAULT_TEXT_SELECTOR,
     themeMode = DEFAULT_THEME_MODE,
+    keywordLists = DEFAULT_KEYWORD_LISTS,
   } = options;
+
+  const patternSets = buildPatternSets(keywordLists);
 
   const findRoot = (): Element | null => {
     try {
-      return document.querySelector(rootSelector);
+      return (
+        document.querySelector(rootSelector) ??
+        document.querySelector(DEFAULT_ROOT_SELECTOR)
+      );
     } catch {
-      return null;
+      try {
+        return document.querySelector(DEFAULT_ROOT_SELECTOR);
+      } catch {
+        return null;
+      }
     }
   };
 
@@ -51,7 +62,7 @@ export const createHighlighter = (
     return noopController;
   }
 
-  const scanner = createScanner(textSelector);
+  const scanner = createScanner(textSelector, patternSets);
 
   let observedRoot: Element | null = null;
   let rootObserver: MutationObserver | null = null;

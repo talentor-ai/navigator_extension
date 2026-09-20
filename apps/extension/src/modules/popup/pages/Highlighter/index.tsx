@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Switch } from '@common/components';
-import { H1 } from '@modules/popup/components';
+import { H1, Input } from '@modules/popup/components';
+import { InputFieldType } from '@modules/popup/models/model.form';
 import {
   NEGATIVE_KEYWORDS,
   ORANGE_KEYWORDS,
@@ -8,6 +9,7 @@ import {
   PURPLE_KEYWORDS,
 } from '@modules/highlighter';
 import useHighlighterSettings from './hooks/useHighlighterSettings';
+import useHighlighterSelector from './hooks/useHighlighterSelector';
 
 const TONE_SUMMARY = [
   { key: 'highlighter.tonePositive', count: POSITIVE_KEYWORDS.length },
@@ -19,6 +21,12 @@ const TONE_SUMMARY = [
 const Highlighter = () => {
   const { t } = useTranslation();
   const { settings, isLoading, updateEnabled } = useHighlighterSettings();
+  const {
+    hostname,
+    hasHostname,
+    isLoading: isSelectorLoading,
+    register,
+  } = useHighlighterSelector();
   const toggleLabel = settings.enabled
     ? t('highlighter.disableLabel')
     : t('highlighter.enableLabel');
@@ -44,6 +52,22 @@ const Highlighter = () => {
         >
           {toggleLabel}
         </label>
+      </div>
+
+      <div className="tai:flex tai:flex-col tai:gap-1">
+        <h3 className="tai:text-txt1">{t('highlighter.selectorTitle')}</h3>
+        <p className="tai:text-txt3">
+          {hasHostname
+            ? t('highlighter.selectorHint', { hostname })
+            : t('highlighter.selectorNoHost')}
+        </p>
+        <Input
+          name="selector"
+          type={InputFieldType.text}
+          placeholder={t('highlighter.selectorPlaceholder')}
+          disabled={!hasHostname || isSelectorLoading}
+          register={register}
+        />
       </div>
 
       <div className="tai:flex tai:flex-col tai:gap-1">

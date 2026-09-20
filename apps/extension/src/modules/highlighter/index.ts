@@ -4,12 +4,16 @@ export type {
   HighlighterSettings,
   HighlighterOptions,
   HighlighterController,
+  KeywordList,
 } from './types';
+
+export type { HighlighterSelectors } from './selectors';
 
 export {
   DEFAULT_ROOT_SELECTOR,
   DEFAULT_TEXT_SELECTOR,
   DEFAULT_THEME_MODE,
+  DEFAULT_KEYWORD_LISTS,
 } from './constants/defaults';
 
 export {
@@ -27,6 +31,16 @@ export {
   subscribeHighlighterSettings,
 } from './storage';
 
+export {
+  HIGHLIGHTER_SELECTORS_KEY,
+  getSelectorForHost,
+  readHighlighterSelectors,
+  setHighlighterSelector,
+  subscribeHighlighterSelectors,
+} from './selectors';
+
 export { startHighlighter } from './start';
 
 export { createHighlighter } from './engine/createHighlighter';
+
+export { highlightKeywords } from './engine/highlightKeywords';

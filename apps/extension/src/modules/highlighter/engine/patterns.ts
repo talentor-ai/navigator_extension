@@ -1,10 +1,5 @@
-import {
-  NEGATIVE_KEYWORDS,
-  ORANGE_KEYWORDS,
-  POSITIVE_KEYWORDS,
-  PURPLE_KEYWORDS,
-} from '../constants/keywords';
-import type { HighlightTone } from '../types';
+import { DEFAULT_KEYWORD_LISTS } from '../constants/defaults';
+import type { HighlightTone, KeywordList } from '../types';
 
 const REGEX_SPECIAL_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
 
@@ -38,10 +33,22 @@ export const HIGHLIGHT_TONES: readonly HighlightTone[] = Object.freeze([
   'purple',
 ]);
 
-/** Built once per page: compiling ~160 regexes per scan would be wasteful. */
-export const PATTERN_SETS: readonly PatternSet[] = Object.freeze([
-  { tone: 'positive', patterns: buildKeywordPatterns(POSITIVE_KEYWORDS) },
-  { tone: 'negative', patterns: buildKeywordPatterns(NEGATIVE_KEYWORDS) },
-  { tone: 'orange', patterns: buildKeywordPatterns(ORANGE_KEYWORDS) },
-  { tone: 'purple', patterns: buildKeywordPatterns(PURPLE_KEYWORDS) },
-]);
+/**
+ * Compiling ~160 regexes per scan would be wasteful, so pattern sets are built
+ * once per list set. `buildPatternSets` lets callers highlight with custom
+ * keyword lists; `PATTERN_SETS` keeps the shipped defaults for the whole-page
+ * highlighter.
+ */
+export const buildPatternSets = (
+  keywordLists: readonly KeywordList[],
+): readonly PatternSet[] =>
+  Object.freeze(
+    keywordLists.map(({ tone, keywords }) => ({
+      tone,
+      patterns: buildKeywordPatterns(keywords),
+    })),
+  );
+
+export const PATTERN_SETS: readonly PatternSet[] = buildPatternSets(
+  DEFAULT_KEYWORD_LISTS,
+);

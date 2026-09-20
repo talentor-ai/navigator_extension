@@ -35,7 +35,7 @@ export const OverlayPanel = ({ side, anchorY, onClose }: OverlayPanelProps) => {
       <ButtonIcon
         aria-label="Close Talentor AI"
         onClick={onClose}
-        className="tai:absolute tai:top-6 tai:right-6 tai:z-[2] tai:h-7 tai:w-7 tai:cursor-pointer tai:border-0 tai:bg-error-color tai:text-txt1 tai:hover:bg-error-color/70 tai:color-primary" 
+        className="tai:absolute tai:top-6 tai:right-6 tai:z-[2] tai:h-7 tai:w-7 tai:cursor-pointer tai:border-0 tai:bg-error-color tai:text-txt1 tai:hover:bg-error-color/70 tai:color-primary"
       >
         <Icons type="close" size={16} />
       </ButtonIcon>

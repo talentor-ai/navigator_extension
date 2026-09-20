@@ -2,6 +2,7 @@ import type { HighlightTone } from '../types';
 import { collectTextNodes } from './dom';
 import { collectMatches, selectMatches } from './matches';
 import { HIGHLIGHT_TONES, PATTERN_SETS } from './patterns';
+import type { PatternSet } from './patterns';
 
 type RangesByTone = Record<HighlightTone, Range[]>;
 
@@ -26,7 +27,10 @@ const createEmptyRanges = (): RangesByTone => ({
  * per text node and rebuilt only when that node's text actually changed. Ranges
  * are position-only objects: reusing them across scans is safe.
  */
-export const createScanner = (textSelector: string): PageScanner => {
+export const createScanner = (
+  textSelector: string,
+  patternSets: readonly PatternSet[] = PATTERN_SETS,
+): PageScanner => {
   const cache = new Map<Text, CachedEntry>();
   const collectTargets = (root: Element): Element[] =>
     textSelector.trim() === ''
@@ -37,7 +41,7 @@ export const createScanner = (textSelector: string): PageScanner => {
     const rangesByTone = createEmptyRanges();
     const text = textNode.textContent ?? '';
     const matches = selectMatches(
-      PATTERN_SETS.flatMap(({ tone, patterns }) =>
+      patternSets.flatMap(({ tone, patterns }) =>
         collectMatches(text, patterns, tone),
       ),
     );
