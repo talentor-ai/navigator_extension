@@ -4,6 +4,12 @@ import type { Root } from 'react-dom/client';
 import '@lang/i18n';
 import { App } from './App';
 import { startHighlighter } from '@modules/highlighter';
+import { startJobPicker, stopJobPicker } from './jobPicker';
+import {
+  JOB_PICKER_START,
+  JOB_PICKER_STOP,
+  isExtensionOrigin,
+} from '@common/utils/jobPickerBridge';
 import {
   SITE_CHANGED,
   SITE_PING,
@@ -47,6 +53,7 @@ const mount = () => {
 };
 
 const unmount = () => {
+  stopJobPicker();
   stopHighlighter?.();
   stopHighlighter = null;
   root?.unmount();
@@ -81,6 +88,20 @@ if (chrome.runtime?.onMessage) {
     return true;
   });
 }
+
+// Job picker bridge: the overlay iframe asks the content script to highlight
+// hovered page elements and return the clicked one's text.
+window.addEventListener('message', (event) => {
+  if (!isExtensionOrigin(event.origin)) return;
+  if (!event.source) return;
+
+  const type = (event.data as { type?: unknown } | null)?.type;
+  if (type === JOB_PICKER_START) {
+    startJobPicker(event.source as Window);
+  } else if (type === JOB_PICKER_STOP) {
+    stopJobPicker();
+  }
+});
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', start, { once: true });

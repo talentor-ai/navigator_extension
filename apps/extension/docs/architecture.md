@@ -63,6 +63,7 @@ src/
     │   ├── index.tsx           Content-script entry (manifest js)
     │   ├── App.tsx             Launcher/overlay composition
     │   ├── constants.ts        Extension app URL (adds `?host=<hostname>`)
+    │   ├── jobPicker.ts        Host-page element picker (postMessage bridge)
     │   ├── injector.css        Tailwind entry + `:host` reset/theme vars
     │   ├── components/         LauncherButton, OverlayPanel, Icons
     │   └── hooks/              useOverlay
@@ -120,6 +121,27 @@ were deleted.
    so `tai:`-prefixed utilities and preflight apply only to the overlay and never
    to the host page. Injector icons come from `components/Icons` (react-icons/Lucide,
    type-driven `strokeWidth` default `2.7`), mirroring `apps/web`.
+
+## Job Picker
+
+The profile screen's Job picker (`pages/Profile/Screens/components/JobPicker.tsx`)
+selects job-posting text from the host page:
+
+1. Clicking "Seleccionar oferta de trabajo" sets `isPickingAJob` and posts
+   `talentor:job-picker:start` from the iframe to `window.parent`.
+2. `src/modules/injector/jobPicker.ts` (content script) validates the extension
+   origin, stores `event.source`, and attaches capture listeners.
+3. `mouseover` outlines the hovered element inline
+   (`outline: 2px solid #fcaf58`), restoring the previous element; `html`,
+   `body`, and `#talentor-ai-root` are skipped.
+4. A click (capture, `preventDefault` + `stopPropagation`) normalizes the
+   element's `innerText` and posts `talentor:job-picker:picked` back to the
+   iframe, then tears down. `Esc` posts `talentor:job-picker:cancelled`.
+5. The popup hook (`useJobPicker`) writes the text into the standalone RHF
+   `jobDescription` field. The picker is transient: nothing is persisted, and
+   unmount posts `talentor:job-picker:stop`.
+
+Message names/types live in `@common/utils/jobPickerBridge.ts`.
 
 ## Application Component Hierarchy
 

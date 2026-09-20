@@ -4,7 +4,7 @@ export { default as Button } from './Button';
 export { default as ButtonIcon } from './ButtonIcon';
 export { default as Dialog } from './Dialog';
 export { default as FormComponent } from './FormComponent';
-export { Input } from './FormComponent/components';
+export { Input, Textarea } from './FormComponent/components';
 export { default as Icons } from './Icons';
 export { default as Link } from './Link';
 export { default as ProfileInfo } from './ProfileInfo';

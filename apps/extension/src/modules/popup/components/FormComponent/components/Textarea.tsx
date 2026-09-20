@@ -3,8 +3,19 @@ import { useState } from 'react';
 
 interface IFieldProps extends FieldConfig {
   errorMessage?: string;
+  textSize?: 'small' | 'compact' | 'body' | 'medium';
   register: any;
 }
+
+const TEXT_SIZE_CLASSES: Record<
+  'small' | 'compact' | 'body' | 'medium',
+  string
+> = {
+  small: 'tai:text-small',
+  compact: 'tai:text-compact',
+  body: 'tai:text-body',
+  medium: 'tai:text-medium',
+};
 
 const Textarea = ({
   name,
@@ -12,6 +23,7 @@ const Textarea = ({
   type,
   placeholder,
   errorMessage = '',
+  textSize = 'medium',
   register,
   validationRules,
 }: IFieldProps) => {
@@ -25,12 +37,14 @@ const Textarea = ({
 
   return (
     <div className="tai:relative tai:w-full">
-      <label htmlFor={name} className="tai:text-txt2 tai:block tai:mb-1.5">
-        {label}
-        {validationRules?.required && (
-          <span className="tai:text-errorColor"> *</span>
-        )}
-      </label>
+      {label && (
+        <label htmlFor={name} className="tai:text-txt2 tai:block tai:mb-1.5">
+          {label}
+          {validationRules?.required && (
+            <span className="tai:text-errorColor"> *</span>
+          )}
+        </label>
+      )}
       <div
         className={`tai:border ${borderColor()} tai:text-txt1 tai:flex tai:justify-between 
          tai:items-center tai:bg-secondary tai:rounded-2xl tai:rounded-ee-none`}
@@ -40,8 +54,8 @@ const Textarea = ({
           type={type}
           placeholder={placeholder}
           {...register(name, validationRules)}
-          className="tai:w-full tai:h-full tai:py-4 tai:px-4 tai:border-none tai:bg-transparent tai:outline-none tai:resize-y
-            tai:min-h-10 tai:max-h-60"
+          className={`tai:w-full tai:h-full tai:py-4 tai:px-4 tai:border-none tai:bg-transparent tai:outline-none tai:resize-y
+            tai:min-h-10 tai:max-h-60 ${TEXT_SIZE_CLASSES[textSize]}`}
           autoComplete="off"
           onFocus={() => {
             setIsFocused(true);

@@ -59,7 +59,13 @@
     "deleteProfile": "Eliminar perfil",
     "deleteProfileDescription": "¿Estás seguro de querer eliminar este perfil?",
     "deleteProfileConfirm": "Eliminar",
-    "deleteProfileCancel": "Cancelar"
+    "deleteProfileCancel": "Cancelar",
+    "jobPicker": {
+      "title": "Oferta de trabajo",
+      "button": "Seleccionar oferta de trabajo",
+      "placeholder": "Pega o selecciona la descripción del trabajo",
+      "pickingHint": "Selecciona un bloque en la página (Esc para cancelar)"
+    }
   },
   "toolbar": {
     "title": "Talentor AI",

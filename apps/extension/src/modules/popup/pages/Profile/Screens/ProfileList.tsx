@@ -3,6 +3,7 @@ import { UserJobProfile } from '@modules/popup/models/model.user';
 import { useJobProfile, useSessionStore } from '@modules/popup/store';
 import { useProfilesList } from '@modules/popup/hooks';
 import ControlPanel from './components/ControlPanel';
+import JobPicker from './components/JobPicker';
 import InformationGrid from '@modules/popup/containers/InformationGrid';
 import { H1 } from '@modules/popup/components';
 import { useEffect } from 'react';
@@ -35,6 +36,7 @@ const ProfileList = () => {
   return (
     <div className="">
       <ControlPanel />
+      <JobPicker />
       {profileSelected && jobProfileIdSelected && (
         <>
           <H1 className="tai:my-6 tai:text-txt2">Información del perfil</H1>

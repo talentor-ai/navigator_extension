@@ -8,6 +8,7 @@ import {
   faGlobe,
   faPrint,
   faXmark,
+  faBriefcase,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookF,
@@ -35,6 +36,7 @@ const Icons = ({ iconType = '', className = '' }: iProps) => {
     github: faGithub,
     portfolio: faGlobe,
     print: faPrint,
+    briefcase: faBriefcase,
     close: faXmark,
   };
 
