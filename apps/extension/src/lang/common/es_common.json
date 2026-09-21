@@ -56,10 +56,9 @@
     "yearsOfExperience": "Años de experiencia"
   },
   "profile": {
-    "deleteProfile": "Eliminar perfil",
-    "deleteProfileDescription": "¿Estás seguro de querer eliminar este perfil?",
-    "deleteProfileConfirm": "Eliminar",
-    "deleteProfileCancel": "Cancelar",
+    "selectProfile": "Seleccionar perfil",
+    "loadingProfiles": "Cargando...",
+    "noProfiles": "No hay perfiles",
     "jobPicker": {
       "title": "Oferta de trabajo",
       "button": "Seleccionar",

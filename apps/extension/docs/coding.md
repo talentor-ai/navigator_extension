@@ -45,14 +45,15 @@ Pages and containers coordinate data and navigation. Reusable components such as
 `Button`, `Box`, `BaseLayout`, and form controls render UI from props.
 
 Icon-only buttons use the generic `ButtonIcon` from `@common/components`, which
-takes the icon as `children` and forwards native button props; the popup's
-`ButtonIcon` is a thin preset over it.
+takes the icon as `children` and forwards native button props; the injector
+launcher and overlay close control are its only consumers.
 
 ### Custom hooks
 
-`useLogin` and the profile hooks isolate mutations, queries, navigation, and
-error handling from screen markup. Login is the only auth mutation; registration
-is handled by the website.
+`useLogin` and the profile hooks isolate queries, navigation, and error handling
+from screen markup. Login is the only auth mutation; registration is handled by
+the website. Profiles are read-only in the extension (list + selector), so the
+popup ships no profile mutations.
 
 ### Draggable launcher
 

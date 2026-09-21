@@ -68,7 +68,7 @@ src/
     │   ├── components/         LauncherButton, OverlayPanel, Icons
     │   └── hooks/              useOverlay
     └── popup/                  Application loaded in the overlay iframe
-        ├── api/                Axios client, auth, user and profile endpoints
+        ├── api/                Axios client, auth, user and profiles-list endpoints
         ├── components/         Reusable visual/form components
         ├── containers/         Header and menu
         ├── constants/          Route paths and session keys
@@ -124,10 +124,13 @@ were deleted.
 
 ## Job Picker
 
-The profile screen's Job picker (`pages/Profile/Screens/components/JobPicker.tsx`)
-selects job-posting text from the host page:
+The profile screen's Job picker (`pages/Profile/Screens/components/JobPicker.tsx`,
+with form + picker state lifted into `Screens/hooks/useJobPickerForm.ts`) selects
+job-posting text from the host page. Its trigger is the briefcase icon button in
+the selector row (`ProfileSelector`), and the picked text lands in the job
+description textarea below:
 
-1. Clicking "Seleccionar" sets `isPickingAJob` and posts
+1. Clicking the icon button sets `isPickingAJob` and posts
    `talentor:job-picker:start` from the iframe to `window.parent`.
 2. `src/modules/injector/jobPicker.ts` (content script) validates the extension
    origin, stores `event.source`, and attaches capture listeners.
@@ -156,20 +159,24 @@ flowchart TD
     Layout --> Routes[Router]
     Routes --> Profile[Profile]
     Profile --> ProfileList[ProfileList]
-    Profile --> EditProfile[EditProfileList]
+    ProfileList --> Selector[ProfileSelector]
+    ProfileList --> JobPicker[JobPicker]
+    Routes --> Highlighter[Highlighter]
     Routes --> Login[LoginScreen]
 ```
 
 ## Routes
 
-| Path                   | Screen                                     |
-| ---------------------- | ------------------------------------------ |
-| `/`                    | Redirects to `/profile`.                   |
-| `/profile`             | Profile list (`ProfileList`).              |
-| `/profile/config`      | Create profile (`EditProfileList`).        |
-| `/profile/config/:id`  | Edit selected profile (`EditProfileList`). |
-| `/profile/highlighter` | Resaltador settings (`Highlighter`).       |
-| `/auth/login`          | Login screen.                              |
+| Path                   | Screen                               |
+| ---------------------- | ------------------------------------ |
+| `/`                    | Redirects to `/profile`.             |
+| `/profile`             | Profile selector (`ProfileList`).    |
+| `/profile/highlighter` | Resaltador settings (`Highlighter`). |
+| `/auth/login`          | Login screen.                        |
+| anything else          | Redirects to `/profile`.             |
+
+Profile creation and editing were removed; the retired `/profile/config` (and
+`/profile/config/:id`) paths fall through to the catch-all redirect above.
 
 Protected profile routes are wrapped by `RenderAuthComponent`, which redirects
 to `/auth/login` when no session token is present. Routing stays hash-based
@@ -201,12 +208,13 @@ is out of scope, so an expired access token requires logging in again.
 
 ## Backend Contract
 
-| Extension client      | Backend path                           | Use                                                      |
-| --------------------- | -------------------------------------- | -------------------------------------------------------- |
-| `fetchSession.ts`     | `POST /api/v1/auth/login`              | Login only.                                              |
-| `fetchUser.ts`        | `GET /api/v1/user`                     | Load current user (`UserResponse`; no `userJobProfile`). |
-| `jobProfileApi.ts`    | `POST`/`PUT /api/v1/user/job-profile`  | Create or update profile.                                |
-| `deleteJobProfile.ts` | `DELETE /api/v1/user/job-profile/{id}` | Delete profile (no matching backend endpoint yet).       |
+| Extension client   | Backend path              | Use                                                      |
+| ------------------ | ------------------------- | -------------------------------------------------------- |
+| `fetchSession.ts`  | `POST /api/v1/auth/login` | Login only.                                              |
+| `fetchUser.ts`     | `GET /api/v1/user`        | Load current user (`UserResponse`; no `userJobProfile`). |
+| `fetchProfiles.ts` | `GET /api/v1/profiles`    | Profile list for the selector.                           |
 
-The removed job-apply and resume-history endpoints (`POST /api/v1/jobs/apply`,
-`GET /api/v1/resume/history/{profileId}`) are no longer called.
+The removed profile create/update/delete clients (`POST`/`PUT`
+`/api/v1/user/job-profile`, `DELETE /api/v1/user/job-profile/{id}`) are no longer
+called, nor are the removed job-apply and resume-history endpoints
+(`POST /api/v1/jobs/apply`, `GET /api/v1/resume/history/{profileId}`).

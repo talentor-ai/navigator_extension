@@ -32,7 +32,6 @@
         "@tanstack/react-query": "5.101.4",
         "antd": "6.6.1",
         "axios": "1.19.0",
-        "dayjs": "1.11.23",
         "i18next": "26.3.6",
         "lodash": "4.18.1",
         "react": "19.2.8",

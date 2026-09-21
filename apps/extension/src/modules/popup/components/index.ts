@@ -2,7 +2,6 @@ export { default as BaseLayout } from './BaseLayout';
 export { default as Box } from './Box';
 export { default as Button } from './Button';
 export { default as ButtonIcon } from './ButtonIcon';
-export { default as Dialog } from './Dialog';
 export { default as FormComponent } from './FormComponent';
 export { Input, Textarea } from './FormComponent/components';
 export { default as Icons } from './Icons';

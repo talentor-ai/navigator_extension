@@ -1,18 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import {
   HIGHLIGHTER_CONFIG_PATH,
-  ID,
   LOGIN_PATH,
   MAIN_PATH,
-  PROFILE_CONFIG_PATH,
   PROFILE_SETTINGS_PATH,
 } from '@modules/popup/constants/paths';
 import { Highlighter, LoginScreen, Profile } from '@modules/popup/pages';
 import ConditionalRedirect from '@modules/popup/hoc/RenderAuthComponent';
-import {
-  EditProfileList,
-  ProfileList,
-} from '@modules/popup/pages/Profile/Screens';
+import { ProfileList } from '@modules/popup/pages/Profile/Screens';
 
 const Router = () => {
   return (
@@ -31,22 +26,6 @@ const Router = () => {
           }
         />
         <Route
-          path={PROFILE_CONFIG_PATH}
-          element={
-            <ConditionalRedirect>
-              <EditProfileList />
-            </ConditionalRedirect>
-          }
-        />
-        <Route
-          path={`${PROFILE_CONFIG_PATH}/${ID}`}
-          element={
-            <ConditionalRedirect>
-              <EditProfileList />
-            </ConditionalRedirect>
-          }
-        />
-        <Route
           path={HIGHLIGHTER_CONFIG_PATH}
           element={
             <ConditionalRedirect>
@@ -57,6 +36,12 @@ const Router = () => {
       </Route>
 
       <Route path={LOGIN_PATH} index element={<LoginScreen />} />
+
+      {/* Retired or unknown paths (e.g. the old `/profile/config` routes). */}
+      <Route
+        path="*"
+        element={<Navigate to={PROFILE_SETTINGS_PATH} replace />}
+      />
     </Routes>
   );
 };

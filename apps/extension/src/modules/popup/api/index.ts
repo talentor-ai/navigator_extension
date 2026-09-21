@@ -11,5 +11,3 @@ export {
 export { loginApi } from './fetchSession';
 export { getUserApi } from './fetchUser';
 export { getProfilesApi } from './fetchProfiles';
-export { updateJobProfileApi, createJobProfileApi } from './jobProfileApi';
-export { deleteJobProfileApi } from './deleteJobProfile';

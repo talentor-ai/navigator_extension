@@ -2,8 +2,9 @@ import { get } from 'lodash';
 import { UserJobProfile } from '@modules/popup/models/model.user';
 import { useJobProfile, useSessionStore } from '@modules/popup/store';
 import { useProfilesList } from '@modules/popup/hooks';
-import ControlPanel from './components/ControlPanel';
+import ProfileSelector from './components/ProfileSelector';
 import JobPicker from './components/JobPicker';
+import useJobPickerForm from './hooks/useJobPickerForm';
 import InformationGrid from '@modules/popup/containers/InformationGrid';
 import { H1 } from '@modules/popup/components';
 import { useEffect } from 'react';
@@ -33,10 +34,15 @@ const ProfileList = () => {
     }
   }, [jobProfileIdSelected, profileIds, firstValidId, setJobProfile]);
 
+  const { register, isPickingAJob, startPicking } = useJobPickerForm();
+
   return (
     <div className="">
-      <ControlPanel />
-      <JobPicker />
+      <ProfileSelector
+        onStartPicking={startPicking}
+        isPickingAJob={isPickingAJob}
+      />
+      <JobPicker register={register} isPickingAJob={isPickingAJob} />
       {profileSelected && jobProfileIdSelected && (
         <>
           <H1 className="tai:my-6 tai:text-txt2">Información del perfil</H1>

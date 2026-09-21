@@ -1,4 +1,4 @@
-import { FieldConfig, InputFieldType } from '@modules/popup/models/model.form';
+import { FieldConfig } from '@modules/popup/models/model.form';
 import { useState } from 'react';
 
 interface IFieldProps extends FieldConfig {
@@ -34,7 +34,7 @@ const Input = ({
 
   return (
     <div className="tai:relative tai:w-full">
-      {type !== InputFieldType.hidden && label && (
+      {label && (
         <label htmlFor={name} className="tai:text-txt2 tai:block tai:mb-1.5">
           {label}
           {validationRules?.required && (
@@ -44,10 +44,7 @@ const Input = ({
       )}
       <div
         className={`tai:border ${borderColor()} tai:px-4 tai:text-txt1 tai:flex tai:justify-between 
-         tai:items-center tai:h-boxHeight tai:bg-secondary tai:rounded-md ${
-           type === InputFieldType.hidden &&
-           'tai:h-0 tai:border-none tai:absolute tai:pointer-events-none tai:opacity-0'
-         }`}
+         tai:items-center tai:h-boxHeight tai:bg-secondary tai:rounded-md`}
       >
         <input
           id={name}
@@ -65,7 +62,7 @@ const Input = ({
           }}
         />
       </div>
-      {errorMessage && type !== InputFieldType.hidden && (
+      {errorMessage && (
         <span className="tai:text-errorColor tai:text-small tai:absolute tai:top-[100%] tai:right-0">
           {errorMessage}
         </span>

@@ -1,23 +1,21 @@
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Button, Textarea } from '@modules/popup/components';
+import type { UseFormRegister } from 'react-hook-form';
+import { Textarea } from '@modules/popup/components';
 import { InputFieldType } from '@modules/popup/models/model.form';
-import useJobPicker from './hooks/useJobPicker';
+import type { JobPickerFormValues } from '../hooks/useJobPickerForm';
 
-interface JobPickerFormValues {
-  jobDescription: string;
+interface JobPickerProps {
+  register: UseFormRegister<JobPickerFormValues>;
+  isPickingAJob: boolean;
 }
 
-const JobPicker = () => {
+/** Job description target of the picker trigger rendered next to the selector. */
+const JobPicker = ({ register, isPickingAJob }: JobPickerProps) => {
   const { t } = useTranslation();
-  const { register, setValue } = useForm<JobPickerFormValues>({
-    defaultValues: { jobDescription: '' },
-  });
-  const { isPickingAJob, startPicking } = useJobPicker({ setValue });
 
   return (
     <section className="tai:mb-4 tai:flex tai:flex-col tai:gap-2">
-      <h2 className="tai:text-medium tai:font-semibold tai:text-txt2">
+      <h2 className="tai:text-medium tai:pt-5 tai:font-semibold tai:text-txt2">
         {t('profile.jobPicker.title')}
       </h2>
       {isPickingAJob && (
@@ -31,16 +29,6 @@ const JobPicker = () => {
         placeholder={t('profile.jobPicker.placeholder')}
         register={register}
       />
-      <Button
-        type="button"
-        icon="briefcase"
-        fontWeight="normal"
-        className="tai:bg-tertiary tai:ml-auto"
-        disabled={isPickingAJob}
-        onClick={startPicking}
-      >
-        {t('profile.jobPicker.button')}
-      </Button>
     </section>
   );
 };

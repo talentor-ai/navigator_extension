@@ -2,13 +2,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEllipsis,
   faCaretDown,
-  faPlus,
-  faPenToSquare,
-  faTrashCan,
   faGlobe,
   faPrint,
   faXmark,
   faBriefcase,
+  faWandMagicSparkles,
+  faArrowsToCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookF,
@@ -30,13 +29,12 @@ const Icons = ({ iconType = '', className = '' }: iProps) => {
     linkedIn: faLinkedinIn,
     facebook: faFacebookF,
     google: faGoogle,
-    plus: faPlus,
-    edit: faPenToSquare,
-    delete: faTrashCan,
     github: faGithub,
     portfolio: faGlobe,
     print: faPrint,
     briefcase: faBriefcase,
+    magic: faWandMagicSparkles,
+    aim: faArrowsToCircle,
     close: faXmark,
   };
 
