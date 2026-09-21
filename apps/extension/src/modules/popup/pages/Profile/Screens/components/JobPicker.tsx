@@ -17,14 +17,13 @@ const JobPicker = () => {
 
   return (
     <section className="tai:mb-4 tai:flex tai:flex-col tai:gap-2">
-      <h2 className="tai:text-body tai:font-medium tai:text-txt2">
+      <h2 className="tai:text-medium tai:font-semibold tai:text-txt2">
         {t('profile.jobPicker.title')}
       </h2>
       <Button
         type="button"
         icon="briefcase"
         fontWeight="normal"
-        textSize="body"
         className="tai:bg-tertiary"
         disabled={isPickingAJob}
         onClick={startPicking}
@@ -32,14 +31,13 @@ const JobPicker = () => {
         {t('profile.jobPicker.button')}
       </Button>
       {isPickingAJob && (
-        <p className="tai:text-body tai:text-txt3">
+        <p className="tai:text-medium tai:text-txt3">
           {t('profile.jobPicker.pickingHint')}
         </p>
       )}
       <Textarea
         name="jobDescription"
         type={InputFieldType.textarea}
-        textSize="body"
         placeholder={t('profile.jobPicker.placeholder')}
         register={register}
       />

@@ -18,11 +18,9 @@ module.exports = {
         infoColor: 'var(--info-color)',
       },
       fontSize: {
-        small: '0.7rem',
-        compact: '0.8rem',
-        body: '0.9rem',
-        medium: '1rem',
-        large: '1.3rem',
+        small: 'calc(0.9rem * 0.78)',
+        medium: '0.9rem',
+        large: 'calc(0.9rem * 1.22)',
         icon: '1rem',
       },
       spacing: {

@@ -27,7 +27,7 @@ const Select = ({
     return (
       <div className="">
         <SelectComponent
-          className={`tai:w-full ${className}`}
+          className={`tai:w-full tai:text-medium ${className}`}
           size="small"
           style={{ height: '2.3rem' }}
           placeholder={placeholder}
@@ -42,7 +42,7 @@ const Select = ({
   return (
     <div className="">
       <SelectComponent
-        className={`tai:w-full ${className}`}
+        className={`tai:w-full tai:text-medium ${className}`}
         size="small"
         style={{ height: '2.3rem' }}
         placeholder={placeholder}

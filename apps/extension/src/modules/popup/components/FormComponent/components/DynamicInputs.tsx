@@ -24,7 +24,7 @@ const Button = ({
   className = '',
 }: ButtonProps) => {
   const baseClasses =
-    'tai:px-3 tai:py-1 tai:rounded-md tai:text-sm tai:transition-colors';
+    'tai:px-3 tai:py-1 tai:rounded-md tai:text-medium tai:transition-colors';
   const variantClasses = {
     primary: 'tai:bg-primary tai:text-white tai:hover:bg-primary/80',
     danger: 'tai:text-red-500 tai:hover:text-red-700',
@@ -103,7 +103,7 @@ const DynamicInputs = ({
           className="tai:border tai:border-gray-200 tai:p-4 tai:rounded-md tai:mb-3"
         >
           <div className="tai:flex tai:justify-between tai:items-center tai:mb-3">
-            <span className="tai:text-sm tai:text-gray-600">
+            <span className="tai:text-medium tai:text-gray-600">
               {subFormFields[0]?.label} #{index + 1}
             </span>
             <Button onClick={() => removeField(index)} variant="danger">
@@ -152,7 +152,7 @@ const DynamicInputs = ({
                         />
                         <label
                           htmlFor={fieldName}
-                          className="tai:text-txt2 tai:text-sm"
+                          className="tai:text-txt2 tai:text-medium"
                         >
                           {fieldConfig.label}
                         </label>

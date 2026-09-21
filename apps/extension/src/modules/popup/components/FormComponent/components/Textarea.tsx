@@ -3,17 +3,12 @@ import { useState } from 'react';
 
 interface IFieldProps extends FieldConfig {
   errorMessage?: string;
-  textSize?: 'small' | 'compact' | 'body' | 'medium';
+  textSize?: 'small' | 'medium';
   register: any;
 }
 
-const TEXT_SIZE_CLASSES: Record<
-  'small' | 'compact' | 'body' | 'medium',
-  string
-> = {
+const TEXT_SIZE_CLASSES: Record<'small' | 'medium', string> = {
   small: 'tai:text-small',
-  compact: 'tai:text-compact',
-  body: 'tai:text-body',
   medium: 'tai:text-medium',
 };
 

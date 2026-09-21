@@ -21,7 +21,7 @@
   transition-delay: 0.2s;
   font-weight: 800;
   text-transform: uppercase;
-  font-size: var(--size2);
+  font-size: var(--size4);
 }
 
 .linkActive {

@@ -4,8 +4,14 @@ import { useState } from 'react';
 interface IFieldProps extends FieldConfig {
   errorMessage?: string;
   disabled?: boolean;
+  textSize?: 'small' | 'medium';
   register: any;
 }
+
+const TEXT_SIZE_CLASSES: Record<'small' | 'medium', string> = {
+  small: 'tai:text-small',
+  medium: 'tai:text-medium',
+};
 
 const Input = ({
   name,
@@ -14,6 +20,7 @@ const Input = ({
   placeholder,
   errorMessage = '',
   disabled = false,
+  textSize = 'medium',
   register,
   validationRules,
 }: IFieldProps) => {
@@ -48,7 +55,7 @@ const Input = ({
           placeholder={placeholder}
           disabled={disabled}
           {...register(name, validationRules)}
-          className="tai:w-full tai:border-none tai:bg-transparent tai:outline-none tai:disabled:cursor-not-allowed tai:disabled:text-txt3"
+          className={`tai:w-full tai:border-none tai:bg-transparent tai:outline-none tai:disabled:cursor-not-allowed tai:disabled:text-txt3 ${TEXT_SIZE_CLASSES[textSize]}`}
           autoComplete="off"
           onFocus={() => {
             setIsFocused(true);

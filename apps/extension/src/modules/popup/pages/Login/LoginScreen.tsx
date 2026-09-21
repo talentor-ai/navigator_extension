@@ -38,7 +38,7 @@ const LoginScreen = () => {
         href={`${WEB_URL}/register`}
         target="_blank"
         rel="noopener noreferrer"
-        className="tai:mt-2 tai:text-sm"
+        className="tai:mt-2 tai:text-medium"
       >
         {t('login.signUp')}
       </Link>

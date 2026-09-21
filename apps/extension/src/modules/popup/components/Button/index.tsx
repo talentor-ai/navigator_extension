@@ -2,7 +2,7 @@ import { CustomizableComponent } from '@common/models';
 import Icons from '../Icons';
 
 type ButtonFontWeight = 'normal' | 'medium' | 'semibold';
-type ButtonTextSize = 'small' | 'compact' | 'body' | 'medium' | 'large';
+type ButtonTextSize = 'small' | 'medium' | 'large';
 
 interface IButtonProps extends CustomizableComponent {
   children: React.ReactNode;
@@ -22,8 +22,6 @@ const FONT_WEIGHT_CLASSES: Record<ButtonFontWeight, string> = {
 
 const TEXT_SIZE_CLASSES: Record<ButtonTextSize, string> = {
   small: 'tai:text-small',
-  compact: 'tai:text-compact',
-  body: 'tai:text-body',
   medium: 'tai:text-medium',
   large: 'tai:text-large',
 };

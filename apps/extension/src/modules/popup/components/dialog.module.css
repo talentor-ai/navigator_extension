@@ -126,7 +126,7 @@
 
 .title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: var(--size4);
   font-weight: 600;
   color: var(--txt1, #111827);
   flex: 1;
