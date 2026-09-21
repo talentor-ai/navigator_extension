@@ -62,7 +62,7 @@
     "deleteProfileCancel": "Cancelar",
     "jobPicker": {
       "title": "Oferta de trabajo",
-      "button": "Seleccionar oferta de trabajo",
+      "button": "Seleccionar",
       "placeholder": "Pega o selecciona la descripción del trabajo",
       "pickingHint": "Selecciona un bloque en la página (Esc para cancelar)"
     }

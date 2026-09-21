@@ -127,7 +127,7 @@ were deleted.
 The profile screen's Job picker (`pages/Profile/Screens/components/JobPicker.tsx`)
 selects job-posting text from the host page:
 
-1. Clicking "Seleccionar oferta de trabajo" sets `isPickingAJob` and posts
+1. Clicking "Seleccionar" sets `isPickingAJob` and posts
    `talentor:job-picker:start` from the iframe to `window.parent`.
 2. `src/modules/injector/jobPicker.ts` (content script) validates the extension
    origin, stores `event.source`, and attaches capture listeners.

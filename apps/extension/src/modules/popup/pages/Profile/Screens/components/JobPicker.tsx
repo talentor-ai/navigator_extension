@@ -20,16 +20,6 @@ const JobPicker = () => {
       <h2 className="tai:text-medium tai:font-semibold tai:text-txt2">
         {t('profile.jobPicker.title')}
       </h2>
-      <Button
-        type="button"
-        icon="briefcase"
-        fontWeight="normal"
-        className="tai:bg-tertiary"
-        disabled={isPickingAJob}
-        onClick={startPicking}
-      >
-        {t('profile.jobPicker.button')}
-      </Button>
       {isPickingAJob && (
         <p className="tai:text-medium tai:text-txt3">
           {t('profile.jobPicker.pickingHint')}
@@ -41,6 +31,16 @@ const JobPicker = () => {
         placeholder={t('profile.jobPicker.placeholder')}
         register={register}
       />
+      <Button
+        type="button"
+        icon="briefcase"
+        fontWeight="normal"
+        className="tai:bg-tertiary tai:ml-auto"
+        disabled={isPickingAJob}
+        onClick={startPicking}
+      >
+        {t('profile.jobPicker.button')}
+      </Button>
     </section>
   );
 };
