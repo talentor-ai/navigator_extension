@@ -7,7 +7,7 @@ import {
   faXmark,
   faBriefcase,
   faWandMagicSparkles,
-  faArrowsToCircle
+  faArrowsToCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebookF,
