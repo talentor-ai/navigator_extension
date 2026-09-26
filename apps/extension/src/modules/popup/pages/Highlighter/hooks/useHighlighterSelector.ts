@@ -80,7 +80,6 @@ const useHighlighterSelector = () => {
   }, [selector, hostname, isLoading]);
 
   return {
-    hostname,
     hasHostname: Boolean(hostname),
     isLoading,
     register,

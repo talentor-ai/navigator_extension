@@ -1,22 +1,16 @@
 {
   "menu": {
     "profile": "Perfil",
-    "highlighter": "Resaltador"
+    "highlighter": "Settings"
   },
   "highlighter": {
     "title": "Resaltador",
     "description": "Resalta las habilidades clave en todo el contenido de la página.",
     "enableLabel": "Activar resaltador",
     "disableLabel": "Desactivar resaltador",
-    "skillsTitle": "Habilidades resaltadas",
     "selectorTitle": "Contenedor a resaltar",
     "selectorPlaceholder": "Selector CSS",
-    "selectorHint": "Solo se resaltará el contenido dentro de este contenedor. Se guarda para {{hostname}}.",
-    "selectorNoHost": "No se pudo detectar el sitio actual.",
-    "tonePositive": "Positivas",
-    "toneNegative": "Negativas",
-    "toneOrange": "Naranjas",
-    "tonePurple": "Moradas"
+    "selectorNoHost": "No se pudo detectar el sitio actual."
   },
   "header": {
     "title": "Talentor AI",

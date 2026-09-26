@@ -2,27 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { Switch } from '@common/components';
 import { H1, Input } from '@modules/popup/components';
 import { InputFieldType } from '@modules/popup/models/model.form';
-import {
-  NEGATIVE_KEYWORDS,
-  ORANGE_KEYWORDS,
-  POSITIVE_KEYWORDS,
-  PURPLE_KEYWORDS,
-} from '@modules/highlighter';
 import useHighlighterSettings from './hooks/useHighlighterSettings';
 import useHighlighterSelector from './hooks/useHighlighterSelector';
-
-const TONE_SUMMARY = [
-  { key: 'highlighter.tonePositive', count: POSITIVE_KEYWORDS.length },
-  { key: 'highlighter.toneNegative', count: NEGATIVE_KEYWORDS.length },
-  { key: 'highlighter.toneOrange', count: ORANGE_KEYWORDS.length },
-  { key: 'highlighter.tonePurple', count: PURPLE_KEYWORDS.length },
-];
 
 const Highlighter = () => {
   const { t } = useTranslation();
   const { settings, isLoading, updateEnabled } = useHighlighterSettings();
   const {
-    hostname,
     hasHostname,
     isLoading: isSelectorLoading,
     register,
@@ -56,11 +42,9 @@ const Highlighter = () => {
 
       <div className="tai:flex tai:flex-col tai:gap-1">
         <h3 className="tai:text-txt1">{t('highlighter.selectorTitle')}</h3>
-        <p className="tai:text-txt3">
-          {hasHostname
-            ? t('highlighter.selectorHint', { hostname })
-            : t('highlighter.selectorNoHost')}
-        </p>
+        {!hasHostname && (
+          <p className="tai:text-txt3">{t('highlighter.selectorNoHost')}</p>
+        )}
         <Input
           name="selector"
           type={InputFieldType.text}
@@ -68,17 +52,6 @@ const Highlighter = () => {
           disabled={!hasHostname || isSelectorLoading}
           register={register}
         />
-      </div>
-
-      <div className="tai:flex tai:flex-col tai:gap-1">
-        <h3 className="tai:text-txt1">{t('highlighter.skillsTitle')}</h3>
-        <ul className="tai:flex tai:flex-col tai:text-txt3">
-          {TONE_SUMMARY.map(({ key, count }) => (
-            <li key={key}>
-              {t(key)}: {count}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
