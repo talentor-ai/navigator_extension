@@ -1,4 +1,5 @@
 import {
+  FOCUS_TASKS_PATH,
   HIGHLIGHTER_PATH,
   PROFILE_SETTINGS_PATH,
 } from '@modules/popup/constants/paths';
@@ -12,5 +13,9 @@ export const authenticatedRoutes = [
   {
     path: HIGHLIGHTER_PATH,
     label: i18n.t('menu.highlighter'),
+  },
+  {
+    path: FOCUS_TASKS_PATH,
+    label: i18n.t('menu.focusTasks'),
   },
 ];

@@ -20,6 +20,11 @@ export default defineManifest(() => ({
       js: ['src/modules/injector/index.tsx'],
       run_at: 'document_idle',
     },
+    {
+      matches: ['https://www.youtube.com/*'],
+      js: ['src/modules/focus/content.ts'],
+      run_at: 'document_start',
+    },
   ],
   web_accessible_resources: [
     {

@@ -1,11 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import {
+  FOCUS_TASKS_PATH,
   HIGHLIGHTER_CONFIG_PATH,
   LOGIN_PATH,
   MAIN_PATH,
   PROFILE_SETTINGS_PATH,
 } from '@modules/popup/constants/paths';
-import { Highlighter, LoginScreen, Profile } from '@modules/popup/pages';
+import {
+  FocusTasks,
+  Highlighter,
+  LoginScreen,
+  Profile,
+} from '@modules/popup/pages';
 import ConditionalRedirect from '@modules/popup/hoc/RenderAuthComponent';
 import { ProfileList } from '@modules/popup/pages/Profile/Screens';
 
@@ -34,6 +40,14 @@ const Router = () => {
           }
         />
       </Route>
+      <Route
+        path={FOCUS_TASKS_PATH}
+        element={
+          <ConditionalRedirect>
+            <FocusTasks />
+          </ConditionalRedirect>
+        }
+      />
 
       <Route path={LOGIN_PATH} index element={<LoginScreen />} />
 

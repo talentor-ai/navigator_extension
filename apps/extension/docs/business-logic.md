@@ -36,6 +36,24 @@ is out of scope, so an expired access token requires logging in again.
 3. Profile API sends the profile to the backend.
 4. Seeker selects a profile ID; the selection persists under `jobProfile`.
 
+### 3. Configure Focus tasks (per-site)
+
+1. Seeker opens the authenticated `/focus` page while on a site; the page reads
+   the current hostname (the popup iframe receives it via `?host=<hostname>`).
+2. Focus tasks are per-hostname: a change affects only that site, never a global
+   setting.
+3. The first task is YouTube's **Remove shorts** toggle. When enabled on
+   `www.youtube.com`, Shorts-only surfaces are hidden and `/shorts/*` URLs are
+   redirected to `https://www.youtube.com/`.
+4. The selection is persisted under `focus-tasks` in `chrome.storage.local`
+   (shape `Record<hostname, { removeShorts: boolean }>`), so the YouTube content
+   script can apply it without sharing `localStorage` with the popup.
+5. The content script runs independently of the per-site launcher toggle and
+   keeps applying as the page navigates in-app.
+
+The user journey subject to known limitations is covered in
+`docs/architecture.md` (Focus Tasks).
+
 ## Removed Features
 
 The following are gone from the source and must not be reintroduced without an

@@ -11,6 +11,10 @@ Current runtime:
 
 - **Content script:** `src/modules/injector/index.tsx` runs on every `http(s)`
   page, mounts a shadow-DOM launcher, and opens an extension-origin iframe overlay.
+- **Focus content script:** `src/modules/focus/content.ts` runs only on
+  `https://www.youtube.com/*` (`document_start`) and applies the Focus tasks
+  configuration for the current hostname, independent of the per-site launcher
+  toggle.
 - **Popup application source:** `index.html -> src/main.tsx -> src/modules/popup/App.tsx`.
   It is loaded by the overlay iframe via `chrome.runtime.getURL('index.html')`.
 - **No background service worker.**
@@ -21,6 +25,7 @@ Current runtime:
 ```text
 manifest.config.ts
 └── content_scripts -> src/modules/injector/index.tsx   (http://*/*, https://*/*)
+└── content_scripts -> src/modules/focus/content.ts      (https://www.youtube.com/*, document_start)
 └── web_accessible_resources -> index.html, assets/*
     └── launcher + overlay iframe (shadow DOM)
 
@@ -67,6 +72,14 @@ src/
     │   ├── injector.css        Tailwind entry + `:host` reset/theme vars
     │   ├── components/         LauncherButton, OverlayPanel, Icons
     │   └── hooks/              useOverlay
+    ├── focus/                  Focus tasks content script: per-hostname site tweaks
+    │   ├── types.ts            Focus task contracts
+    │   ├── constants.ts        `focus-tasks` storage key + YouTube selectors
+    │   ├── storage.ts          `focus-tasks` reader/writer in chrome.storage.local
+    │   ├── youtube.ts          Remove-shorts stylesheet + `/shorts/*` redirect
+    │   ├── start.ts            Per-hostname coordinator (settings changes)
+    │   ├── content.ts          Content-script entry (YouTube only)
+    │   └── index.ts            Public surface
     └── popup/                  Application loaded in the overlay iframe
         ├── api/                Axios client, auth, user and profiles-list endpoints
         ├── components/         Reusable visual/form components
@@ -75,7 +88,7 @@ src/
         ├── hoc/                Auth redirect wrapper
         ├── hooks/              Cross-page data hooks (useProfile)
         ├── models/             Popup-specific TypeScript contracts
-        ├── pages/              Login and profile screens
+        ├── pages/              Login, profile, and Focus tasks screens
         ├── routes/             HashRouter route tree
         └── store/              Zustand state and persistence
 ```
@@ -122,6 +135,32 @@ were deleted.
    to the host page. Injector icons come from `components/Icons` (react-icons/Lucide,
    type-driven `strokeWidth` default `2.7`), mirroring `apps/web`.
 
+## Focus Tasks
+
+Focus tasks are per-hostname settings that adjust only the current site's
+behavior. The popup page (`/focus`) writes `focus-tasks` to
+`chrome.storage.local` through `useFocusTasksStore`; the shape is
+`Record<hostname, { removeShorts: boolean }>`. `chrome.storage.local` is used
+instead of `localStorage` because the extension-origin iframe and the host-page
+content script do not share `localStorage`.
+
+The YouTube content script (`src/modules/focus/content.ts`, `document_start`)
+reads the current hostname's entry and, while enabled:
+
+- injects one stylesheet that hides Shorts-only containers
+  (`ytd-reel-shelf-renderer`, `ytd-rich-shelf-renderer[is-shorts]`,
+  `ytd-guide-entry-renderer:has(a[title="Shorts"])`,
+  `ytd-video-renderer:has(a[href^="/shorts"])`);
+- redirects any `/shorts/*` URL to `https://www.youtube.com/` via
+  `location.replace`.
+
+SPA navigation is detected via the `yt-navigate-finish` event, `popstate`, and a
+debounced `MutationObserver`. Known limitation: an isolated-world content script
+cannot intercept the page's `history.pushState`, so a brief Shorts render is
+possible before the redirect.
+
+The script is independent of the per-site `enabled-hosts` launcher toggle.
+
 ## Job Picker
 
 The profile screen's Job picker (`pages/Profile/Screens/components/JobPicker.tsx`,
@@ -162,18 +201,20 @@ flowchart TD
     ProfileList --> Selector[ProfileSelector]
     ProfileList --> JobPicker[JobPicker]
     Routes --> Highlighter[Highlighter]
+    Routes --> Focus[FocusTasks]
     Routes --> Login[LoginScreen]
 ```
 
 ## Routes
 
-| Path                   | Screen                               |
-| ---------------------- | ------------------------------------ |
-| `/`                    | Redirects to `/profile`.             |
-| `/profile`             | Profile selector (`ProfileList`).    |
-| `/profile/highlighter` | Resaltador settings (`Highlighter`). |
-| `/auth/login`          | Login screen.                        |
-| anything else          | Redirects to `/profile`.             |
+| Path                   | Screen                                |
+| ---------------------- | ------------------------------------- |
+| `/`                    | Redirects to `/profile`.              |
+| `/profile`             | Profile selector (`ProfileList`).     |
+| `/profile/highlighter` | Resaltador settings (`Highlighter`).  |
+| `/focus`               | Focus tasks (per-site configuration). |
+| `/auth/login`          | Login screen.                         |
+| anything else          | Redirects to `/profile`.              |
 
 Profile creation and editing were removed; the retired `/profile/config` (and
 `/profile/config/:id`) paths fall through to the catch-all redirect above.
@@ -184,15 +225,16 @@ to `/auth/login` when no session token is present. Routing stays hash-based
 
 ## State And Data Flow
 
-| State or layer                 | Storage                      | Responsibility                                                                           |
-| ------------------------------ | ---------------------------- | ---------------------------------------------------------------------------------------- |
-| `useSessionStore`              | Persisted as `session`       | Authenticated `UserResponse` user and access token. Axios reads the token via the store. |
-| `useJobProfile`                | Persisted as `jobProfile`    | Selected profile ID.                                                                     |
-| `useJobProfileResumeFormStore` | Persisted as `job-post-form` | Legacy form store; currently unused.                                                     |
-| `highlighter-settings`         | `chrome.storage.local`       | Resaltador enabled flag (popup + content script).                                        |
-| `highlighter-selectors`        | `chrome.storage.local`       | Per-hostname CSS selector for the Resaltador container (popup + content script).         |
-| TanStack Query                 | Query cache                  | Remote user data and mutation invalidation (`['USER_INFO']`).                            |
-| `localStorage['current-path']` | Browser storage              | Last popup route used by the menu.                                                       |
+| State or layer                 | Storage                      | Responsibility                                                                                                                                        |
+| ------------------------------ | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useSessionStore`              | Persisted as `session`       | Authenticated `UserResponse` user and access token. Axios reads the token via the store.                                                              |
+| `useJobProfile`                | Persisted as `jobProfile`    | Selected profile ID.                                                                                                                                  |
+| `useJobProfileResumeFormStore` | Persisted as `job-post-form` | Legacy form store; currently unused.                                                                                                                  |
+| `highlighter-settings`         | `chrome.storage.local`       | Resaltador enabled flag (popup + content script).                                                                                                     |
+| `highlighter-selectors`        | `chrome.storage.local`       | Per-hostname CSS selector for the Resaltador container (popup + content script).                                                                      |
+| `focus-tasks`                  | `chrome.storage.local`       | Per-hostname Focus tasks config (`Record<hostname, { removeShorts: boolean }>`). Popup writes via `useFocusTasksStore`; YouTube content script reads. |
+| TanStack Query                 | Query cache                  | Remote user data and mutation invalidation (`['USER_INFO']`).                                                                                         |
+| `localStorage['current-path']` | Browser storage              | Last popup route used by the menu.                                                                                                                    |
 
 ## Authentication (Login-Only)
 

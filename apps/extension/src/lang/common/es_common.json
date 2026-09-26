@@ -1,7 +1,17 @@
 {
   "menu": {
     "profile": "Perfil",
-    "highlighter": "Settings"
+    "highlighter": "Settings",
+    "focusTasks": "Focus tasks"
+  },
+  "focusTasks": {
+    "title": "Focus tasks",
+    "description": "Configuraciones que modifican solo el comportamiento del sitio actual.",
+    "currentSite": "Sitio actual",
+    "noTasks": "No hay tareas de enfoque disponibles para este sitio.",
+    "youtubeSectionTitle": "YouTube",
+    "removeShorts": "Remove shorts",
+    "removeShortsHint": "Oculta los Shorts y redirige las URLs /shorts a la página principal."
   },
   "highlighter": {
     "title": "Resaltador",
