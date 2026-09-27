@@ -1,0 +1,94 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --font-sans: 'Poppins', sans-serif;
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-bg-header: var(--bg-header);
+  --color-header-foreground: var(--header-foreground);
+  --color-card: var(--card);
+  --color-bg-card: var(--bg-card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-lime: var(--lime);
+  --color-lime-foreground: var(--lime-foreground);
+  --text-display: 2.5rem;
+  --text-display--line-height: 3rem;
+  --text-role: 1.25rem;
+  --text-role--line-height: 1.75rem;
+  --text-section: 0.75rem;
+  --text-section--line-height: 1.125rem;
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.625rem;
+  --text-subtitle: 0.9375rem;
+  --text-subtitle--line-height: 1.375rem;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5rem;
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.25rem;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.125rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --primary: #ffffff;
+    --primary-foreground: #000000;
+    --secondary: #262626;
+    --secondary-foreground: #f5f5f5;
+    --background: #090909;
+    --foreground: #f5f5f5;
+    --bg-header: #090909;
+    --header-foreground: #ffffff;
+    --card: #141414;
+    --bg-card: #1a1a1a;
+    --popover: #1a1a1a;
+    --popover-foreground: #f5f5f5;
+    --card-foreground: #f5f5f5;
+    --muted: #262626;
+    --muted-foreground: #a3a3a3;
+    --accent: #ffffff;
+    --accent-foreground: #000000;
+    --success: #d4d4d4;
+    --success-foreground: #000000;
+    --destructive: #a3a3a3;
+    --destructive-foreground: #000000;
+    --border: #404040;
+    --input: #333333;
+    --ring: #ffffff;
+    --lime: #a3e635;
+    --lime-foreground: #1a2e05;
+    --radius: 0.5rem;
+  }
+  * {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    font-family: 'Poppins', sans-serif;
+  }
+}

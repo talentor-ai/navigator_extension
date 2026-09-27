@@ -1,0 +1,18 @@
+import { CustomizableComponent } from '@common/models';
+
+interface LinkProps extends CustomizableComponent {
+  href: string;
+  children?: React.ReactNode;
+  target?: string;
+  rel?: string;
+}
+
+const Link = ({ href, children, ...extra }: LinkProps) => {
+  return (
+    <a className="tai:text-infoColor tai:underline" href={href} {...extra}>
+      {children}
+    </a>
+  );
+};
+
+export default Link;

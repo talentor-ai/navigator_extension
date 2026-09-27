@@ -1,41 +1,69 @@
 # AGENTS.md
 
+## Package manager
+
+- Use `bun` (root pins `bun@1.3.14`). Fresh clones need `bun install`.
+- Workspaces: `apps/*`, `packages/*`. Single root `bun.lock`.
+
 ## Commands
 
-- Use `bun` (`packageManager` pins `bun@1.3.5`). Fresh clones need `bun install`.
-- `bun run dev` runs the CRXJS/Vite extension dev server on fixed port `5173` (`strictPort: true`).
-- `bun run build` builds the extension into `dist/`. Do not hand-edit `dist/`.
-- `bun run lint` runs ESLint with `--max-warnings 0`.
-- `bun run typecheck` runs `tsc -b`.
-- `bun run format` and `bun run format:check` run Prettier across the repo.
-- `bun run verify` is the intended full local check order: format check -> lint -> typecheck -> build.
-- `bun run build` still does not typecheck by itself.
-- `bun run clean` is misnamed: it removes `dist/` and then starts Vite.
-- There is no repo CI workflow, but Husky is configured locally: `prepare` installs hooks and `.husky/pre-commit` runs `bunx lint-staged`.
+- `bun run dev:web` -> Vite web dev server on port `5173` (`strictPort`).
+- `bun run dev:extension` -> CRXJS extension dev server on port `5174` (`strictPort`).
+- `bun run verify` is the intended full local check order: `format:check -> lint -> typecheck -> build`.
+- `bun run lint` uses the single root `eslint.config.js`.
+- `bun run typecheck` runs each workspace's own `typecheck` script.
+- `bun run generate:contracts` regenerates `packages/contracts/src/generated.ts` from the running backend (`http://localhost:3011/openapi.json`).
+- `bun run deps:latest <pkg>...` installs registry packages at their npm `latest` version (exact). Use `--dev` and `--cwd <dir>` as needed; `pkg@version` pins explicitly.
+- Do NOT hand-edit `dist/` or commit it.
 
-## Wiring
+## Workspaces
 
-- `manifest.config.ts` is the source of truth for extension wiring.
-- The popup entry is `index.html` -> `src/main.tsx` -> `src/Apps/PopUp/App.tsx`.
-- `src/Apps/PopUp/popup.tsx` exists but is not wired into the current build.
-- The background service worker entry is `src/Apps/ServiceWorker/index.ts`.
-- The content script entry is `src/Apps/HTMLInjector/index.tsx` and it only runs on `https://www.linkedin.com/jobs/*`.
+- `apps/web`: Vite + React + Ant Design + TanStack Query + React Router (BrowserRouter). Port `5173`.
+- `apps/extension`: Vite + CRXJS Chrome extension, port `5174`. See `apps/extension/AGENTS.md` for extension wiring.
+- `packages/api-client`: typed axios client, envelope unwrap, `ApiError`.
+- `packages/contracts`: generated OpenAPI types; regenerate with `bun run generate:contracts`.
+- `packages/config`: shared `tsconfig.base.json`.
 
-## Boundaries
+## Frontend structure
 
-- `src/Apps/PopUp/` contains the popup UI, routes, React Query data layer, and Zustand stores.
-- `src/Apps/HTMLInjector/` owns the LinkedIn DOM integration. The brittle selectors live in `src/Apps/HTMLInjector/constants.ts` and the scraper is `helpers/jobPostScrapper.ts`.
-- `src/Apps/ServiceWorker/` is only the bridge between the content script and the popup.
+- Non-test production files (`*.ts`, `*.tsx`, `*.js`, `*.jsx`) must stay at or below 250 lines. Split the file before it exceeds this limit.
+- Test and E2E files (e.g., `*.test.*`, `*.spec.*`, `__tests__/`, `e2e/`) are exempt from the line limit and must not be split solely to satisfy it.
+- Components that own state, data fetching, mutations, event orchestration, or substantial derived logic must extract that logic into custom hooks (colocated in `hooks/` or alongside the component). The component itself must focus on rendering and composition.
+- Logic-free, presentational subcomponents belong in the nearest feature or component `components/` folder. Do not promote single-use presentational pieces to top-level shared folders.
+- When a component grows large, convert it into a folder module. Create only files with clear responsibility — do not add speculative abstractions. Allowed layout as needed:
+  ```
+  FeatureOrComponent/
+  ├── index.tsx       # public entry; re-exports the component
+  ├── components/     # presentational subcomponents
+  ├── hooks/          # custom hooks extracted from the component
+  ├── types.ts        # module-scoped types
+  ├── constants.ts    # module-scoped constants
+  └── utils.ts        # module-scoped pure helpers
+  ```
+- When converting a file to a folder module, preserve its public import path (e.g., `Component.tsx` → `Component/index.tsx` with a re-export) so existing imports remain valid.
+- Structural refactors must preserve observable behavior and keep existing tests passing; update or add tests only for intentional behavior changes.
+- All web icons are registered in `apps/web/src/components/Icons/constants.ts` and rendered through type-driven `<Icons type="..." />`; no direct `react-icons` imports elsewhere.
+- Generic endpoint calls use `apps/web/src/api/baseApi.ts`, which delegates to shared `@talentor/api-client`; never create another Axios instance or duplicate auth interceptors.
+- E2E work is excluded for now; normal verification uses unit tests + `bun run verify` (existing E2E files/scripts remain, not deleted, but are not executed).
+
+## Toolchain notes
+
+- `typescript` is pinned to `6.0.3` (latest `7.0.x` is incompatible with `typescript-eslint`). Do not bump past `6.x` until typescript-eslint supports TS 7.
+- `react-hooks/set-state-in-effect` and `react-hooks/incompatible-library` are disabled for `apps/**` until pre-existing extension patterns are refactored (kanban: React hooks debt). Re-enable after.
+- Formatting: Prettier config at root; keep `LF` (`.gitattributes`).
+- Workspace-local packages are referenced as `workspace:*`.
+
+## Auth
+
+- Refresh token is `HttpOnly` cookie (`refresh_token`, `Path=/api/v1/auth`); never in `localStorage` or JS.
+- Access token is memory-only (`packages/api-client` + `apps/web/src/store/auth.ts`).
+- `bootstrap` is single-flight (StrictMode) and calls `POST /api/v1/auth/refresh` via cookie.
+- `packages/api-client` handles `withCredentials`, single-flight refresh, and retry once on `401`.
+- Multi-tab: `BroadcastChannel('talentor-auth')` for login/logout; `Web Locks` (`talentor-refresh`) serializes refresh.
 
 ## Gotchas
 
-- The scrape-to-popup flow spans `src/Apps/constants.ts`, `src/Apps/HTMLInjector/components/ApplyButton/index.tsx`, `src/Apps/ServiceWorker/index.ts`, and `src/Apps/PopUp/pages/Home/index.tsx`; change them together.
-- Git line endings are normalized with `.gitattributes` and `.editorconfig`; keep text files on `LF`.
-- Popup routing uses `HashRouter`; keep extension routes hash-based.
-- The popup remembers the last route via `localStorage['current-path']` in `src/Apps/PopUp/containers/Menu/index.tsx`.
-- Tailwind classes must use the `ik-` prefix.
-- `src/Apps/PopUp/app.css` is shared: the popup imports it directly, and the content script injects the built CSS into a shadow root.
-- TS path aliases are nonstandard and worth reusing: `@popup:...`, `@injector:...`, `@all/*`.
-- API base config lives in `src/Apps/PopUp/api/baseApi.ts` and `constants.ts`; the only verified env var is `VITE_SERVICE_URL`, which falls back to `'/'`, and all API paths build from `/api/v1`.
-- Persisted local state matters: `session`, `jobProfile`, and `current-path` are stored in `localStorage`; both form stores currently use the `job-post-form` persist key.
-- `src/Apps/PopUp/lang/i18n.ts` currently loads only `es_common.json`; non-`es` browsers fall back to the first available resource.
+- Extension popup uses `HashRouter`; keep extension routes hash-based.
+- Extension Tailwind classes must use the `tai:` prefix (Tailwind 4 variant-style via `@tailwindcss/postcss`, `@config` in `app.css`, `prefix: 'tai'` in `tailwind.config.js`). Write `tai:flex`, `tai:grid`, `tai:bg-primary`; with variants prefix comes first: `tai:hover:bg-primary`, `tai:disabled:text-txt3`, `tai:active:scale-95`, `tai:last:border-none`. Never use unprefixed or dash-form `tai-`/`ik-` classes; `apps/web` stays unprefixed.
+- Backend must be running for `bun run generate:contracts`.
+- If a latest dependency conflicts (e.g. TS vs typescript-eslint), do not silently downgrade; pin a compatible version and document the reason here.

@@ -1,0 +1,26 @@
+{
+  "name": "@talentor/api-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@talentor/contracts": "workspace:*",
+    "axios": "1.19.0"
+  },
+  "devDependencies": {
+    "@talentor/config": "workspace:*",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.2",
+    "jsdom": "30.0.1",
+    "msw": "2.15.0",
+    "vitest": "4.1.11"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

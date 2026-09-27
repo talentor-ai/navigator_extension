@@ -1,0 +1,83 @@
+{
+  "menu": {
+    "profile": "Perfil",
+    "highlighter": "Settings",
+    "focusTasks": "Focus tasks"
+  },
+  "focusTasks": {
+    "title": "Focus tasks",
+    "description": "Configuraciones que modifican solo el comportamiento del sitio actual.",
+    "currentSite": "Sitio actual",
+    "noTasks": "No hay tareas de enfoque disponibles para este sitio.",
+    "youtubeSectionTitle": "YouTube",
+    "removeShorts": "Remove shorts",
+    "removeShortsHint": "Oculta los Shorts y redirige las URLs /shorts a la página principal."
+  },
+  "highlighter": {
+    "title": "Resaltador",
+    "description": "Resalta las habilidades clave en todo el contenido de la página.",
+    "enableLabel": "Activar resaltador",
+    "disableLabel": "Desactivar resaltador",
+    "selectorTitle": "Contenedor a resaltar",
+    "selectorPlaceholder": "Selector CSS",
+    "selectorNoHost": "No se pudo detectar el sitio actual."
+  },
+  "header": {
+    "title": "Talentor AI",
+    "subtitle": "Cree un multiples CV profesionales en segundos"
+  },
+  "login": {
+    "login": "Iniciar sesión",
+    "signUp": "Registrarse"
+  },
+  "formFields": {
+    "name": "Nombres",
+    "lastName": "Apellidos",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "briefDescription": "Descripción breve",
+    "aboutMe": "Sobre mí",
+    "additionalSkills": "Habilidades",
+    "softSkills": "Habilidades adicionales",
+    "languages": "Idiomas",
+    "linkedInUrl": "LinkedIn",
+    "githubUrl": "GitHub",
+    "portfolioUrl": "Portafolio",
+    "linkedIn": "LinkedIn",
+    "github": "GitHub",
+    "portfolio": "Portafolio",
+    "userJobProfileExperience": "Experiencia",
+    "userJobProfileSkills": "Habilidades",
+    "position": "Posición",
+    "company": "Compañía",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "jobType": "Tipo de trabajo",
+    "location": "Ubicación",
+    "description": "Descripción",
+    "skillName": "Nombre de la habilidad",
+    "yearsOfExperience": "Años de experiencia"
+  },
+  "profile": {
+    "selectProfile": "Seleccionar perfil",
+    "loadingProfiles": "Cargando...",
+    "noProfiles": "No hay perfiles",
+    "jobPicker": {
+      "title": "Oferta de trabajo",
+      "button": "Seleccionar",
+      "placeholder": "Pega o selecciona la descripción del trabajo",
+      "pickingHint": "Selecciona un bloque en la página (Esc para cancelar)"
+    }
+  },
+  "toolbar": {
+    "title": "Talentor AI",
+    "currentSite": "Sitio actual",
+    "enabled": "Talentor AI está activado en este sitio",
+    "disabled": "Talentor AI está desactivado en este sitio",
+    "enable": "Activar",
+    "disable": "Desactivar",
+    "unsupported": "Talentor AI no puede ejecutarse en esta página.",
+    "reloadHint": "Si el lanzador no aparece, recarga esta página para activar el script de contenido."
+  }
+}
