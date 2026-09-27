@@ -27,4 +27,5 @@ export const YOUTUBE_SHORTS_SELECTORS: string[] = [
   'ytd-guide-entry-renderer:has(a[title="Shorts"])',
   'ytd-mini-guide-entry-renderer:has(a[href^="/shorts"])',
   'ytd-browse[page-subtype="shorts"]',
+  'grid-shelf-view-model',
 ];
