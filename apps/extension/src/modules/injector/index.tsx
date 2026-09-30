@@ -10,6 +10,7 @@ import {
   JOB_PICKER_STOP,
   isExtensionOrigin,
 } from '@common/utils/jobPickerBridge';
+import { isExtensionContextValid } from '@common/utils/extensionContext';
 import {
   SITE_CHANGED,
   SITE_PING,
@@ -21,11 +22,35 @@ import injectorCss from './injector.css?inline';
 const HOST_ID = 'talentor-ai-root';
 const ROOT_ID = 'talentor-ai-shadow-root';
 
+/**
+ * Reloading the extension leaves this content script running with dead
+ * `chrome.*` bindings. Poll while the overlay is mounted so an orphaned script
+ * removes its UI instead of throwing "Extension context invalidated" forever.
+ */
+const CONTEXT_WATCH_MS = 5000;
+
 let root: Root | null = null;
 let stopHighlighter: (() => void) | null = null;
+let isShutDown = false;
+let contextWatchId: number | null = null;
+
+const clearContextWatch = () => {
+  if (contextWatchId === null) return;
+  window.clearInterval(contextWatchId);
+  contextWatchId = null;
+};
+
+const startContextWatch = () => {
+  if (contextWatchId !== null || isShutDown) return;
+
+  contextWatchId = window.setInterval(() => {
+    if (isExtensionContextValid()) return;
+    shutdown();
+  }, CONTEXT_WATCH_MS);
+};
 
 const mount = () => {
-  if (document.getElementById(HOST_ID)) return;
+  if (isShutDown || document.getElementById(HOST_ID)) return;
 
   const host = document.createElement('div');
   host.id = HOST_ID;
@@ -50,9 +75,11 @@ const mount = () => {
   );
 
   stopHighlighter = startHighlighter();
+  startContextWatch();
 };
 
 const unmount = () => {
+  clearContextWatch();
   stopJobPicker();
   stopHighlighter?.();
   stopHighlighter = null;
@@ -61,8 +88,27 @@ const unmount = () => {
   document.getElementById(HOST_ID)?.remove();
 };
 
+const shutdown = () => {
+  if (isShutDown) return;
+  isShutDown = true;
+  unmount();
+};
+
 const syncWithSitePreference = async () => {
+  if (isShutDown) return;
+  if (!isExtensionContextValid()) {
+    shutdown();
+    return;
+  }
+
   const enabled = await isHostEnabled(window.location.hostname);
+
+  if (isShutDown) return;
+  if (!isExtensionContextValid()) {
+    shutdown();
+    return;
+  }
+
   if (enabled) {
     mount();
   } else {
@@ -78,15 +124,20 @@ subscribeEnabledHosts(() => {
   void syncWithSitePreference();
 });
 
-if (chrome.runtime?.onMessage) {
-  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (message?.type !== SITE_PING && message?.type !== SITE_CHANGED) {
-      return;
-    }
-    sendResponse({ ok: true });
-    void syncWithSitePreference();
-    return true;
-  });
+// Toolbar popup pings the content script to detect a missing/stale script.
+try {
+  if (isExtensionContextValid() && chrome.runtime?.onMessage) {
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      if (message?.type !== SITE_PING && message?.type !== SITE_CHANGED) {
+        return;
+      }
+      sendResponse({ ok: true });
+      void syncWithSitePreference();
+      return true;
+    });
+  }
+} catch {
+  /* context already invalidated; nothing to register */
 }
 
 // Job picker bridge: the overlay iframe asks the content script to highlight

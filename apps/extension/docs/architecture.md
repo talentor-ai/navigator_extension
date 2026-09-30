@@ -60,7 +60,7 @@ src/
     │   ├── constants/          Hardcoded keywords + whole-page defaults
     │   ├── engine/             Patterns, matches, theme, range cache, DOM scan,
     │   │                       `highlightKeywords(keywordLists, cssSelector)`
-    │   ├── storage.ts          `highlighter-settings` in chrome.storage.local
+    │   ├── storage.ts          `highlighter-settings` (hostname -> enabled)
     │   ├── selectors.ts        `highlighter-selectors` (hostname -> CSS selector)
     │   ├── start.ts            Coordinator (per-host selector + settings changes)
     │   └── index.ts            Public surface
@@ -129,7 +129,14 @@ were deleted.
    its vertical position, and is clamped (`useViewport` + `EDGE_MARGIN`) so it
    never exceeds the viewport.
 7. `index.html` and `assets/*` are listed in `web_accessible_resources`.
-8. `injector.css` (`@import 'tailwindcss'` + `:host` reset/theme vars) is imported
+8. Reloading the extension leaves older content scripts running with dead
+   `chrome.*` bindings ("Extension context invalidated"). Every storage access
+   goes through `@common/utils/extensionContext` (`isExtensionContextValid`,
+   `subscribeStorageChanges`), and the injector polls that check every 5s while
+   mounted, removing the launcher/overlay and stopping the highlighter when the
+   context dies. The toolbar's ping then reports a missing script and shows the
+   reload hint.
+9. `injector.css` (`@import 'tailwindcss'` + `:host` reset/theme vars) is imported
    with Vite's `?inline` and appended as a `<style>` tag inside the shadow root,
    so `tai:`-prefixed utilities and preflight apply only to the overlay and never
    to the host page. Injector icons come from `components/Icons` (react-icons/Lucide,
@@ -230,7 +237,7 @@ to `/auth/login` when no session token is present. Routing stays hash-based
 | `useSessionStore`              | Persisted as `session`       | Authenticated `UserResponse` user and access token. Axios reads the token via the store.                                                              |
 | `useJobProfile`                | Persisted as `jobProfile`    | Selected profile ID.                                                                                                                                  |
 | `useJobProfileResumeFormStore` | Persisted as `job-post-form` | Legacy form store; currently unused.                                                                                                                  |
-| `highlighter-settings`         | `chrome.storage.local`       | Resaltador enabled flag (popup + content script).                                                                                                     |
+| `highlighter-settings`         | `chrome.storage.local`       | Per-hostname Resaltador enabled map (`useHighlighterSettingsStore`, popup + content script).                                                          |
 | `highlighter-selectors`        | `chrome.storage.local`       | Per-hostname CSS selector for the Resaltador container (popup + content script).                                                                      |
 | `focus-tasks`                  | `chrome.storage.local`       | Per-hostname Focus tasks config (`Record<hostname, { removeShorts: boolean }>`). Popup writes via `useFocusTasksStore`; YouTube content script reads. |
 | TanStack Query                 | Query cache                  | Remote user data and mutation invalidation (`['USER_INFO']`).                                                                                         |

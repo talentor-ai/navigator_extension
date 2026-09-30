@@ -7,13 +7,10 @@ import useHighlighterSelector from './hooks/useHighlighterSelector';
 
 const Highlighter = () => {
   const { t } = useTranslation();
-  const { settings, isLoading, updateEnabled } = useHighlighterSettings();
-  const {
-    hasHostname,
-    isLoading: isSelectorLoading,
-    register,
-  } = useHighlighterSelector();
-  const toggleLabel = settings.enabled
+  const { enabled, hasHostname, isLoading, updateEnabled } =
+    useHighlighterSettings();
+  const { isLoading: isSelectorLoading, register } = useHighlighterSelector();
+  const toggleLabel = enabled
     ? t('highlighter.disableLabel')
     : t('highlighter.enableLabel');
 
@@ -27,8 +24,8 @@ const Highlighter = () => {
       <div className="tai:flex tai:flex-row tai:items-center tai:gap-3 tai:rounded-md tai:bg-secondary tai:p-3">
         <Switch
           id="highlighter-enabled"
-          checked={settings.enabled}
-          disabled={isLoading}
+          checked={enabled}
+          disabled={isLoading || !hasHostname}
           onCheckedChange={updateEnabled}
           label={toggleLabel}
         />

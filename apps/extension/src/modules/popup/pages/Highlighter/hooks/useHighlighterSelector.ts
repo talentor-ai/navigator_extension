@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   getSelectorForHost,
@@ -6,17 +6,10 @@ import {
   setHighlighterSelector,
   subscribeHighlighterSelectors,
 } from '@modules/highlighter';
+import useCurrentHostname from '@modules/popup/hooks/useCurrentHostname';
 
 const DEBOUNCE_MS = 300;
 const SELECTOR_FIELD = 'selector';
-
-const readHostname = (): string => {
-  try {
-    return new URLSearchParams(window.location.search).get('host') ?? '';
-  } catch {
-    return '';
-  }
-};
 
 /**
  * Resolves the current host's CSS selector, hydrates it into a small RHF form
@@ -24,7 +17,7 @@ const readHostname = (): string => {
  * shared highlighter selector map (debounced, per exact hostname).
  */
 const useHighlighterSelector = () => {
-  const hostname = useMemo(readHostname, []);
+  const hostname = useCurrentHostname();
   const { register, watch, reset } = useForm<{ selector: string }>({
     defaultValues: { selector: '' },
   });

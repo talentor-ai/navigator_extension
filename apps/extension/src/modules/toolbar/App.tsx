@@ -5,8 +5,9 @@ import { useSiteEnabled } from '@common/hooks/useSiteEnabled';
 import { SITE_CHANGED, SITE_PING, getHostname } from '@common/utils/siteAccess';
 
 const pingContentScript = async (tabId: number | undefined) => {
-  if (tabId === undefined || !chrome.tabs?.sendMessage) return false;
+  if (tabId === undefined) return false;
   try {
+    if (!chrome.tabs?.sendMessage) return false;
     const response = await chrome.tabs.sendMessage(tabId, {
       type: SITE_PING,
     });
@@ -17,8 +18,9 @@ const pingContentScript = async (tabId: number | undefined) => {
 };
 
 const notifyContentScript = (tabId: number | undefined) => {
-  if (tabId === undefined || !chrome.tabs?.sendMessage) return;
+  if (tabId === undefined) return;
   try {
+    if (!chrome.tabs?.sendMessage) return;
     void chrome.tabs.sendMessage(tabId, { type: SITE_CHANGED }).catch(() => {});
   } catch {
     /* content script absent; storage event is the fallback */

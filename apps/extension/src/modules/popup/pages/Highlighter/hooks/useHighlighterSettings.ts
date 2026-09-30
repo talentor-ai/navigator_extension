@@ -1,56 +1,41 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  DEFAULT_HIGHLIGHTER_SETTINGS,
-  readHighlighterSettings,
-  subscribeHighlighterSettings,
-  writeHighlighterSettings,
-} from '@modules/highlighter';
-import type { HighlighterSettings } from '@modules/highlighter';
+import { useCallback, useEffect } from 'react';
+import { isHighlighterEnabledForHost } from '@modules/highlighter';
+import useHighlighterSettingsStore, {
+  startHighlighterSettingsStoreSync,
+} from '@modules/popup/store/useHighlighterSettingsStore';
+import useCurrentHostname from '@modules/popup/hooks/useCurrentHostname';
 
+/**
+ * Per-page highlighter flag: reads this iframe's hostname entry from the shared
+ * settings store and writes back only that host, so enabling the highlighter on
+ * one site never affects another.
+ */
 const useHighlighterSettings = () => {
-  const [settings, setSettings] = useState<HighlighterSettings>(
-    DEFAULT_HIGHLIGHTER_SETTINGS,
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const settingsRef = useRef<HighlighterSettings>(DEFAULT_HIGHLIGHTER_SETTINGS);
-
-  const applySettings = useCallback((next: HighlighterSettings) => {
-    if (settingsRef.current.enabled === next.enabled) return;
-    settingsRef.current = next;
-    setSettings(next);
-  }, []);
+  const hostname = useCurrentHostname();
+  const settings = useHighlighterSettingsStore((state) => state.settings);
+  const isHydrated = useHighlighterSettingsStore((state) => state.isHydrated);
+  const setEnabled = useHighlighterSettingsStore((state) => state.setEnabled);
 
   useEffect(() => {
-    let active = true;
-
-    void readHighlighterSettings().then((stored) => {
-      if (!active) return;
-      applySettings(stored);
-      setIsLoading(false);
-    });
-
-    const unsubscribe = subscribeHighlighterSettings((next) => {
-      if (!active) return;
-      applySettings(next);
-      setIsLoading(false);
-    });
-
-    return () => {
-      active = false;
-      unsubscribe();
-    };
-  }, [applySettings]);
-
-  const updateEnabled = useCallback(async (enabled: boolean) => {
-    const current = settingsRef.current;
-    if (current.enabled === enabled) return;
-    const next: HighlighterSettings = { enabled };
-    settingsRef.current = next;
-    setSettings(next);
-    await writeHighlighterSettings(next);
+    startHighlighterSettingsStoreSync();
   }, []);
 
-  return { settings, isLoading, updateEnabled };
+  const enabled = isHighlighterEnabledForHost(settings, hostname);
+
+  const updateEnabled = useCallback(
+    async (value: boolean) => {
+      if (!hostname) return;
+      await setEnabled(hostname, value);
+    },
+    [hostname, setEnabled],
+  );
+
+  return {
+    enabled,
+    hasHostname: Boolean(hostname),
+    isLoading: !isHydrated,
+    updateEnabled,
+  };
 };
 
 export default useHighlighterSettings;

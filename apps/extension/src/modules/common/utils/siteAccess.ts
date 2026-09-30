@@ -1,3 +1,5 @@
+import { subscribeStorageChanges } from './extensionContext';
+
 export const ENABLED_HOSTS_KEY = 'enabled-hosts';
 
 export type EnabledHosts = Record<string, true>;
@@ -59,15 +61,14 @@ export const setHostEnabled = async (
 export const subscribeEnabledHosts = (
   listener: (hosts: EnabledHosts) => void,
 ): (() => void) => {
-  if (!chrome.storage?.onChanged) return () => {};
   const handler = (
-    changes: { [key: string]: chrome.storage.StorageChange },
+    changes: Record<string, chrome.storage.StorageChange>,
     area: string,
   ) => {
     if (area !== 'local' || !changes[ENABLED_HOSTS_KEY]) return;
     const next = changes[ENABLED_HOSTS_KEY].newValue;
     listener(next && typeof next === 'object' ? (next as EnabledHosts) : {});
   };
-  chrome.storage.onChanged.addListener(handler);
-  return () => chrome.storage.onChanged.removeListener(handler);
+
+  return subscribeStorageChanges(handler);
 };

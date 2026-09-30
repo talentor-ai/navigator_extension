@@ -6,6 +6,7 @@ import {
   subscribeHighlighterSelectors,
 } from './selectors';
 import {
+  isHighlighterEnabledForHost,
   readHighlighterSettings,
   subscribeHighlighterSettings,
 } from './storage';
@@ -49,7 +50,7 @@ export const startHighlighter = (): (() => void) => {
         readHighlighterSelectors(),
       ]);
 
-      if (!settings.enabled) {
+      if (!isHighlighterEnabledForHost(settings, hostname)) {
         stopController();
         return;
       }

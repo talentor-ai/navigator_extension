@@ -1,3 +1,4 @@
+import { subscribeStorageChanges } from '@common/utils/extensionContext';
 import { DEFAULT_FOCUS_TASK_SETTINGS, FOCUS_TASKS_KEY } from './constants';
 import type { FocusTaskSettings, FocusTasks } from './types';
 
@@ -78,16 +79,13 @@ export const setFocusTaskSettings = async (
 export const subscribeFocusTasks = (
   listener: (tasks: FocusTasks) => void,
 ): (() => void) => {
-  if (!chrome.storage?.onChanged) return () => {};
-
   const handler = (
-    changes: { [key: string]: chrome.storage.StorageChange },
+    changes: Record<string, chrome.storage.StorageChange>,
     area: string,
   ) => {
     if (area !== 'local' || !changes[FOCUS_TASKS_KEY]) return;
     listener(normalizeFocusTasks(changes[FOCUS_TASKS_KEY].newValue));
   };
 
-  chrome.storage.onChanged.addListener(handler);
-  return () => chrome.storage.onChanged.removeListener(handler);
+  return subscribeStorageChanges(handler);
 };

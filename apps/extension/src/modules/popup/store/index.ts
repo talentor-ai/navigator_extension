@@ -3,3 +3,5 @@ export { default as useJobProfileResumeFormStore } from './useJobProfileResumeFo
 export { default as useSessionStore } from './useSessionStore';
 export { default as useFocusTasksStore } from './useFocusTasksStore';
 export { startFocusTasksStoreSync } from './useFocusTasksStore';
+export { default as useHighlighterSettingsStore } from './useHighlighterSettingsStore';
+export { startHighlighterSettingsStoreSync } from './useHighlighterSettingsStore';

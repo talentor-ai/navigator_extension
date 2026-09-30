@@ -2,9 +2,7 @@ export type HighlightTone = 'positive' | 'negative' | 'orange' | 'purple';
 
 export type HighlightThemeMode = 'auto' | 'light' | 'dark';
 
-export interface HighlighterSettings {
-  enabled: boolean;
-}
+export type HighlighterSettings = Record<string, boolean>;
 
 export interface KeywordList {
   tone: HighlightTone;

@@ -26,8 +26,11 @@ export {
 export {
   HIGHLIGHTER_SETTINGS_KEY,
   DEFAULT_HIGHLIGHTER_SETTINGS,
+  normalizeHighlighterSettings,
+  isHighlighterEnabledForHost,
   readHighlighterSettings,
   writeHighlighterSettings,
+  setHighlighterEnabled,
   subscribeHighlighterSettings,
 } from './storage';
 

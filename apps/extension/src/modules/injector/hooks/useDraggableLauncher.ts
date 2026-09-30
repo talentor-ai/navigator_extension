@@ -149,9 +149,13 @@ export const useDraggableLauncher = () => {
       sideRef.current = snappedSide;
       setSide(snappedSide);
       updatePosition({ x: xForSide(snappedSide), y });
-      void chrome.storage?.local?.set({
-        [STORAGE_KEY]: { side: snappedSide, y },
-      });
+      try {
+        void chrome.storage?.local?.set({
+          [STORAGE_KEY]: { side: snappedSide, y },
+        });
+      } catch {
+        /* context invalidated; skip persisting the position */
+      }
     },
     [updatePosition],
   );

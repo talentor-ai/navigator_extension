@@ -1,3 +1,5 @@
+import { subscribeStorageChanges } from '@common/utils/extensionContext';
+
 export const HIGHLIGHTER_SELECTORS_KEY = 'highlighter-selectors';
 
 /**
@@ -69,10 +71,8 @@ export const setHighlighterSelector = async (
 export const subscribeHighlighterSelectors = (
   listener: (selectors: HighlighterSelectors) => void,
 ): (() => void) => {
-  if (!chrome.storage?.onChanged) return () => {};
-
   const handler = (
-    changes: { [key: string]: chrome.storage.StorageChange },
+    changes: Record<string, chrome.storage.StorageChange>,
     area: string,
   ) => {
     if (area !== 'local' || !changes[HIGHLIGHTER_SELECTORS_KEY]) return;
@@ -83,6 +83,5 @@ export const subscribeHighlighterSelectors = (
     );
   };
 
-  chrome.storage.onChanged.addListener(handler);
-  return () => chrome.storage.onChanged.removeListener(handler);
+  return subscribeStorageChanges(handler);
 };

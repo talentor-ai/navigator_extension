@@ -3,7 +3,7 @@ import { getFocusTaskSettings, isYouTubeHost } from '@modules/focus';
 import useFocusTasksStore, {
   startFocusTasksStoreSync,
 } from '@modules/popup/store/useFocusTasksStore';
-import useCurrentHostname from './useCurrentHostname';
+import useCurrentHostname from '@modules/popup/hooks/useCurrentHostname';
 
 const useFocusTasksSettings = () => {
   const hostname = useCurrentHostname();
